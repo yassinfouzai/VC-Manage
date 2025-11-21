@@ -1,14 +1,16 @@
 #include "../include/ville/ville.hpp"
-#include "../include/utils.hpp"
 #include "../include/buildings/batiment.hpp"
+#include "../include/utils.hpp"
 #include <memory>
 #include <string>
 #include <vector>
 
 using namespace std;
 
-Ville::Ville(const string& nom, float budget, unsigned int population, BatimentList batiments)
+Ville::Ville(const string &nom, float budget, unsigned int population,
+             float satisfaction, float polution, BatimentList batiments)
     : nom(nom), budget(budget), population(population),
+      satisfaction(satisfaction), polution(polution),
       batiments(std::move(batiments)) {}
 
 // Using Polymorphic storage with a unique pointer to insert any sub-class of
@@ -25,17 +27,19 @@ void Ville::supprimerBatiment(int id) {
   }
 }
 Resources Ville::calculerConsummationTotale() {
-    Resources ConsumationTotale;
-    for (auto it = batiments.begin(); it != batiments.end(); ++it) {
-        ConsumationTotale += (*it)->getConsummation();
-    }
-    return ConsumationTotale;
+  Resources ConsumationTotale;
+  for (auto it = batiments.begin(); it != batiments.end(); ++it) {
+    ConsumationTotale += (*it)->getConsummation();
+  }
+  return ConsumationTotale;
 }
 
 int Ville::calculerSatisfaction() {
-    int satisfaction;
-    for (auto it = batiments.begin(); it != batiments.end(); ++it) {
-        satisfaction += (*it)->getSatisfaction();
-    }
-    return satisfaction;
+  int satisfaction;
+  for (auto it = batiments.begin(); it != batiments.end(); ++it) {
+    satisfaction += (*it)->getSatisfaction();
+  }
+  return satisfaction;
 }
+
+string Ville::getNom() { return nom; }
