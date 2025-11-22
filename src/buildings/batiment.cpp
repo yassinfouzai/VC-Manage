@@ -5,21 +5,25 @@
 using namespace std;
 
 // Constructors
-Batiment::Batiment(int id, const string &nom, Ville *ville, const string &type,
-                   int effectSatisfication, double cost, double consommationEau,
-                   double consommationElectricite, int x, int y, int largeur,
-                   int longeur)
+Batiment::Batiment(int id, const string &nom, Ville *ville, TypeBatiment type,
+                   int effectSatisfication, double cost, unsigned int Employees,
+                   unsigned int EmployeesNeeded, double consommationEau,
+                   double consommationElectricite, float polution, int x, int y,
+                   int largeur, int longeur)
     : id(id), nom(nom), ville(ville), type(type),
-      effectSatisfication(effectSatisfication),
+      effectSatisfication(effectSatisfication), cost(cost),
+      Employees(Employees), EmployeesNeeded(EmployeesNeeded),
       consommation(consommationEau, consommationElectricite), position(x, y),
       surface(largeur, longeur) {}
 
-Batiment::Batiment(int id, const string &nom, Ville *ville, const string &type,
-                   int effectSatisfication, double cost, double consommationEau,
-                   double consommationElectricite, Position position,
-                   Surface surface)
+Batiment::Batiment(int id, const string &nom, Ville *ville, TypeBatiment type,
+                   int effectSatisfication, double cost, unsigned int Employees,
+                   unsigned int EmployeesNeeded, double consommationEau,
+                   double consommationElectricite, float polution,
+                   Position position, Surface surface)
     : id(id), nom(nom), ville(ville), type(type),
-      effectSatisfication(effectSatisfication),
+      effectSatisfication(effectSatisfication), cost(cost),
+      Employees(Employees), EmployeesNeeded(EmployeesNeeded),
       consommation(consommationEau, consommationElectricite),
       position(position), surface(surface) {}
 
@@ -45,3 +49,4 @@ int Batiment::calculerImpactRessources() { return 0; }
 int Batiment::getID() { return id; }
 Resources Batiment::getConsummation() { return consommation; }
 int Batiment::getSatisfaction() { return effectSatisfication; }
+float Batiment::getPolution() { return polution; }

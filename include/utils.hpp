@@ -72,6 +72,18 @@ struct Resources {
     }
 };
 
+enum class TypeBatiment {
+    House,
+    Apartment,
+    Park,
+    Cinema,
+    PowerPlant,
+    WaterTreatmentPlant,
+    Custom
+};
+
+
+
 using BatPtr = std::unique_ptr<Batiment>;
 using BatimentList = std::vector<BatPtr>;
 

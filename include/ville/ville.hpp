@@ -8,25 +8,29 @@ using namespace std;
 
 class Ville {
 public:
-  Ville(const string& nom, float budget, unsigned int population, float satisfaction, float polution,
-        BatimentList batiments);
+  Ville(const string &nom, float budget, unsigned int population,
+        Resources resources, BatimentList batiments);
   void ajoutBatiment(BatPtr batiment);
   void supprimerBatiment(int id);
   Resources calculerConsummationTotale();
-  int calculerSatisfaction();
+  Resources calculerResourcesTotale();
+  float calculerPolutionTotale();
+  int calculerSatisfactionTotale();
 
-  // Getters  
+  // Getters
   string getNom();
   float getBudget();
   unsigned int getPopulation();
-  float getSatisfaction();
+  int getSatisfaction();
   float getPolution();
+  Resources getResources();
 
   // Setters
   void setBudget(float newBudget);
   void setPopulation(unsigned int newPopulation);
   void setSatisfaction(int newSatisfaction);
   void setPolution(float newPolution);
+  void setResources(Resources newResources);
 
 private:
   string nom;
@@ -34,6 +38,7 @@ private:
   unsigned int population;
   int satisfaction;
   float polution;
+  Resources resources;
   BatimentList batiments;
 };
 

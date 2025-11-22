@@ -1,28 +1,16 @@
 #ifndef MAISON
 #define MAISON
 
-#include "batiment.hpp"
+#include "resident.hpp"
 
-using namespace std;
-
-class Maison : public Batiment {
+class Maison : public Resident {
 public:
-  // Constructors
-  Maison(int id, const string& nom, Ville* ville, const string& type, int effectSatisfication, double cost,
-         double consommationEau, double consommationElectricite, int x, int y, int largeur, int longeur,
+  Maison(int id, const std::string &nom, Ville *ville, int effectSatisfication,
+         Resources consummation, float polution, Position position,
          int capaciteHabitants, int habitantsActuels);
-  Maison(int id, const string& nom, Ville* ville, const string& type, int effectSatisfication, double cost,
-         double consommationEau, double consommationElectricite, Position position, Surface surface,
-         int capaciteHabitants, int habitantsActuels);
-
-  // Methods
-  void afficheDetails() const override;
-  void ajouterHabitants(int nombreHabitants);
-  void retirerHabitants(int nombreHabitants);
-
-private:
-  int capaciteHabitants;
-  int habitantsActuels;
+  Maison(int id, const std::string &nom, Ville *ville, int effectSatisfication,
+         double consummationEau, double consummationElectricte, float polution,
+         int x, int y, int capaciteHabitants, int habitantsActuels);
 };
 
 #endif // !MAISON

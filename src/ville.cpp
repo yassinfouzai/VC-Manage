@@ -8,9 +8,8 @@
 using namespace std;
 
 Ville::Ville(const string &nom, float budget, unsigned int population,
-             float satisfaction, float polution, BatimentList batiments)
-    : nom(nom), budget(budget), population(population),
-      satisfaction(satisfaction), polution(polution),
+             Resources resources, BatimentList batiments)
+    : nom(nom), budget(budget), population(population), resources(resources),
       batiments(std::move(batiments)) {}
 
 // Using Polymorphic storage with a unique pointer to insert any sub-class of
@@ -26,6 +25,8 @@ void Ville::supprimerBatiment(int id) {
     }
   }
 }
+
+// calculs
 Resources Ville::calculerConsummationTotale() {
   Resources ConsumationTotale;
   for (auto it = batiments.begin(); it != batiments.end(); ++it) {
@@ -34,12 +35,51 @@ Resources Ville::calculerConsummationTotale() {
   return ConsumationTotale;
 }
 
-int Ville::calculerSatisfaction() {
-  int satisfaction;
+Resources Ville::calculerResourcesTotale() {
+  Resources ResourcesTotale;
   for (auto it = batiments.begin(); it != batiments.end(); ++it) {
-    satisfaction += (*it)->getSatisfaction();
+    if ((*it)->type == TypeBatiment::PowerPlant ||
+        (*it)->type == TypeBatiment::WaterTreatmentPlant) {
+      ResourcesTotale += (*it)->getConsummation();
+    }
   }
-  return satisfaction;
+  setResources(resources);
+  return ResourcesTotale;
 }
 
+float Ville::calculerPolutionTotale() {
+  float PolutionTotale;
+  for (auto it = batiments.begin(); it != batiments.end(); ++it) {
+    PolutionTotale += (*it)->getPolution();
+  }
+  setPopulation(PolutionTotale);
+  return PolutionTotale;
+}
+
+int Ville::calculerSatisfactionTotale() {
+  int satisfactionTotale;
+  for (auto it = batiments.begin(); it != batiments.end(); ++it) {
+    satisfactionTotale += (*it)->getSatisfaction();
+  }
+  setSatisfaction(satisfactionTotale);
+  return satisfactionTotale;
+}
+
+// Getters
 string Ville::getNom() { return nom; }
+float Ville::getBudget() { return budget; }
+float Ville::getPolution() { return polution; }
+unsigned int Ville::getPopulation() { return polution; }
+int Ville::getSatisfaction() { return satisfaction; }
+Resources Ville::getResources() { return resources; }
+
+// Setters
+void Ville::setBudget(float newBudget) { budget = newBudget; }
+void Ville::setPopulation(unsigned int newPopulation) {
+  population = newPopulation;
+}
+void Ville::setSatisfaction(int newSatisfaction) {
+  satisfaction = newSatisfaction;
+}
+void Ville::setPolution(float newPolution) { polution = newPolution; }
+void Ville::setResources(Resources newResources) { resources = newResources; }
