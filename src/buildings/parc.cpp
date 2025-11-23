@@ -1,21 +1,21 @@
 #include "../../include/buildings/parc.hpp"
 #include <iostream>
 
-Parc::Parc(int id, const string &nom, Ville *ville, int effectSatisfication,
-           double cost, Resources consommation, float polution,
-           Position position, int effectBienEtre, unsigned int EmployeesNeeded)
-    : effectBienEtre(effectBienEtre), EmployeesNeeded(EmployeesNeeded),
-      Batiment(id, nom, ville, TypeBatiment::Park, effectSatisfication, cost,
-               consommation, polution, position, Surface(2, 2)) {}
+Parc::Parc(int id, const string &nom, Ville *ville, TypeBatiment type,
+           int effectSatisfication, double cost, unsigned int Employees,
+           unsigned int EmployeesNeeded, Resources consommation, float polution,
+           Position position, Surface surface)
+    : Service(id, nom, ville, type, effectSatisfication, cost, Employees,
+              EmployeesNeeded, consommation, polution, position, surface) {}
 
-Parc::Parc(int id, const string &nom, Ville *ville, int effectSatisfication,
-           double cost, double consommationEau, double consommationElectricite,
-           float polution, int x, int y, int effectBienEtre,
-           unsigned int EmployeesNeeded)
-    : effectBienEtre(effectBienEtre), EmployeesNeeded(EmployeesNeeded),
-      Batiment(id, nom, ville, TypeBatiment::Park, effectSatisfication, cost,
-               consommationEau, consommationElectricite, polution, x, y, 2, 2) {
-}
+Parc::Parc(int id, const string &nom, Ville *ville, TypeBatiment type,
+       int effectSatisfication, double cost, unsigned int Employees,
+       unsigned int EmployeesNeeded, double consommationEau,
+       double consommationElectricite, float polution, int x, int y,
+       int largeur, int longeur) :
+      Service(id, nom, ville, type, effectSatisfication, cost, Employees,
+              EmployeesNeeded, consommationEau, consommationElectricite,
+              polution, x, y, largeur, longeur) {}
 
 void Parc::diminuerPollution() {
   ville->setPolution(ville->getPolution() - (surface.largeur * surface.longeur *

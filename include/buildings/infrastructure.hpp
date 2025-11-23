@@ -21,8 +21,12 @@ protected:
                  int largeur, int longeur, Resources productionRessources);
 
 public:
+  // Methods
   void produireRessources();
   double calculerPollution();
+
+  static Infrastructure createPowerPlant(int id, const string& nom, Ville *ville, int x, int y);
+  static Infrastructure createWaterTreatmentPlant(int id, const string& nom, Ville *ville, int x, int y);
 
 private:
   Resources productionRessources;

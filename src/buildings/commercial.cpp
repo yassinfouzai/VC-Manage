@@ -1,5 +1,6 @@
 #include "../../include/buildings/commercial.hpp"
 
+#include <iostream>
 #include <string>
 
 using namespace std;
@@ -38,3 +39,12 @@ Comercial Comercial::createBank(int id, const string &nom, Ville *ville,
                                   int x, int y) {
     return Comercial(id, nom, ville, TypeBatiment::Bank, -20, 2000.0, 0, 10, 10, 30, 2.0, x, y, 1, 1, 50.0);
 }
+
+// Methods
+void Comercial::afficheDetails() const {
+  Service::afficheDetails();
+  std::cout << "Profit :\t" << profit << endl;
+}
+
+// Getters
+double Comercial::getProfit() { return profit; }

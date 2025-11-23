@@ -1,5 +1,7 @@
 #include "../include/ville/ville.hpp"
 #include "../include/buildings/batiment.hpp"
+#include "../include/buildings/resident.hpp"
+#include "../include/buildings/commercial.hpp"
 #include "../include/utils.hpp"
 #include <memory>
 #include <string>
@@ -48,7 +50,7 @@ Resources Ville::calculerResourcesTotale() {
 }
 
 float Ville::calculerPolutionTotale() {
-  float PolutionTotale;
+  float PolutionTotale = 0;
   for (auto it = batiments.begin(); it != batiments.end(); ++it) {
     PolutionTotale += (*it)->getPolution();
   }
@@ -57,13 +59,40 @@ float Ville::calculerPolutionTotale() {
 }
 
 int Ville::calculerSatisfactionTotale() {
-  int satisfactionTotale;
+  int satisfactionTotale = 0;
   for (auto it = batiments.begin(); it != batiments.end(); ++it) {
     satisfactionTotale += (*it)->getSatisfaction();
   }
   setSatisfaction(satisfactionTotale);
   return satisfactionTotale;
 }
+
+int Ville::calculerPopulationTotale() {
+  int populationTotale = 0;
+  for (auto it = batiments.begin(); it != batiments.end(); ++it) {
+    if ((*it)->type == TypeBatiment::House ||
+        (*it)->type == TypeBatiment::Apartment) {
+      Resident* r = dynamic_cast<Resident*>(it->get());
+      if (r) populationTotale += r->gethabitantsActuels();
+    }
+  }
+  setPopulation(populationTotale);
+  return populationTotale;
+}
+
+double Ville::calculerProfit() {
+  double profitTotale = 0.0;
+  for (auto it = batiments.begin(); it != batiments.end(); ++it) {
+      Comercial* c = dynamic_cast<Comercial*>(it->get());
+      if (c) profitTotale += c->getProfit();
+  }
+  return profitTotale;
+}
+
+void Ville::collectProfit() {
+    budget += calculerProfit();
+}
+
 
 // Getters
 string Ville::getNom() { return nom; }

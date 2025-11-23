@@ -27,6 +27,9 @@ public:
   static Comercial createMall(int id, const string &nom, Ville *ville, int x, int y);
   static Comercial createBank(int id, const string &nom, Ville *ville, int x, int y);
 
+  // Getters
+  double getProfit();
+
 private:
   double profit;
 };

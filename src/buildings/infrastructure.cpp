@@ -28,3 +28,12 @@ Infrastructure::Infrastructure(int id, const string &nom, Ville *ville,
     : productionRessources(productionRessources),
       Service(id, nom, ville, type, effectSatisfication, cost, employees,
               employeesNeeded, consommation, polution, position, surface) {}
+
+
+Infrastructure Infrastructure::createPowerPlant(int id, const string &nom, Ville *ville, int x, int y) {
+    return Infrastructure(id, nom, ville, TypeBatiment::PowerPlant, -2, 20.0, 0, 40, 3.0, 0.0, 20, x, y, 1, 1, Resources(0.0,200.0));
+}
+
+Infrastructure Infrastructure::createWaterTreatmentPlant(int id, const string &nom, Ville *ville, int x, int y) {
+    return Infrastructure(id, nom, ville, TypeBatiment::WaterTreatmentPlant, -2, 20.0, 0, 40, 0.0, 7.0, 15, x, y, 1, 1, Resources(200.0,0.0));
+}

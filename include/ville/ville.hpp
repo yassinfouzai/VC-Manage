@@ -16,6 +16,9 @@ public:
   Resources calculerResourcesTotale();
   float calculerPolutionTotale();
   int calculerSatisfactionTotale();
+  int calculerPopulationTotale();
+  double calculerProfit();
+  void collectProfit();
 
   // Getters
   string getNom();

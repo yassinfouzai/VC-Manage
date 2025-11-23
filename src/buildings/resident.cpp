@@ -30,9 +30,10 @@ void Resident::afficheDetails() const {
   std::cout << "Capacite Habitants :\t" << capaciteHabitants << endl;
 }
 
-// TO-DO check with capacity of the house
 void Resident::ajouterHabitants(int nombreHabitants) {
   habitantsActuels += nombreHabitants;
+  if (habitantsActuels >= capaciteHabitants)
+    habitantsActuels = capaciteHabitants;
 }
 
 void Resident::retirerHabitants(int nombreHabitants) {
@@ -41,3 +42,12 @@ void Resident::retirerHabitants(int nombreHabitants) {
   else
     habitantsActuels -= nombreHabitants;
 }
+
+Resident Resident::createHouse(int id, const string &nom, Ville *ville, int x,
+                               int y) {
+  return Resident(id, nom, ville, TypeBatiment::House, 10, 30.0, 20.0, 20.0,
+                  3.0, x, y, 1, 1, 6, 0);
+}
+
+// Getters
+int Resident::gethabitantsActuels() { return habitantsActuels; }
