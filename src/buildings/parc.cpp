@@ -2,20 +2,18 @@
 #include <iostream>
 
 Parc::Parc(int id, const string &nom, Ville *ville, int effectSatisfication,
-           double cost, double consommationEau, double consommationElectricite,
-           float polution, Position position, int effectBienEtre,
-           unsigned int EmployeesNeeded)
+           double cost, Resources consommation, float polution,
+           Position position, int effectBienEtre, unsigned int EmployeesNeeded)
     : effectBienEtre(effectBienEtre), EmployeesNeeded(EmployeesNeeded),
-      Batiment(id, nom, ville, TypeBatiment::Park, effectSatisfication, cost, 0, 0, // TODO : modify this to be employee attrib
-               consommationEau, consommationElectricite, polution, position,
-               Surface(2, 2)) {}
+      Batiment(id, nom, ville, TypeBatiment::Park, effectSatisfication, cost,
+               consommation, polution, position, Surface(2, 2)) {}
 
 Parc::Parc(int id, const string &nom, Ville *ville, int effectSatisfication,
            double cost, double consommationEau, double consommationElectricite,
            float polution, int x, int y, int effectBienEtre,
            unsigned int EmployeesNeeded)
     : effectBienEtre(effectBienEtre), EmployeesNeeded(EmployeesNeeded),
-      Batiment(id, nom, ville, TypeBatiment::Park, effectSatisfication, cost, 0, 0, // TODO : same here 
+      Batiment(id, nom, ville, TypeBatiment::Park, effectSatisfication, cost,
                consommationEau, consommationElectricite, polution, x, y, 2, 2) {
 }
 

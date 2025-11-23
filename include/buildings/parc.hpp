@@ -10,7 +10,7 @@ class Parc : public Batiment {
 public:
   // Constructors
   Parc(int id, const string &nom, Ville *ville, int effectSatisfication,
-       double cost, double consommationEau, double consommationElectricite,
+       double cost, Resources consommation,
        float polution, Position position, int effectBienEtre,
        unsigned int EmployeesNeeded);
 

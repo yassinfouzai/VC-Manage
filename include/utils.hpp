@@ -77,6 +77,8 @@ enum class TypeBatiment {
     Apartment,
     Park,
     Cinema,
+    Mall,
+    Bank,
     PowerPlant,
     WaterTreatmentPlant,
     Custom

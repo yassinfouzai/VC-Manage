@@ -12,18 +12,16 @@ Resident::Resident(int id, const std::string &nom, Ville *ville,
                    float polution, int x, int y, int largeur, int longeur,
                    int capaciteHabitants, int habitantsActuels)
     : capaciteHabitants(capaciteHabitants), habitantsActuels(habitantsActuels),
-      Batiment(id, nom, ville, type, effectSatisfication, cost, 0, 0,
-               consommationEau, consommationElectricite, polution, x, y,
-               largeur, longeur) {}
+      Batiment(id, nom, ville, type, effectSatisfication, cost, consommationEau,
+               consommationElectricite, polution, x, y, largeur, longeur) {}
 
 Resident::Resident(int id, const std::string &nom, Ville *ville,
                    TypeBatiment type, int effectSatisfication, double cost,
-                   Resources consummation, float polution, Position position,
+                   Resources consommation, float polution, Position position,
                    Surface surface, int capaciteHabitants, int habitantsActuels)
     : capaciteHabitants(capaciteHabitants), habitantsActuels(habitantsActuels),
-      Batiment(id, nom, ville, type, effectSatisfication, cost, 0, 0,
-               consummation.eau, consummation.electricite, polution, position,
-               surface) {}
+      Batiment(id, nom, ville, type, effectSatisfication, cost, consommation,
+               polution, position, surface) {}
 
 // Methods
 void Resident::afficheDetails() const {

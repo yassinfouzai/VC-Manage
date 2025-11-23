@@ -6,10 +6,10 @@
 class Maison : public Resident {
 public:
   Maison(int id, const std::string &nom, Ville *ville, int effectSatisfication,
-         Resources consummation, float polution, Position position,
+         Resources consommation, float polution, Position position,
          int capaciteHabitants, int habitantsActuels);
   Maison(int id, const std::string &nom, Ville *ville, int effectSatisfication,
-         double consummationEau, double consummationElectricte, float polution,
+         double consommationEau, double consommationElectricte, float polution,
          int x, int y, int capaciteHabitants, int habitantsActuels);
 };
 

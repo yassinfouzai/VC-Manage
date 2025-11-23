@@ -7,7 +7,7 @@
 
 using namespace std;
 
-Ville::Ville(const string &nom, float budget, unsigned int population,
+Ville::Ville(const string &nom, double budget, unsigned int population,
              Resources resources, BatimentList batiments)
     : nom(nom), budget(budget), population(population), resources(resources),
       batiments(std::move(batiments)) {}
@@ -26,11 +26,11 @@ void Ville::supprimerBatiment(int id) {
   }
 }
 
-// calculs
-Resources Ville::calculerConsummationTotale() {
+// calculus
+Resources Ville::calculerconsommationTotale() {
   Resources ConsumationTotale;
   for (auto it = batiments.begin(); it != batiments.end(); ++it) {
-    ConsumationTotale += (*it)->getConsummation();
+    ConsumationTotale += (*it)->getconsommation();
   }
   return ConsumationTotale;
 }
@@ -40,7 +40,7 @@ Resources Ville::calculerResourcesTotale() {
   for (auto it = batiments.begin(); it != batiments.end(); ++it) {
     if ((*it)->type == TypeBatiment::PowerPlant ||
         (*it)->type == TypeBatiment::WaterTreatmentPlant) {
-      ResourcesTotale += (*it)->getConsummation();
+      ResourcesTotale += (*it)->getconsommation();
     }
   }
   setResources(resources);
@@ -67,14 +67,14 @@ int Ville::calculerSatisfactionTotale() {
 
 // Getters
 string Ville::getNom() { return nom; }
-float Ville::getBudget() { return budget; }
+double Ville::getBudget() { return budget; }
 float Ville::getPolution() { return polution; }
 unsigned int Ville::getPopulation() { return polution; }
 int Ville::getSatisfaction() { return satisfaction; }
 Resources Ville::getResources() { return resources; }
 
 // Setters
-void Ville::setBudget(float newBudget) { budget = newBudget; }
+void Ville::setBudget(double newBudget) { budget = newBudget; }
 void Ville::setPopulation(unsigned int newPopulation) {
   population = newPopulation;
 }
