@@ -37,8 +37,9 @@ void Batiment::afficheDetails() const {
             << ")" << endl;
 }
 
-// TODO
-int Batiment::calculerImpactRessources() { return 0; }
+void Batiment::impacterRessources() {
+    ville->setResources(ville->getResources()-consommation);
+}
 
 // getters
 int Batiment::getID() { return id; }

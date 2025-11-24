@@ -26,7 +26,7 @@ public:
   virtual ~Batiment() = default; // For the Polymorphic deletion
 
   virtual void afficheDetails() const;
-  int calculerImpactRessources();
+  virtual void impacterRessources();
 
   // Getters
   int getID();

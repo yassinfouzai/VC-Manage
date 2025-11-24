@@ -82,6 +82,19 @@ int Ville::calculerPopulationTotale() {
   return populationTotale;
 }
 
+int Ville::calculerCapacitePopulation() {
+  int capaciteTotale = 0;
+  for (auto it = batiments.begin(); it != batiments.end(); ++it) {
+    if ((*it)->type == TypeBatiment::House ||
+        (*it)->type == TypeBatiment::Apartment) {
+      Resident* r = dynamic_cast<Resident*>(it->get());
+      if (r) capaciteTotale += r->getcapaciteHabitants();
+    }
+  }
+  return capaciteTotale;
+}
+
+
 double Ville::calculerProfit() {
   double profitTotale = 0.0;
   for (auto it = batiments.begin(); it != batiments.end(); ++it) {
@@ -95,6 +108,15 @@ void Ville::collectProfit() {
     budget += calculerProfit();
 }
 
+
+void Ville::updatePopulation() {
+    int newPopulation = calculerSatisfactionTotale()/2;
+    int capaciteTotale = calculerCapacitePopulation();
+    if (newPopulation > capaciteTotale) {
+        newPopulation = capaciteTotale;
+    }
+    population = newPopulation;
+}
 
 // Getters
 string Ville::getNom() { return nom; }

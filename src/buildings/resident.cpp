@@ -51,3 +51,4 @@ Resident Resident::createHouse(int id, const string &nom, Ville *ville, int x,
 
 // Getters
 int Resident::gethabitantsActuels() { return habitantsActuels; }
+int Resident::getcapaciteHabitants() { return capaciteHabitants; }

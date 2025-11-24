@@ -49,3 +49,11 @@ Infrastructure Infrastructure::createUtilityPlant(int id, const string &nom,
   return Infrastructure(id, nom, ville, TypeBatiment::UtilityPlant, -6, 60.0, 0,
                         45, 0.0, 0.0, 45, x, y, 1, 1, Resources(150.0, 150.0));
 }
+
+void Infrastructure::impacterRessources() {
+  ville->setResources(ville->getResources() - consommation + productionRessources);
+}
+
+void Infrastructure::produireRessources() {
+  ville->setResources(ville->getResources() + productionRessources);
+}

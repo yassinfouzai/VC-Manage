@@ -33,6 +33,7 @@ public:
 
   // Getters
   int gethabitantsActuels();
+  int getcapaciteHabitants();
 };
 
 #endif // !MAISON

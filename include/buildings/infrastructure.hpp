@@ -20,18 +20,19 @@ protected:
                  double consommationElectricite, double pollution, int x, int y,
                  int largeur, int longeur, Resources productionRessources);
 
+
+Resources productionRessources;
 public:
   // Methods
   void produireRessources();
-  double calculerPollution();
+  void impacterRessources() override;
+  double calculerPollution(); //TODO
 
   static Infrastructure createPowerPlant(int id, const string &nom,
                                          Ville *ville, int x, int y);
   static Infrastructure createWaterTreatmentPlant(int id, const string &nom,
                                                   Ville *ville, int x, int y);
   static Infrastructure createUtilityPlant(int id, const string& nom, Ville *ville, int x, int y);
-private:
-  Resources productionRessources;
 };
 
 #endif // !INFRASTRUCTURE

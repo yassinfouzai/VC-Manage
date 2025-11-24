@@ -17,8 +17,10 @@ public:
   float calculerPolutionTotale();
   int calculerSatisfactionTotale();
   int calculerPopulationTotale();
+  int calculerCapacitePopulation();
   double calculerProfit();
   void collectProfit();
+  void updatePopulation();
 
   // Getters
   string getNom();
