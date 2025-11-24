@@ -25,9 +25,11 @@ public:
   void produireRessources();
   double calculerPollution();
 
-  static Infrastructure createPowerPlant(int id, const string& nom, Ville *ville, int x, int y);
-  static Infrastructure createWaterTreatmentPlant(int id, const string& nom, Ville *ville, int x, int y);
-
+  static Infrastructure createPowerPlant(int id, const string &nom,
+                                         Ville *ville, int x, int y);
+  static Infrastructure createWaterTreatmentPlant(int id, const string &nom,
+                                                  Ville *ville, int x, int y);
+  static Infrastructure createUtilityPlant(int id, const string& nom, Ville *ville, int x, int y);
 private:
   Resources productionRessources;
 };

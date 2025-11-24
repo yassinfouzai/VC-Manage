@@ -81,6 +81,7 @@ enum class TypeBatiment {
     Bank,
     PowerPlant,
     WaterTreatmentPlant,
+    UtilityPlant,
     Custom
 };
 

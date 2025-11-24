@@ -19,20 +19,20 @@ protected:
            float polution, Position position, Surface surface,
            int capaciteHabitants, int habitantsActuels);
 
+  int capaciteHabitants;
+  int habitantsActuels;
+
 public:
   // Methods
   void afficheDetails() const override;
   void ajouterHabitants(int nombreHabitants);
   void retirerHabitants(int nombreHabitants);
 
-  static Resident createHouse(int id, const string& nom, Ville *ville, int x, int y);
+  static Resident createHouse(int id, const string &nom, Ville *ville, int x,
+                              int y);
 
   // Getters
   int gethabitantsActuels();
-
-private:
-  int capaciteHabitants;
-  int habitantsActuels;
 };
 
 #endif // !MAISON

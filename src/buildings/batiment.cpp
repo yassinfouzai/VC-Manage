@@ -37,6 +37,7 @@ void Batiment::afficheDetails() const {
             << ")" << endl;
 }
 
+// TODO
 int Batiment::calculerImpactRessources() { return 0; }
 
 // getters

@@ -14,6 +14,7 @@ public:
 
 private:
   Ville ville;
+  unsigned int cycleActuel;
 };
 
 #endif // !SIMULATION
