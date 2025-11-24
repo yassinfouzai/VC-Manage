@@ -1,7 +1,7 @@
 #include "../include/ville/ville.hpp"
 #include "../include/buildings/batiment.hpp"
-#include "../include/buildings/resident.hpp"
 #include "../include/buildings/commercial.hpp"
+#include "../include/buildings/resident.hpp"
 #include "../include/utils.hpp"
 #include <memory>
 #include <string>
@@ -74,8 +74,9 @@ int Ville::calculerPopulationTotale() {
   for (auto it = batiments.begin(); it != batiments.end(); ++it) {
     if ((*it)->type == TypeBatiment::House ||
         (*it)->type == TypeBatiment::Apartment) {
-      Resident* r = dynamic_cast<Resident*>(it->get());
-      if (r) populationTotale += r->gethabitantsActuels();
+      Resident *r = dynamic_cast<Resident *>(it->get());
+      if (r)
+        populationTotale += r->gethabitantsActuels();
     }
   }
   setPopulation(populationTotale);
@@ -87,35 +88,33 @@ int Ville::calculerCapacitePopulation() {
   for (auto it = batiments.begin(); it != batiments.end(); ++it) {
     if ((*it)->type == TypeBatiment::House ||
         (*it)->type == TypeBatiment::Apartment) {
-      Resident* r = dynamic_cast<Resident*>(it->get());
-      if (r) capaciteTotale += r->getcapaciteHabitants();
+      Resident *r = dynamic_cast<Resident *>(it->get());
+      if (r)
+        capaciteTotale += r->getcapaciteHabitants();
     }
   }
   return capaciteTotale;
 }
 
-
 double Ville::calculerProfit() {
   double profitTotale = 0.0;
   for (auto it = batiments.begin(); it != batiments.end(); ++it) {
-      Comercial* c = dynamic_cast<Comercial*>(it->get());
-      if (c) profitTotale += c->getProfit();
+    Comercial *c = dynamic_cast<Comercial *>(it->get());
+    if (c)
+      profitTotale += c->getProfit();
   }
   return profitTotale;
 }
 
-void Ville::collectProfit() {
-    budget += calculerProfit();
-}
-
+void Ville::collectProfit() { budget += calculerProfit(); }
 
 void Ville::updatePopulation() {
-    int newPopulation = calculerSatisfactionTotale()/2;
-    int capaciteTotale = calculerCapacitePopulation();
-    if (newPopulation > capaciteTotale) {
-        newPopulation = capaciteTotale;
-    }
-    population = newPopulation;
+  int newPopulation = calculerSatisfactionTotale() / 2;
+  int capaciteTotale = calculerCapacitePopulation();
+  if (newPopulation > capaciteTotale) {
+    newPopulation = capaciteTotale;
+  }
+  population = newPopulation;
 }
 
 // Getters

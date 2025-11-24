@@ -38,7 +38,7 @@ void Batiment::afficheDetails() const {
 }
 
 void Batiment::impacterRessources() {
-    ville->setResources(ville->getResources()-consommation);
+  ville->setResources(ville->getResources() - consommation);
 }
 
 // getters

@@ -51,7 +51,8 @@ Infrastructure Infrastructure::createUtilityPlant(int id, const string &nom,
 }
 
 void Infrastructure::impacterRessources() {
-  ville->setResources(ville->getResources() - consommation + productionRessources);
+  ville->setResources(ville->getResources() - consommation +
+                      productionRessources);
 }
 
 void Infrastructure::produireRessources() {

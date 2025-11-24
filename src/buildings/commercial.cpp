@@ -27,17 +27,20 @@ Comercial::Comercial(int id, const string &nom, Ville *ville, TypeBatiment type,
 
 Comercial Comercial::createCinema(int id, const string &nom, Ville *ville,
                                   int x, int y) {
-    return Comercial(id, nom, ville, TypeBatiment::Cinema, 100, 500.0, 0, 5, 10, 30, 2.5, x, y, 2, 1, 10.0);
+  return Comercial(id, nom, ville, TypeBatiment::Cinema, 100, 500.0, 0, 5, 10,
+                   30, 2.5, x, y, 2, 1, 10.0);
 }
 
-Comercial Comercial::createMall(int id, const string &nom, Ville *ville,
-                                  int x, int y) {
-    return Comercial(id, nom, ville, TypeBatiment::Mall, 100, 2000.0, 0, 50, 400, 600, 8.0, x, y, 3, 3, 20.0);
+Comercial Comercial::createMall(int id, const string &nom, Ville *ville, int x,
+                                int y) {
+  return Comercial(id, nom, ville, TypeBatiment::Mall, 100, 2000.0, 0, 50, 400,
+                   600, 8.0, x, y, 3, 3, 20.0);
 }
 
-Comercial Comercial::createBank(int id, const string &nom, Ville *ville,
-                                  int x, int y) {
-    return Comercial(id, nom, ville, TypeBatiment::Bank, -20, 2000.0, 0, 10, 10, 30, 2.0, x, y, 1, 1, 50.0);
+Comercial Comercial::createBank(int id, const string &nom, Ville *ville, int x,
+                                int y) {
+  return Comercial(id, nom, ville, TypeBatiment::Bank, -20, 2000.0, 0, 10, 10,
+                   30, 2.0, x, y, 1, 1, 50.0);
 }
 
 // Methods

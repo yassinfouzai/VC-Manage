@@ -23,9 +23,11 @@ public:
   // Methods
   void afficheDetails() const override;
   static Comercial createCinema(int id, const string &nom, Ville *ville, int x,
-                          int y);
-  static Comercial createMall(int id, const string &nom, Ville *ville, int x, int y);
-  static Comercial createBank(int id, const string &nom, Ville *ville, int x, int y);
+                                int y);
+  static Comercial createMall(int id, const string &nom, Ville *ville, int x,
+                              int y);
+  static Comercial createBank(int id, const string &nom, Ville *ville, int x,
+                              int y);
 
   // Getters
   double getProfit();

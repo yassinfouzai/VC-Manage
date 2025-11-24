@@ -1,14 +1,14 @@
 #ifndef SIMULATION
 #define SIMULATION
 
-#include "../ville/ville.hpp"
 #include "../utils.hpp"
+#include "../ville/ville.hpp"
 
 using namespace std;
 
 class Simulation {
 public:
-  Simulation(const string& nomVille, Difficulty difficulty);
+  Simulation(const string &nomVille, Difficulty difficulty);
   void demarerCycle();
   void terminerCycle();
   void declencherCycle();

@@ -9,11 +9,11 @@ Parc::Parc(int id, const string &nom, Ville *ville, TypeBatiment type,
               EmployeesNeeded, consommation, polution, position, surface) {}
 
 Parc::Parc(int id, const string &nom, Ville *ville, TypeBatiment type,
-       int effectSatisfication, double cost, unsigned int Employees,
-       unsigned int EmployeesNeeded, double consommationEau,
-       double consommationElectricite, float polution, int x, int y,
-       int largeur, int longeur) :
-      Service(id, nom, ville, type, effectSatisfication, cost, Employees,
+           int effectSatisfication, double cost, unsigned int Employees,
+           unsigned int EmployeesNeeded, double consommationEau,
+           double consommationElectricite, float polution, int x, int y,
+           int largeur, int longeur)
+    : Service(id, nom, ville, type, effectSatisfication, cost, Employees,
               EmployeesNeeded, consommationEau, consommationElectricite,
               polution, x, y, largeur, longeur) {}
 

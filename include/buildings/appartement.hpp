@@ -8,7 +8,8 @@ private:
   Appartement(int id, const std::string &nom, Ville *ville, TypeBatiment type,
               int effectSatisfication, double cost, Resources consommation,
               float polution, Position position, Surface surface,
-              int capaciteHabitants, int habitantsActuels, unsigned int floorsCount);
+              int capaciteHabitants, int habitantsActuels,
+              unsigned int floorsCount);
 
   Appartement(int id, const std::string &nom, Ville *ville, TypeBatiment type,
               int effectSatisfication, double cost, double consommationEau,
@@ -17,6 +18,7 @@ private:
               int habitantsActuels, unsigned int floorsCount);
 
   unsigned int floorsCount;
+
 protected:
   static constexpr unsigned int MAX_FLOOR_COUNT = 4;
   static constexpr int MAX_HABITATS_PER_FLOOR = 2;
