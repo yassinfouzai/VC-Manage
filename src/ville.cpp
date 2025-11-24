@@ -18,10 +18,12 @@ Ville::Ville(const string &nom, double budget, unsigned int population,
 // Batiment
 void Ville::ajoutBatiment(BatPtr batiment) {
   batiments.push_back(std::move(batiment));
+  budget -= batiment->getCost();
 }
 void Ville::supprimerBatiment(int id) {
   for (auto it = batiments.begin(); it != batiments.end(); ++it) {
     if ((*it)->getID() == id) {
+      budget += (*it)->getCost();
       batiments.erase(it);
       return;
     }

@@ -30,6 +30,7 @@ public:
 
   // Getters
   int getID();
+  double getCost();
   int getSatisfaction();
   float getPolution();
   Resources getconsommation();

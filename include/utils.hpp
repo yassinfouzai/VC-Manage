@@ -85,6 +85,11 @@ enum class TypeBatiment {
     Custom
 };
 
+enum class Difficulty {
+    Easy,
+    Medium,
+    Hard
+};
 
 
 using BatPtr = std::unique_ptr<Batiment>;
