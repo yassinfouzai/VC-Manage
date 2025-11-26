@@ -15,6 +15,9 @@ Ville::Ville(const string &nom, double budget, unsigned int population,
     : nom(nom), budget(budget), population(population), resources(resources),
       batiments(std::move(batiments)) {}
 
+
+// List de batiments
+// TO-DO : Need to figure out how the building are destroyed
 void Ville::ajoutBatiment(BatPtr batiment) {
   batiments.push_back(std::move(batiment));
   budget -= batiment->getCost();

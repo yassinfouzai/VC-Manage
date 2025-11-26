@@ -84,6 +84,12 @@ enum class TypeBatiment {
   Custom
 };
 
+enum class SimState {
+    Running,
+    Evaluating,
+    GameOver
+};
+
 enum class Difficulty { Easy, Medium, Hard };
 
 using BatPtr = std::unique_ptr<Batiment>;

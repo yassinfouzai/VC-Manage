@@ -26,7 +26,7 @@ public:
   // Methods
   void produireRessources();
   void impacterRessources() override;
-  double calculerPollution(); // TODO
+  double calculerPollution(); // TO-DO
 
   static Infrastructure createPowerPlant(int id, const string &nom,
                                          Ville *ville, int x, int y);
