@@ -12,14 +12,20 @@ Batiment::Batiment(int id, const string &nom, Ville *ville, TypeBatiment type,
     : id(id), nom(nom), ville(ville), type(type),
       effectSatisfication(effectSatisfication), cost(cost),
       consommation(consommationEau, consommationElectricite), position(x, y),
-      surface(largeur, longeur) {}
+      surface(largeur, longeur) {
+  if (ville)
+    ville->setBudget(ville->getBudget() - cost);
+}
 
 Batiment::Batiment(int id, const string &nom, Ville *ville, TypeBatiment type,
                    int effectSatisfication, double cost, Resources consommation,
                    float polution, Position position, Surface surface)
     : id(id), nom(nom), ville(ville), type(type),
       effectSatisfication(effectSatisfication), cost(cost),
-      consommation(consommation), position(position), surface(surface) {}
+      consommation(consommation), position(position), surface(surface) {
+  if (ville)
+    ville->setBudget(ville->getBudget() - cost);
+}
 
 // methods
 void Batiment::afficheDetails() const {

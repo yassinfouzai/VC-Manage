@@ -9,13 +9,12 @@
 
 using namespace std;
 
+// Constructor
 Ville::Ville(const string &nom, double budget, unsigned int population,
              Resources resources, BatimentList batiments)
     : nom(nom), budget(budget), population(population), resources(resources),
       batiments(std::move(batiments)) {}
 
-// Using Polymorphic storage with a unique pointer to insert any sub-class of
-// Batiment
 void Ville::ajoutBatiment(BatPtr batiment) {
   batiments.push_back(std::move(batiment));
   budget -= batiment->getCost();

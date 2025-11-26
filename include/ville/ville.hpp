@@ -45,6 +45,7 @@ private:
   float polution;
   Resources resources;
   BatimentList batiments;
+  BatimentList newBatiments;
 };
 
 #endif // !VILLE

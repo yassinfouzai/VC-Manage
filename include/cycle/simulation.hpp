@@ -11,12 +11,14 @@ public:
   Simulation(const string &nomVille, Difficulty difficulty);
   void demarerCycle();
   void terminerCycle();
-  void declencherCycle();
+  void declencherEvenement();
 
 private:
   Ville ville;
   unsigned int cycleActuel;
   Difficulty difficulty;
+  unsigned int TimePerCycle;
+  unsigned int currentTime;
 };
 
 #endif // !SIMULATION
