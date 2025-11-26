@@ -31,7 +31,7 @@ int main() {
                              {3, 3, 3, 0, 0, 0, 2, 2, 1, 1, 0, 1, 2, 3, 2, 1}};
 
   SDL_Window *window = SDL_CreateWindow("Tilemap Zoom", SDL_WINDOWPOS_CENTERED,
-                                        SDL_WINDOWPOS_CENTERED, WIDTH * 3,
+                                        SDL_WINDOWPOS_CENTERED, WIDTH * 2,
                                         HEIGHT * 2, SDL_WINDOW_SHOWN);
   SDL_Renderer *renderer =
       SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -55,8 +55,8 @@ int main() {
   }
 
   float scale = 2.0f;
-  float cameraX = 0.0f;
-  float cameraY = 0.0f;
+  float cameraX = -25.0f;
+  float cameraY = -25.0f;
   float baseSpeed = 5.0f;
   bool running = true;
   SDL_Event event;

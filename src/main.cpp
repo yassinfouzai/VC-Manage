@@ -21,7 +21,7 @@ void init(const std::string &windowName, SDL_Window **window,
   // Init Renderer
   *renderer = SDL_CreateRenderer(*window, -1, SDL_RENDERER_ACCELERATED);
 
-  // ImGui init
+  // ImGUI init
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGui_ImplSDL2_InitForSDLRenderer(*window, *renderer);
@@ -44,7 +44,7 @@ int main() {
   SDL_Window *window;
   SDL_Renderer *renderer;
 
-  // intialize the window, the renderer and ImGUI
+  // initialize the window, the renderer and ImGUI
   init("VC", &window, &renderer);
 
   bool running = true;

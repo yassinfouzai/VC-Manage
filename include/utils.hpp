@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 
 class Batiment;
 
@@ -69,6 +70,12 @@ struct Resources {
     electricite -= other.electricite;
     return *this;
   }
+};
+
+struct WindowSettings {
+    std::string title;
+    const int width{1280};
+    const int height{720};
 };
 
 enum class TypeBatiment {
