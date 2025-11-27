@@ -2,8 +2,8 @@
 #define UTILS
 
 #include <memory>
-#include <vector>
 #include <string>
+#include <vector>
 
 class Batiment;
 
@@ -73,9 +73,9 @@ struct Resources {
 };
 
 struct WindowSettings {
-    std::string title;
-    const int width{1280};
-    const int height{720};
+  std::string title;
+  const int width{1280};
+  const int height{720};
 };
 
 enum class TypeBatiment {
@@ -91,11 +91,7 @@ enum class TypeBatiment {
   Custom
 };
 
-enum class SimState {
-    Running,
-    Evaluating,
-    GameOver
-};
+enum class SimState { Running, Evaluating, GameOver };
 
 enum class Difficulty { Easy, Medium, Hard };
 
