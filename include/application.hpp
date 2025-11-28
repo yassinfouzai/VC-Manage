@@ -7,10 +7,12 @@
 
 class Application {
 public:
-    Application(const WindowSettings& settings);
+    explicit Application(const WindowSettings& settings);
     ~Application();
     int run();
     void stop();
+
+    Window getWindow() const;
 
 private:
     Window window;

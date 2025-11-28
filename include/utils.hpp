@@ -74,8 +74,8 @@ struct Resources {
 
 struct WindowSettings {
   std::string title;
-  const int width{1280};
-  const int height{720};
+  const int width{960};
+  const int height{640};
 };
 
 enum class TypeBatiment {
