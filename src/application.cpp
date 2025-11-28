@@ -49,6 +49,7 @@ void Application::stop() { running = false; }
 
 int Application::run() {
   float x = 50.0f, y = 200.0f, speed = 2.0f;
+  float recwidth = 60.0f;
   float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 
   SDL_Renderer *renderer = window.getNativeRenderer();
@@ -74,35 +75,40 @@ int Application::run() {
     float taskbarHeight = 40.0f;
     float controlPanelWidth = window.getWidth() * 0.25;
     if (controlPanelWidth < 200.0f) {
-        controlPanelWidth = 200.0f;
+      controlPanelWidth = 200.0f;
     }
     ImGuiWindowFlags flags =
-        ImGuiWindowFlags_NoResize |
-        ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
-        ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings |
-        ImGuiWindowFlags_NoFocusOnAppearing;
+        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar |
+        ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing;
 
     // Control Panel
     ImGui::SetNextWindowPos(
         ImVec2(viewport->Pos.x + viewport->Size.x - controlPanelWidth,
-               viewport->Pos.y - taskbarHeight));
-    ImGui::SetNextWindowSize(ImVec2(controlPanelWidth, viewport->Size.y));
+               viewport->Pos.y));
+    ImGui::SetNextWindowSize(
+        ImVec2(controlPanelWidth, viewport->Size.y - taskbarHeight));
 
-    ImGui::Begin("Control Panel", nullptr,flags);
-    ImGui::Text("Rectangle X: %.1f", x);
-    ImGui::Text("Rectangle Y: %.1f", y);
-    ImGui::SliderFloat("Speed", &speed, 0.1f, 10.0f);
-    ImGui::ColorEdit4("Color", color);
-    ImGui::Text("Width : %f", controlPanelWidth);
-    ImGui::SameLine();
+    ImVec2 mousePos = ImGui::GetMousePos();
+    bool isHoveringRect = (mousePos.x >= x && mousePos.x <= x + recwidth &&
+                           mousePos.y >= y && mousePos.y <= y + recwidth);
+
+    ImGui::Begin("Inspector", nullptr, flags);
+    if (isHoveringRect) {
+      ImGui::Text("Rectangle Info:");
+      ImGui::Text("Position: (%.1f, %.1f)", x, y);
+      ImGui::Text("Size: %.1f", recwidth);
+      ImGui::Text("Speed: %.1f", speed);
+      ImGui::ColorEdit4("Color", color);
+    } else {
+      ImGui::Text("Hover over the rectangle to see info");
+    }
     ImGui::End();
 
     // Taskbar
     ImGui::SetNextWindowPos(ImVec2(
         viewport->Pos.x, viewport->Pos.y + viewport->Size.y - taskbarHeight));
     ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, taskbarHeight));
-
-
 
     ImGui::Begin("Taskbar", nullptr, flags | ImGuiWindowFlags_NoTitleBar);
     ImGui::Text("Taskbar:");
@@ -127,7 +133,7 @@ int Application::run() {
                            (Uint8)(color[1] * 255), (Uint8)(color[2] * 255),
                            (Uint8)(color[3] * 255));
 
-    SDL_Rect r{(int)x, (int)y, 60, 60};
+    SDL_Rect r{(int)x, (int)y, (int)recwidth, (int)recwidth};
     SDL_RenderFillRect(renderer, &r);
 
     // Render ImGui on top
@@ -135,6 +141,7 @@ int Application::run() {
                                           window.getNativeRenderer());
 
     SDL_RenderPresent(renderer);
+    SDL_Delay(16);
   }
 
   return exitStatus;

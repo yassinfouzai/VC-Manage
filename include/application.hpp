@@ -12,8 +12,6 @@ public:
     int run();
     void stop();
 
-    Window getWindow() const;
-
 private:
     Window window;
     bool running;
