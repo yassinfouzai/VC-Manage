@@ -12,6 +12,8 @@ public:
     SDL_Window* getNativeWindow() const;
     SDL_Renderer* getNativeRenderer() const;
     float getScale() const;
+    float getWidth() const;
+    float getHeight() const;
 private:
     SDL_Window* window{nullptr};
     SDL_Renderer* renderer{nullptr};

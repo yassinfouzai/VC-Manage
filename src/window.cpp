@@ -45,3 +45,15 @@ float Window::getScale() const {
 
   return scale_x;
 }
+
+float Window::getWidth() const {
+  int windowWidth = 0;
+  SDL_GetWindowSize(window, &windowWidth, nullptr);
+  return static_cast<float>(windowWidth);
+}
+
+float Window::getHeight() const {
+  int windowHeight = 0;
+  SDL_GetWindowSize(window, nullptr, &windowHeight);
+  return static_cast<float>(windowHeight);
+}
