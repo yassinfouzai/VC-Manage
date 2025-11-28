@@ -1,4 +1,5 @@
 #include "../include/cycle/simulation.hpp"
+#include "../include/buildings/batiment.hpp"
 
 Simulation::Simulation(const string &nomVille, Difficulty difficulty)
     : ville(nomVille,

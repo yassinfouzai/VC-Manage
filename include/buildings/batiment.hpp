@@ -23,7 +23,7 @@ public:
   Batiment(int id, const string &nom, Ville *ville, TypeBatiment type,
            int effectSatisfication, double cost, Resources consommation,
            float polution, Position position, Surface surface);
-  virtual ~Batiment(); // For the Polymorphic deletion
+  virtual ~Batiment() = default; // For the Polymorphic deletion
 
   virtual void afficheDetails() const;
   virtual void impacterRessources();
