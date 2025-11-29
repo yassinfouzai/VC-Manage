@@ -6,10 +6,21 @@
 
 using namespace std;
 
+class Batiment;
+
 class Ville {
 public:
   Ville(const string &nom, double budget, unsigned int population,
         Resources resources, BatimentList batiments);
+  ~Ville();
+
+  Ville(const Ville &) = delete;
+  Ville &operator=(const Ville &) = delete;
+
+  // Enable move
+  Ville(Ville &&) = default;
+  Ville &operator=(Ville &&) = default;
+
   void ajoutBatiment(BatPtr batiment);
   void supprimerBatiment(int id);
   Resources calculerconsommationTotale();
@@ -23,12 +34,12 @@ public:
   void updatePopulation();
 
   // Getters
-  string getNom();
-  double getBudget();
-  unsigned int getPopulation();
-  int getSatisfaction();
-  float getPolution();
-  Resources getResources();
+  string getNom() const;
+  double getBudget() const;
+  unsigned int getPopulation() const;
+  int getSatisfaction() const;
+  float getPolution() const;
+  Resources getResources() const;
 
   // Setters
   void setBudget(double newBudget);

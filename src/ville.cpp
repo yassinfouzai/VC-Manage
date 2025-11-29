@@ -15,6 +15,7 @@ Ville::Ville(const string &nom, double budget, unsigned int population,
     : nom(nom), budget(budget), population(population), resources(resources),
       batiments(std::move(batiments)) {}
 
+Ville::~Ville() = default;
 
 // List de batiments
 // TO-DO : Need to figure out how the building are destroyed
@@ -120,12 +121,12 @@ void Ville::updatePopulation() {
 }
 
 // Getters
-string Ville::getNom() { return nom; }
-double Ville::getBudget() { return budget; }
-float Ville::getPolution() { return polution; }
-unsigned int Ville::getPopulation() { return polution; }
-int Ville::getSatisfaction() { return satisfaction; }
-Resources Ville::getResources() { return resources; }
+string Ville::getNom() const { return nom; }
+double Ville::getBudget() const { return budget; }
+float Ville::getPolution() const { return polution; }
+unsigned int Ville::getPopulation() const { return polution; }
+int Ville::getSatisfaction() const { return satisfaction; }
+Resources Ville::getResources() const { return resources; }
 
 // Setters
 void Ville::setBudget(double newBudget) { budget = newBudget; }

@@ -16,18 +16,22 @@ public:
   void terminerCycle();
   void terminerCycleEarly();
   void declencherEvenement();
-  void tick(unsigned int delta);
+  void tick(float delta);
   bool canInteract() const;
 
   // Getters
-  SimState getState();
+  int getCycle() const;
+  float getTimePerCycle() const;
+  SimState getState() const;
+  float getCurrentTime() const;
+  const Ville& getVille() const;
 
 private:
   Ville ville;
   unsigned int cycleActuel;
   Difficulty difficulty;
-  unsigned int TimePerCycle;
-  unsigned int currentTime;
+  float TimePerCycle;
+  float currentTime;
   SimState state;
 };
 

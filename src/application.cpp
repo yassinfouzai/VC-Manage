@@ -1,4 +1,5 @@
 #include "../include/application.hpp"
+#include "../include/cycle/simulation.hpp"
 #include "../tools/imgui/imgui.h"
 #include "../tools/imgui/imgui_impl_sdl2.h"
 #include "../tools/imgui/imgui_impl_sdlrenderer2.h"
@@ -53,6 +54,8 @@ int Application::run() {
   float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 
   SDL_Renderer *renderer = window.getNativeRenderer();
+
+  Simulation sim("Test Town", Difficulty::Medium);
 
   while (running) {
     SDL_Event event;
@@ -111,7 +114,7 @@ int Application::run() {
     ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, taskbarHeight));
 
     ImGui::Begin("Taskbar", nullptr, flags | ImGuiWindowFlags_NoTitleBar);
-    ImGui::Text("Taskbar:");
+    ImGui::Text("%s :", sim.getVille().getNom().c_str());
     ImGui::SameLine();
     ImGui::Text("Population: 0");
     ImGui::SameLine();
@@ -119,7 +122,12 @@ int Application::run() {
     ImGui::SameLine();
     ImGui::Text("Budget: 0");
     ImGui::SameLine();
+    ImGui::Text("Cycle Actuel: %d", sim.getCycle());
+    ImGui::SameLine();
+    ImGui::Text("Cycle : %.1f / %.1f", sim.getCurrentTime(), sim.getTimePerCycle());
+    ImGui::SameLine();
     if (ImGui::Button("Skip Month")) {
+      sim.terminerCycleEarly();
     }
     ImGui::End();
 
@@ -142,6 +150,7 @@ int Application::run() {
 
     SDL_RenderPresent(renderer);
     SDL_Delay(16);
+    sim.tick(0.016); // 1/60
   }
 
   return exitStatus;
