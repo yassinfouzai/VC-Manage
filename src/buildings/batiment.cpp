@@ -4,6 +4,27 @@
 
 using namespace std;
 
+float Batiment::POLLUTION_SATISFACTION_FACTOR = 0.5f;
+float Batiment::SATISFACTION_POPULATION_FACTOR = 0.3f;
+float Batiment::BUILDING_POLLUTION_FACTOR = 1.0f;
+float Batiment::POPULATION_BUILDING_FACTOR = 0.1f;
+
+
+void Batiment::setPollutionSatisfactionFactor(float factor) {
+    POLLUTION_SATISFACTION_FACTOR = factor;
+}
+
+void Batiment::setSatisfactionPopulationFactor(float factor) {
+    SATISFACTION_POPULATION_FACTOR = factor;
+}
+
+void Batiment::setBuildingPollutionFactor(float factor) {
+    BUILDING_POLLUTION_FACTOR = factor;
+}
+
+void Batiment::setPopulationBuildingFactor(float factor) {
+    POPULATION_BUILDING_FACTOR = factor;
+}
 // Constructors
 Batiment::Batiment(int id, const string &nom, Ville *ville, TypeBatiment type,
                    int effectSatisfication, double cost, double consommationEau,
