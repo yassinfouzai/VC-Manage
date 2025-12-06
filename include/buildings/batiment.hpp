@@ -14,6 +14,12 @@ public:
   Position position;
   Ville *ville;
 
+  // Variables  ACCESSIBLES pour les interactions
+  static float POLLUTION_SATISFACTION_FACTOR;       // Comment la pollution affecte la satisfaction
+  static float SATISFACTION_POPULATION_FACTOR;      // Comment la satisfaction affecte la population
+  static float BUILDING_POLLUTION_FACTOR;          // Comment les bâtiments affectent la pollution
+  static float POPULATION_BUILDING_FACTOR;         // Comment la population affecte les besoins en bâtiments
+  
   // Constructors
   Batiment(int id, const string &nom, Ville *ville, TypeBatiment type,
            int effectSatisfication, double cost, double consommationEau,
@@ -23,7 +29,7 @@ public:
   Batiment(int id, const string &nom, Ville *ville, TypeBatiment type,
            int effectSatisfication, double cost, Resources consommation,
            float polution, Position position, Surface surface);
-  virtual ~Batiment() = default; // For the Polymorphic deletion
+  virtual ~Batiment() = default;
 
   virtual void afficheDetails() const;
   virtual void impacterRessources();
@@ -35,6 +41,12 @@ public:
   float getPolution();
   Resources getconsommation();
 
+  // Setters 
+  static void setPollutionSatisfactionFactor(float factor);
+  static void setSatisfactionPopulationFactor(float factor);
+  static void setBuildingPollutionFactor(float factor);
+  static void setPopulationBuildingFactor(float factor);
+
 protected:
   int id;
   string nom;
@@ -43,5 +55,6 @@ protected:
   int effectSatisfication;
   double cost;
 };
+
 
 #endif // !BATIMENT
