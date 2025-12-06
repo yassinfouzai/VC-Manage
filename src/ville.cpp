@@ -131,7 +131,7 @@ void Ville::updatePopulation() {
   int populationActuelle = calculerPopulationTotale();
   
   // Facteur de croissance basé sur la satisfaction
-  float croissanceFacteur = 1.0f + (satisfaction / 100.0f * Batiment::SATISFACTION_POPULATION_FACTOR);
+  float croissanceFacteur = 0.5f + (satisfaction / (100.0f * Batiment::SATISFACTION_POPULATION_FACTOR));
   
   // Calculer nouvelle population
   int nouvellePopulation = static_cast<int>(populationActuelle * croissanceFacteur);
