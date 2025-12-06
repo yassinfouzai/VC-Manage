@@ -18,11 +18,11 @@ Ville::Ville(const string &nom, double budget, unsigned int population,
 Ville::~Ville() = default;
 
 // List de batiments
-// TO-DO : Need to figure out how the building are destroyed
 void Ville::ajoutBatiment(BatPtr batiment) {
   batiments.push_back(std::move(batiment));
   budget -= batiment->getCost();
 }
+
 void Ville::supprimerBatiment(int id) {
   for (auto it = batiments.begin(); it != batiments.end(); ++it) {
     if ((*it)->getID() == id) {
@@ -33,7 +33,7 @@ void Ville::supprimerBatiment(int id) {
   }
 }
 
-// calculus
+// calculations
 Resources Ville::calculerconsommationTotale() {
   Resources ConsumationTotale;
   for (auto it = batiments.begin(); it != batiments.end(); ++it) {
@@ -59,7 +59,14 @@ float Ville::calculerPolutionTotale() {
   for (auto it = batiments.begin(); it != batiments.end(); ++it) {
     PolutionTotale += (*it)->getPolution();
   }
-  setPopulation(PolutionTotale);
+  
+  // La pollution est affectée par les bâtiments 
+  PolutionTotale *= Batiment::BUILDING_POLLUTION_FACTOR;
+  
+  // La population affecte aussi la pollution
+  PolutionTotale += population * 0.01f;
+  
+  setPolution(PolutionTotale);
   return PolutionTotale;
 }
 
@@ -68,6 +75,14 @@ int Ville::calculerSatisfactionTotale() {
   for (auto it = batiments.begin(); it != batiments.end(); ++it) {
     satisfactionTotale += (*it)->getSatisfaction();
   }
+  
+  // La pollution réduit la satisfaction
+  satisfactionTotale -= static_cast<int>(polution * Batiment::POLLUTION_SATISFACTION_FACTOR);
+  
+ 
+  if (satisfactionTotale < 0) satisfactionTotale = 0;
+  if (satisfactionTotale > 100) satisfactionTotale = 100;
+  
   setSatisfaction(satisfactionTotale);
   return satisfactionTotale;
 }
@@ -82,7 +97,6 @@ int Ville::calculerPopulationTotale() {
         populationTotale += r->gethabitantsActuels();
     }
   }
-  setPopulation(populationTotale);
   return populationTotale;
 }
 
@@ -112,19 +126,64 @@ double Ville::calculerProfit() {
 void Ville::collectProfit() { budget += calculerProfit(); }
 
 void Ville::updatePopulation() {
-  int newPopulation = calculerSatisfactionTotale() / 2;
+  //  La satisfaction affecte la population
   int capaciteTotale = calculerCapacitePopulation();
-  if (newPopulation > capaciteTotale) {
-    newPopulation = capaciteTotale;
+  int populationActuelle = calculerPopulationTotale();
+  
+  // Facteur de croissance basé sur la satisfaction
+  float croissanceFacteur = 1.0f + (satisfaction / 100.0f * Batiment::SATISFACTION_POPULATION_FACTOR);
+  
+  // Calculer nouvelle population
+  int nouvellePopulation = static_cast<int>(populationActuelle * croissanceFacteur);
+  
+  // Ne pas dépasser la capacité
+  if (nouvellePopulation > capaciteTotale) {
+    nouvellePopulation = capaciteTotale;
   }
-  population = newPopulation;
+  
+  // Ne pas tomber en dessous de 0
+  if (nouvellePopulation < 0) {
+    nouvellePopulation = 0;
+  }
+  
+  // Distribuer la population dans les bâtiments
+  int difference = nouvellePopulation - populationActuelle;
+  
+  if (difference > 0) {
+    for (auto it = batiments.begin(); it != batiments.end() && difference > 0; ++it) {
+      if ((*it)->type == TypeBatiment::House || (*it)->type == TypeBatiment::Apartment) {
+        Resident *r = dynamic_cast<Resident *>(it->get());
+        if (r && r->gethabitantsActuels() < r->getcapaciteHabitants()) {
+          int placesDisponibles = r->getcapaciteHabitants() - r->gethabitantsActuels();
+          int ajouter = (placesDisponibles < difference) ? placesDisponibles : difference;
+          r->ajouterHabitants(ajouter);
+          difference -= ajouter;
+        }
+      }
+    }
+  } else if (difference < 0) {
+    difference = -difference;
+    for (auto it = batiments.begin(); it != batiments.end() && difference > 0; ++it) {
+      if ((*it)->type == TypeBatiment::House || (*it)->type == TypeBatiment::Apartment) {
+        Resident *r = dynamic_cast<Resident *>(it->get());
+        if (r && r->gethabitantsActuels() > 0) {
+          int habitants = r->gethabitantsActuels();
+          int retirer = (habitants < difference) ? habitants : difference;
+          r->retirerHabitants(retirer);
+          difference -= retirer;
+        }
+      }
+    }
+  }
+  
+  setPopulation(nouvellePopulation);
 }
 
 // Getters
 string Ville::getNom() const { return nom; }
 double Ville::getBudget() const { return budget; }
 float Ville::getPolution() const { return polution; }
-unsigned int Ville::getPopulation() const { return polution; }
+unsigned int Ville::getPopulation() const { return population; }  
 int Ville::getSatisfaction() const { return satisfaction; }
 Resources Ville::getResources() const { return resources; }
 
