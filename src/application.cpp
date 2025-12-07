@@ -48,112 +48,252 @@ Application::~Application() {
 
 void Application::stop() { running = false; }
 
-int Application::run() {
-  float x = 50.0f, y = 200.0f, speed = 2.0f;
-  float recwidth = 60.0f;
-  float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
-
-  SDL_Renderer *renderer = window.getNativeRenderer();
-
-  Simulation sim("Test Town", Difficulty::Medium);
-
-  while (running) {
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-      ImGui_ImplSDL2_ProcessEvent(&event);
-      if (event.type == SDL_QUIT)
-        stop();
-    }
-
-    // Update rectangle position
-    x += speed;
-    if (x > 800)
-      x = -50;
-
-    // Start ImGui frame
-    ImGui_ImplSDL2_NewFrame();
-    ImGui_ImplSDLRenderer2_NewFrame();
-    ImGui::NewFrame();
-    ImGuiViewport *viewport = ImGui::GetMainViewport();
-    float taskbarHeight = 40.0f;
-    float controlPanelWidth = window.getWidth() * 0.25;
-    if (controlPanelWidth < 200.0f) {
-      controlPanelWidth = 200.0f;
-    }
-    ImGuiWindowFlags flags =
-        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
-        ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar |
-        ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing;
-
-    // Control Panel
-    ImGui::SetNextWindowPos(
-        ImVec2(viewport->Pos.x + viewport->Size.x - controlPanelWidth,
-               viewport->Pos.y));
-    ImGui::SetNextWindowSize(
-        ImVec2(controlPanelWidth, viewport->Size.y - taskbarHeight));
-
-    ImVec2 mousePos = ImGui::GetMousePos();
-    bool isHoveringRect = !ImGui::GetIO().WantCaptureMouse && mousePos.x >= x &&
-                          mousePos.x <= x + recwidth && mousePos.y >= y &&
-                          mousePos.y <= y + recwidth;
-
-    ImGui::Begin("Inspector", nullptr, flags);
-    if (isHoveringRect) {
-      ImGui::Text("Rectangle Info:");
-      ImGui::Text("Position: (%.1f, %.1f)", x, y);
-      ImGui::Text("Size: %.1f", recwidth);
-      ImGui::Text("Speed: %.1f", speed);
-      ImGui::ColorEdit4("Color", color);
-    } else {
-      ImGui::Text("Hover over the rectangle to see info");
-    }
-    ImGui::End();
-
-    // Taskbar
-    ImGui::SetNextWindowPos(ImVec2(
-        viewport->Pos.x, viewport->Pos.y + viewport->Size.y - taskbarHeight));
-    ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, taskbarHeight));
-
-    ImGui::Begin("Taskbar", nullptr, flags | ImGuiWindowFlags_NoTitleBar);
-    ImGui::Text("%s :", sim.getVille().getNom().c_str());
-    ImGui::SameLine();
-    ImGui::Text("Population: 0");
-    ImGui::SameLine();
-    ImGui::Text("Satisfaction: 0");
-    ImGui::SameLine();
-    ImGui::Text("Budget: 0");
-    ImGui::SameLine();
-    ImGui::Text("Cycle Actuel: %d", sim.getCycle());
-    ImGui::SameLine();
-    ImGui::Text("Cycle : %.1f / %.1f", sim.getCurrentTime(),
-                sim.getTimePerCycle());
-    ImGui::SameLine();
-    if (ImGui::Button("Skip Month")) {
-      sim.terminerCycleEarly();
-    }
-    ImGui::End();
-
-    ImGui::Render();
-
-    // SDL Rendering
-    SDL_SetRenderDrawColor(renderer, 35, 35, 35, 255);
-    SDL_RenderClear(renderer);
-
-    SDL_SetRenderDrawColor(renderer, (Uint8)(color[0] * 255),
-                           (Uint8)(color[1] * 255), (Uint8)(color[2] * 255),
-                           (Uint8)(color[3] * 255));
-
-    SDL_Rect r{(int)x, (int)y, (int)recwidth, (int)recwidth};
-    SDL_RenderFillRect(renderer, &r);
-
-    // Render ImGui on top
-    ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(),
-                                          window.getNativeRenderer());
-
-    SDL_RenderPresent(renderer);
-    SDL_Delay(16);
-    sim.tick(0.016); // 1/60
+void Application::displayInspect(ImGuiWindowFlags flags, float x, float y,
+                                 bool isHoveringRect, float speed,
+                                 float recwidth) const {
+  float controlPanelWidth = window.getWidth() * 0.25;
+  if (controlPanelWidth < 200.0f) {
+    controlPanelWidth = 200.0f;
   }
 
-  return exitStatus;
+  ImGuiViewport *viewport = ImGui::GetMainViewport();
+
+  ImGui::SetNextWindowPos(ImVec2(
+      viewport->Pos.x + viewport->Size.x - controlPanelWidth, viewport->Pos.y));
+  ImGui::SetNextWindowSize(
+      ImVec2(controlPanelWidth, viewport->Size.y - taskbarHeight));
+
+  ImGui::Begin("Inspector", nullptr, flags);
+  if (isHoveringRect) {
+    ImGui::Text("Rectangle Info:");
+    ImGui::Text("Position: (%.1f, %.1f)", x, y);
+    ImGui::Text("Size: %.1f", recwidth);
+    ImGui::Text("Speed: %.1f", speed);
+  } else {
+    ImGui::Text("Hover over the rectangle to see info");
+  }
+  ImGui::End();
 }
+
+void Application::displayTaskBar(ImGuiWindowFlags flags,
+                                 Simulation &sim) const {
+  ImGuiViewport *viewport = ImGui::GetMainViewport();
+  ImGui::SetNextWindowPos(ImVec2(
+      viewport->Pos.x, viewport->Pos.y + viewport->Size.y - taskbarHeight));
+  ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, taskbarHeight));
+
+  ImGui::Begin("Taskbar", nullptr, flags | ImGuiWindowFlags_NoTitleBar);
+
+  ImGui::Text("%s :", sim.getVille().getNom().c_str());
+  ImGui::SameLine();
+  ImGui::Text("Population: %d", sim.getVille().getPopulation());
+  ImGui::SameLine();
+  ImGui::Text("Satisfaction: %.1d", sim.getVille().getSatisfaction());
+  ImGui::SameLine();
+  ImGui::Text("Budget: %.2f", sim.getVille().getBudget());
+  ImGui::SameLine();
+  ImGui::Text("Cycle Actuel: %d", sim.getCycle());
+  ImGui::SameLine();
+  ImGui::Text("Cycle : %.1f / %.1f", sim.getCurrentTime(),
+              sim.getTimePerCycle());
+  ImGui::SameLine();
+
+  if (ImGui::Button("Skip Month")) {
+    sim.terminerCycleEarly();
+  }
+
+  ImGui::End();
+}
+
+void Application::checkEvent() {
+  SDL_Event event;
+  while (SDL_PollEvent(&event)) {
+    if (event.type == SDL_QUIT)
+      running = false;
+
+    if (event.type == SDL_MOUSEWHEEL) {
+      float oldScale = scale;
+      if (event.wheel.y > 0)
+        scale *= 1.1f;
+      if (event.wheel.y < 0)
+        scale *= 0.9f;
+      if (scale < 1.0f)
+        scale = 1.0f;
+      if (scale > 10.0f)
+        scale = 10.0f;
+
+      int mouseX, mouseY;
+      SDL_GetMouseState(&mouseX, &mouseY);
+      float worldX_before = cameraX + mouseX / oldScale;
+      float worldY_before = cameraY + mouseY / oldScale;
+      float worldX_after = cameraX + mouseX / scale;
+      float worldY_after = cameraY + mouseY / scale;
+
+      cameraX += (worldX_before - worldX_after);
+      cameraY += (worldY_before - worldY_after);
+    }
+  }
+}
+
+int Application::run() {
+    float x = 50.0f, y = 200.0f;
+    float recwidth = 60.0f;
+    float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+
+    // --------------------GRID--------------------
+    const int ROWS = 64;
+    const int COLS = 64;
+    const int TILE_SIZE = 16; // size in BMP
+
+    int tilemap[ROWS][COLS];
+
+    // Initialize tilemap to -1
+    for (int i = 0; i < ROWS; ++i)
+        for (int j = 0; j < COLS; ++j)
+            tilemap[i][j] = -1;
+
+    std::srand(static_cast<unsigned int>(time(nullptr)));
+
+    for (int i = 0; i < ROWS; ++i) {
+        for (int j = 0; j < COLS; ++j) {
+
+            if (tilemap[i][j] != -1)
+                continue;
+
+            int r;
+            do {
+                r = std::rand() % 16;
+            } while (r == 6 || r == 9 || r == 12 || r == 13);
+
+            // ---- 2x2 block (r = 8) ----
+            if (r == 8 &&
+                i + 1 < ROWS && j + 1 < COLS &&
+                tilemap[i][j + 1] == -1 &&
+                tilemap[i + 1][j] == -1 &&
+                tilemap[i + 1][j + 1] == -1) {
+
+                tilemap[i][j] = 8;
+                tilemap[i][j + 1] = 9;
+                tilemap[i + 1][j] = 12;
+                tilemap[i + 1][j + 1] = 13;
+                j++;
+                continue;
+            }
+
+            // ---- horizontal 2-block (r = 5) ----
+            if (r == 5 && j + 1 < COLS &&
+                tilemap[i][j + 1] == -1) {
+
+                tilemap[i][j] = 5;
+                tilemap[i][j + 1] = 6;
+                j++;
+                continue;
+            }
+
+            // fallback if shape cannot be formed
+            if (r == 8 || r == 5)
+                r = 0;
+
+            tilemap[i][j] = r;
+        }
+    }
+
+    // Cleanup: ensure valid src indexing
+    for (int i = 0; i < ROWS; ++i)
+        for (int j = 0; j < COLS; ++j)
+            if (tilemap[i][j] < 0 || tilemap[i][j] >= 16)
+                tilemap[i][j] = 0;
+
+    // UVs: assuming a 64×64 texture (16 tiles of 16px)
+    SDL_Rect src[16];
+    int idx = 0;
+    for (int ty = 0; ty < 64; ty += TILE_SIZE) {
+        for (int tx = 0; tx < 64; tx += TILE_SIZE) {
+            src[idx] = {tx, ty, TILE_SIZE, TILE_SIZE};
+            idx++;
+        }
+    }
+    // -------------------END-GRID--------------------
+
+    SDL_Renderer *renderer = window.getNativeRenderer();
+
+    Simulation sim("Test Town", Difficulty::Medium);
+    sim.getVille().setBudget(1000);
+
+    scale = 2.0f;
+    cameraX = 0.0f;  // FIXED: ensure map starts on-screen
+    cameraY = 0.0f;
+    speed = 5.0f;
+    taskbarHeight = 40.0f;
+    running = true;
+    const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+
+    while (running) {
+        checkEvent();
+
+        // Camera movement
+        float moveSpeed = speed / scale;
+        if (keystate[SDL_SCANCODE_W]) cameraY -= moveSpeed;
+        if (keystate[SDL_SCANCODE_S]) cameraY += moveSpeed;
+        if (keystate[SDL_SCANCODE_A]) cameraX -= moveSpeed;
+        if (keystate[SDL_SCANCODE_D]) cameraX += moveSpeed;
+
+        // Start ImGui frame
+        ImGui_ImplSDL2_NewFrame();
+        ImGui_ImplSDLRenderer2_NewFrame();
+        ImGui::NewFrame();
+        ImGuiViewport *viewport = ImGui::GetMainViewport();
+
+        ImGuiWindowFlags flags =
+            ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+            ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar |
+            ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing;
+
+        // Hover detection
+        ImVec2 mousePos = ImGui::GetMousePos();
+        float screenX = (x - cameraX) * scale;
+        float screenY = (y - cameraY) * scale;
+        float screenSize = recwidth * scale;
+        bool isHoveringRect =
+            !ImGui::GetIO().WantCaptureMouse &&
+            mousePos.x >= screenX && mousePos.x <= screenX + screenSize &&
+            mousePos.y >= screenY && mousePos.y <= screenY + screenSize;
+
+        displayInspect(flags, x, y, isHoveringRect, speed, recwidth);
+        displayTaskBar(flags, sim);
+
+        ImGui::Render();
+
+        // SDL Rendering
+        SDL_SetRenderDrawColor(renderer, 35, 35, 35, 255);
+        SDL_RenderClear(renderer);
+
+        // Render tiles
+        for (int yy = 0; yy < ROWS; yy++) {
+            for (int xx = 0; xx < COLS; xx++) {
+
+                int tile = tilemap[yy][xx];
+                SDL_Rect *srcRect = &src[tile];
+
+                SDL_Rect dest = {
+                    int((xx * TILE_SIZE - cameraX) * scale),
+                    int((yy * TILE_SIZE - cameraY) * scale),
+                    int(TILE_SIZE * scale),
+                    int(TILE_SIZE * scale)
+                };
+
+                SDL_RenderCopy(renderer, window.getTexture(), srcRect, &dest);
+            }
+        }
+
+        // ImGui on top
+        ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer);
+
+        SDL_RenderPresent(renderer);
+        SDL_Delay(16);
+        sim.tick(0.016f);
+    }
+
+    return exitStatus;
+}
+

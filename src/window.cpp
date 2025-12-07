@@ -16,20 +16,34 @@ Window::Window(const WindowSettings &settings) {
 
   renderer = SDL_CreateRenderer(
       window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
+
   if (renderer == nullptr) {
     std::cerr << "ERROR: Failed to initialize the Renderer" << std::endl;
     return;
   }
+
+  SDL_Surface *tile_map_surface = SDL_LoadBMP("./mall.bmp");
+  if (!tile_map_surface) {
+    std::cerr << "Failed to load BMP: " << SDL_GetError() << "\n";
+    return;
+  }
+  tileTexture =
+      SDL_CreateTextureFromSurface(renderer, tile_map_surface);
+  SDL_FreeSurface(tile_map_surface);
+
 }
 
 Window::~Window() {
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
+  SDL_DestroyTexture(tileTexture);
 }
 
 SDL_Window *Window::getNativeWindow() const { return window; }
 
 SDL_Renderer *Window::getNativeRenderer() const { return renderer; }
+
+SDL_Texture* Window::getTexture() const { return tileTexture; }
 
 float Window::getScale() const {
   int windowWidth = 0;

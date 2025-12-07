@@ -30,7 +30,7 @@ void Simulation::terminerCycle() {
   cycleActuel++;
 
   // GAME OVER check
-  if (ville.getPopulation() <= 0 || ville.getBudget() <= 0 ||
+  if (ville.getPopulation() <= 0 && ville.getBudget() <= 0 &&
       ville.getSatisfaction() <= 0) {
     state = SimState::GameOver;
     return;
@@ -71,3 +71,4 @@ float Simulation::getTimePerCycle() const { return TimePerCycle; }
 float Simulation::getCurrentTime() const { return currentTime; }
 SimState Simulation::getState() const { return state; }
 const Ville &Simulation::getVille() const { return ville; }
+Ville &Simulation::getVille() { return ville; }

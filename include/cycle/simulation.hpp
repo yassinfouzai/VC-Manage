@@ -25,6 +25,7 @@ public:
   SimState getState() const;
   float getCurrentTime() const;
   const Ville& getVille() const;
+  Ville& getVille();
 
 private:
   Ville ville;
