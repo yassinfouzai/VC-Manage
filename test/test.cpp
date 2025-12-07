@@ -9,26 +9,21 @@ int main() {
 
   const int WIDTH = 320;
   const int HEIGHT = 320;
-  const int ROWS = 16;
-  const int COLS = 16;
+  const int ROWS = 64;
+  const int COLS = 64;
   const int TILE_SIZE = 16; // size in BMP
 
-  int tilemap[ROWS][COLS] = {{0, 1, 2, 3, 1, 0, 2, 3, 1, 0, 1, 2, 3, 2, 1, 0},
-                             {1, 1, 2, 2, 3, 3, 0, 0, 1, 1, 2, 3, 0, 1, 2, 3},
-                             {2, 2, 2, 3, 3, 3, 1, 1, 0, 0, 3, 0, 1, 2, 3, 1},
-                             {3, 3, 3, 0, 0, 0, 2, 2, 1, 1, 0, 1, 2, 3, 1, 2},
-                             {0, 1, 2, 3, 1, 0, 2, 3, 1, 0, 1, 2, 3, 1, 2, 3},
-                             {1, 1, 2, 2, 3, 3, 0, 0, 1, 1, 2, 3, 0, 1, 3, 2},
-                             {2, 2, 2, 3, 3, 3, 1, 1, 0, 0, 3, 0, 1, 2, 1, 0},
-                             {3, 3, 3, 0, 0, 0, 2, 2, 1, 1, 0, 1, 2, 3, 2, 1},
-                             {0, 1, 2, 3, 1, 0, 2, 3, 1, 0, 1, 2, 3, 2, 1, 0},
-                             {1, 1, 2, 2, 3, 3, 0, 0, 1, 1, 2, 3, 0, 1, 2, 3},
-                             {2, 2, 2, 3, 3, 3, 1, 1, 0, 0, 3, 0, 1, 2, 3, 1},
-                             {3, 3, 3, 0, 0, 0, 2, 2, 1, 1, 0, 1, 2, 3, 1, 2},
-                             {0, 1, 2, 3, 1, 0, 2, 3, 1, 0, 1, 2, 3, 1, 2, 3},
-                             {1, 1, 2, 2, 3, 3, 0, 0, 1, 1, 2, 3, 0, 1, 3, 2},
-                             {2, 2, 2, 3, 3, 3, 1, 1, 0, 0, 3, 0, 1, 2, 1, 0},
-                             {3, 3, 3, 0, 0, 0, 2, 2, 1, 1, 0, 1, 2, 3, 2, 1}};
+  int tilemap[ROWS][COLS];
+
+  // Seed the random number generator
+  std::srand(static_cast<unsigned int>(time(nullptr)));
+
+  // Fill the tilemap
+  for (int i = 0; i < ROWS; ++i) {
+    for (int j = 0; j < COLS; ++j) {
+      tilemap[i][j] = std::rand() % 9; // values from 0 to 8
+    }
+  }
 
   SDL_Window *window = SDL_CreateWindow("Tilemap Zoom", SDL_WINDOWPOS_CENTERED,
                                         SDL_WINDOWPOS_CENTERED, WIDTH * 2,
@@ -55,8 +50,8 @@ int main() {
   }
 
   float scale = 2.0f;
-  float cameraX = -25.0f;
-  float cameraY = -25.0f;
+  float cameraX = 300.0f;
+  float cameraY = 300.0f;
   float baseSpeed = 5.0f;
   bool running = true;
   SDL_Event event;
