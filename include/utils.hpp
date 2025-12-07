@@ -85,17 +85,17 @@ struct WindowSettings {
 };
 
 enum class TypeBatiment {
-  Blank,
-  House,
-  Apartment,
-  Cinema,
-  Mall,
-  Bank,
-  PowerPlant,
-  WaterTreatmentPlant,
-  UtilityPlant,
-  Park,
-  Custom
+  Blank, //0
+  House, //1
+  Apartment, //2
+  Cinema, //3
+  Mall, //4
+  Bank, //5
+  PowerPlant, //6
+  WaterTreatmentPlant, //7
+  UtilityPlant, //8
+  Park, //9
+  Custom //10
 };
 
 enum class SimState { Running, Evaluating, GameOver };

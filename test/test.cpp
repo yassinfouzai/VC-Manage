@@ -15,13 +15,52 @@ int main() {
 
   int tilemap[ROWS][COLS];
 
-  // Seed the random number generator
-  std::srand(static_cast<unsigned int>(time(nullptr)));
-
-  // Fill the tilemap
+  // Initialize tilemap to -1
   for (int i = 0; i < ROWS; ++i) {
     for (int j = 0; j < COLS; ++j) {
-      tilemap[i][j] = std::rand() % 9; // values from 0 to 8
+      tilemap[i][j] = -1;
+    }
+  }
+
+  // Seed RNG
+  std::srand(static_cast<unsigned int>(time(nullptr)));
+
+  for (int i = 0; i < ROWS; ++i) {
+    for (int j = 0; j < COLS; ++j) {
+
+      if (tilemap[i][j] != -1)
+        continue; // already filled by a previous block
+
+      int r;
+      do {
+        r = std::rand() % 16;
+      } while (r == 6 || r == 9 || r == 12 || r == 13);
+
+      // ---- 2x2 block for r = 8 ----
+      if (r == 8 && i + 1 < ROWS && j + 1 < COLS && tilemap[i][j] == -1 &&
+          tilemap[i][j + 1] == -1 && tilemap[i + 1][j] == -1 &&
+          tilemap[i + 1][j + 1] == -1) {
+        tilemap[i][j] = 8;
+        tilemap[i][j + 1] = 9;
+        tilemap[i + 1][j] = 12;
+        tilemap[i + 1][j + 1] = 13;
+
+        j++; // skip next column
+      }
+      // ---- horizontal 2-wide block for r = 5 ----
+      else if (r == 5 && j + 1 < COLS && // BOUND MUST BE COLS
+               tilemap[i][j] == -1 && tilemap[i][j + 1] == -1) {
+        tilemap[i][j] = 5;
+        tilemap[i][j + 1] = 6;
+
+        j++; // also skip, since a pair was placed
+      } else {
+        // If block cannot be placed → convert to 0
+        if (r == 8 || r == 5)
+          r = 0;
+
+        tilemap[i][j] = r;
+      }
     }
   }
 
@@ -31,7 +70,7 @@ int main() {
   SDL_Renderer *renderer =
       SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-  SDL_Surface *tile_map_surface = SDL_LoadBMP("./tiles.bmp");
+  SDL_Surface *tile_map_surface = SDL_LoadBMP("./mall.bmp");
   if (!tile_map_surface) {
     std::cerr << "Failed to load BMP: " << SDL_GetError() << "\n";
     return 1;

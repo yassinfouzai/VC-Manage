@@ -93,8 +93,9 @@ int Application::run() {
         ImVec2(controlPanelWidth, viewport->Size.y - taskbarHeight));
 
     ImVec2 mousePos = ImGui::GetMousePos();
-    bool isHoveringRect = (mousePos.x >= x && mousePos.x <= x + recwidth &&
-                           mousePos.y >= y && mousePos.y <= y + recwidth);
+    bool isHoveringRect = !ImGui::GetIO().WantCaptureMouse && mousePos.x >= x &&
+                          mousePos.x <= x + recwidth && mousePos.y >= y &&
+                          mousePos.y <= y + recwidth;
 
     ImGui::Begin("Inspector", nullptr, flags);
     if (isHoveringRect) {
@@ -124,7 +125,8 @@ int Application::run() {
     ImGui::SameLine();
     ImGui::Text("Cycle Actuel: %d", sim.getCycle());
     ImGui::SameLine();
-    ImGui::Text("Cycle : %.1f / %.1f", sim.getCurrentTime(), sim.getTimePerCycle());
+    ImGui::Text("Cycle : %.1f / %.1f", sim.getCurrentTime(),
+                sim.getTimePerCycle());
     ImGui::SameLine();
     if (ImGui::Button("Skip Month")) {
       sim.terminerCycleEarly();
