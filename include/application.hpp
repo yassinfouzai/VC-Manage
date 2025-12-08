@@ -27,8 +27,8 @@ private:
 
   // for run() method
   void checkEvent();
-  void displayInspect(ImGuiWindowFlags flags, float x, float y, bool isHoveringRect, float speed, float recwidth) const;
-  void displayTaskBar(ImGuiWindowFlags flags, Simulation&) const; 
+  void displayInspect(ImGuiWindowFlags flags, float x, float y, int value, bool isHoveringRect, float speed, float recwidth) const;
+  void displayTaskBar(ImGuiWindowFlags flags, Simulation&); 
 };
 
 #endif // !APPLICATION
