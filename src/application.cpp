@@ -105,6 +105,27 @@ void Application::displayTaskBar(ImGuiWindowFlags flags, Simulation &sim) {
   ImGui::End();
 }
 
+void Application::displayToolkit(ImGuiWindowFlags flags) {
+  float width = window.getWidth() * 0.2;
+
+  ImGuiViewport *viewport = ImGui::GetMainViewport();
+
+  ImGui::SetNextWindowPos(ImVec2(0, 0));
+  ImGui::SetNextWindowSize(ImVec2(width, viewport->Size.y - taskbarHeight));
+
+  ImGui::Begin("Toolkit", nullptr, flags);
+
+  ImGui::Button("House");
+  ImGui::SameLine();
+  ImGui::Button("Appartement");
+
+  ImGui::Button("Cinema");
+  ImGui::SameLine();
+  ImGui::Button("Bank");
+
+  ImGui::End();
+}
+
 void Application::checkEvent() {
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
@@ -246,21 +267,37 @@ int Application::run() {
         ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing;
 
     // ----------------- HOVER FIX -----------------
-    ImVec2 mousePos = ImGui::GetMousePos();
 
-    float worldX = cameraX + mousePos.x / scale;
-    float worldY = cameraY + mousePos.y / scale;
+    ImGuiIO &io = ImGui::GetIO();
+    bool imguiBlockingMouse = io.WantCaptureMouse; // UI takes control
 
-    int tileX = int(worldX) / TILE_SIZE;
-    int tileY = int(worldY) / TILE_SIZE;
+    bool insideMap = false;
+    int tileX = -1, tileY = -1;
+    int hoveredTile = -1;
+    bool hoveredValid = false;
 
-    bool insideMap = tileX >= 0 && tileX < COLS && tileY >= 0 && tileY < ROWS;
+    if (!imguiBlockingMouse) {
+      ImVec2 mousePos = ImGui::GetMousePos();
 
-    int hoveredTile = insideMap ? tilemap[tileY][tileX] : -1;
-    bool hoveredValid = insideMap && hoveredTile >= 0;
+      float worldX = cameraX + mousePos.x / scale;
+      float worldY = cameraY + mousePos.y / scale;
+
+      tileX = int(worldX) / TILE_SIZE;
+      tileY = int(worldY) / TILE_SIZE;
+
+      insideMap = tileX >= 0 && tileX < COLS && tileY >= 0 && tileY < ROWS;
+
+      if (insideMap) {
+        hoveredTile = tilemap[tileY][tileX];
+        hoveredValid = hoveredTile >= 0;
+      }
+    }
+
+    displayToolkit(flags);
 
     displayInspect(flags, tileX, tileY, hoveredTile, hoveredValid, speed,
                    TILE_SIZE);
+
     // ---------------------------------------------
 
     displayTaskBar(flags, sim);
@@ -279,7 +316,7 @@ int Application::run() {
                          int((yy * TILE_SIZE - cameraY) * scale),
                          int(TILE_SIZE * scale), int(TILE_SIZE * scale)};
 
-        if (insideMap && xx == tileX && yy == tileY) {
+        if (!imguiBlockingMouse && insideMap && xx == tileX && yy == tileY) {
           // Brighten the tile by increasing alpha (or color modulation)
           SDL_SetTextureColorMod(window.getTexture(), 255, 255,
                                  255);                      // reset color

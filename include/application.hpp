@@ -29,6 +29,7 @@ private:
   void checkEvent();
   void displayInspect(ImGuiWindowFlags flags, float x, float y, int value, bool isHoveringRect, float speed, float recwidth) const;
   void displayTaskBar(ImGuiWindowFlags flags, Simulation&); 
+  void displayToolkit(ImGuiWindowFlags flags);
 };
 
 #endif // !APPLICATION
