@@ -23,6 +23,11 @@ protected:
 
   unsigned int EmployeesNeeded;
   unsigned int Employees;
+public:
+        // Job accessors
+        unsigned int getEmployees() const { return Employees; }
+        unsigned int getEmployeesNeeded() const { return EmployeesNeeded; }
+        void setEmployees(unsigned int count) { Employees = count; }
 };
 
 #endif // !SERVICE

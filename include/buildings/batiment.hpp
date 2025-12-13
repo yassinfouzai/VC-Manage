@@ -40,6 +40,7 @@ public:
   int getSatisfaction();
   float getPolution();
   Resources getconsommation();
+  string getNom() const;  // Getter for building name
 
   // Setters 
   static void setPollutionSatisfactionFactor(float factor);
