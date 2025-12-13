@@ -69,7 +69,6 @@ void Application::displayInspect(ImGuiWindowFlags flags, float x, float y,
     ImGui::Text("Position: (%.1f, %.1f)", x, y);
     ImGui::Text("Value: %d", value);
     ImGui::Text("Size: %.1f", recwidth);
-    ImGui::Text("Speed: %.1f", speed);
   } else {
     ImGui::Text("Hover over the rectangle to see info");
   }
@@ -142,8 +141,8 @@ void Application::checkEvent() {
         scale *= 0.9f;
       if (scale < 1.0f)
         scale = 1.0f;
-      if (scale > 10.0f)
-        scale = 10.0f;
+      if (scale > 20.0f)
+        scale = 20.0f;
 
       int mouseX, mouseY;
       SDL_GetMouseState(&mouseX, &mouseY);
@@ -159,17 +158,18 @@ void Application::checkEvent() {
 }
 
 int Application::run() {
-  float x = 1.0f, y = 1.0f;
-  float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
 
-  // --------------------GRID--------------------
+  // -------------------- GRID --------------------
   const int ROWS = 64;
   const int COLS = 64;
-  const int TILE_SIZE = 16;
+  const int TILE_SIZE = 32;
+  const int TILES_X = 5;
+  const int TILES_Y = 5;
+  const int TILE_COUNT = TILES_X * TILES_Y;
 
   int tilemap[ROWS][COLS];
 
-  // Initialize tilemap to -1
+  // Initialize tilemap
   for (int i = 0; i < ROWS; ++i)
     for (int j = 0; j < COLS; ++j)
       tilemap[i][j] = -1;
@@ -184,57 +184,85 @@ int Application::run() {
 
       int r;
       do {
-        r = std::rand() % 16;
-      } while (r == 6 || r == 9 || r == 12 || r == 13);
+        r = std::rand() % TILE_COUNT;
+      } while (r == 11 || r == 16 || r == 20 ||
+               r == 21 || // existing exclusions
+               r == 13 || r == 14 || r == 17 || r == 18 || r == 19 || r == 22 ||
+               r == 23 || r == 24 // 3x3 children
+      );
 
-      // ---- 2x2 block (r = 8) ----
-      if (r == 8 && i + 1 < ROWS && j + 1 < COLS && tilemap[i][j + 1] == -1 &&
+      // -------- 3x3 BUILDING (head = 12) --------
+      if (r == 12 && i + 2 < ROWS && j + 2 < COLS && tilemap[i][j] == -1 &&
+          tilemap[i][j + 1] == -1 && tilemap[i][j + 2] == -1 &&
+          tilemap[i + 1][j] == -1 && tilemap[i + 1][j + 1] == -1 &&
+          tilemap[i + 1][j + 2] == -1 && tilemap[i + 2][j] == -1 &&
+          tilemap[i + 2][j + 1] == -1 && tilemap[i + 2][j + 2] == -1) {
+
+        tilemap[i][j] = 12;
+        tilemap[i][j + 1] = 13;
+        tilemap[i][j + 2] = 14;
+
+        tilemap[i + 1][j] = 17;
+        tilemap[i + 1][j + 1] = 18;
+        tilemap[i + 1][j + 2] = 19;
+
+        tilemap[i + 2][j] = 22;
+        tilemap[i + 2][j + 1] = 23;
+        tilemap[i + 2][j + 2] = 24;
+
+        j += 2; // skip used columns
+        continue;
+      }
+
+      // -------- 2x2 BUILDING --------
+      if (r == 15 && i + 1 < ROWS && j + 1 < COLS && tilemap[i][j + 1] == -1 &&
           tilemap[i + 1][j] == -1 && tilemap[i + 1][j + 1] == -1) {
 
-        tilemap[i][j] = 8;
-        tilemap[i][j + 1] = 9;
-        tilemap[i + 1][j] = 12;
-        tilemap[i + 1][j + 1] = 13;
-        j++;
+        tilemap[i][j] = 15;
+        tilemap[i][j + 1] = 16;
+        tilemap[i + 1][j] = 20;
+        tilemap[i + 1][j + 1] = 21;
+
+        ++j;
         continue;
       }
 
-      // ---- horizontal 2-block (r = 5) ----
-      if (r == 5 && j + 1 < COLS && tilemap[i][j + 1] == -1) {
-        tilemap[i][j] = 5;
-        tilemap[i][j + 1] = 6;
-        j++;
+      // -------- 2x1 BUILDING --------
+      if (r == 10 && j + 1 < COLS && tilemap[i][j + 1] == -1) {
+        tilemap[i][j] = 10;
+        tilemap[i][j + 1] = 11;
+        ++j;
         continue;
       }
 
-      if (r == 8 || r == 5)
+      if (r == 5 || r == 8)
         r = 0;
 
       tilemap[i][j] = r;
     }
   }
 
+  // Clamp indices
   for (int i = 0; i < ROWS; ++i)
     for (int j = 0; j < COLS; ++j)
-      if (tilemap[i][j] < 0 || tilemap[i][j] >= 16)
+      if (tilemap[i][j] < 0 || tilemap[i][j] >= TILE_COUNT)
         tilemap[i][j] = 0;
 
-  SDL_Rect src[16];
+  // ---- Tileset source rectangles ----
+  SDL_Rect src[TILE_COUNT];
   int idx = 0;
-  for (int ty = 0; ty < 64; ty += TILE_SIZE) {
-    for (int tx = 0; tx < 64; tx += TILE_SIZE) {
-      src[idx] = {tx, ty, TILE_SIZE, TILE_SIZE};
-      idx++;
+
+  for (int y = 0; y < TILES_Y; ++y) {
+    for (int x = 0; x < TILES_X; ++x) {
+      src[idx++] = {x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE};
     }
   }
-  // -------------------END-GRID--------------------
+  // ------------------ END GRID ------------------
 
   SDL_Renderer *renderer = window.getNativeRenderer();
 
   Simulation sim("Test Town", Difficulty::Medium);
   sim.getVille().setBudget(1000);
-  
-  // Initialize game state on first load
   sim.getVille().calculerPolutionTotale();
   sim.getVille().calculerSatisfactionTotale();
 
@@ -245,7 +273,7 @@ int Application::run() {
   taskbarHeight = 40.0f;
   running = true;
 
-  const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+  const Uint8 *keystate = SDL_GetKeyboardState(nullptr);
 
   while (running) {
     checkEvent();
@@ -263,17 +291,9 @@ int Application::run() {
     ImGui_ImplSDL2_NewFrame();
     ImGui_ImplSDLRenderer2_NewFrame();
     ImGui::NewFrame();
-    ImGuiViewport *viewport = ImGui::GetMainViewport();
-
-    ImGuiWindowFlags flags =
-        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
-        ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar |
-        ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing;
-
-    // ----------------- HOVER FIX -----------------
 
     ImGuiIO &io = ImGui::GetIO();
-    bool imguiBlockingMouse = io.WantCaptureMouse; // UI takes control
+    bool imguiBlockingMouse = io.WantCaptureMouse;
 
     bool insideMap = false;
     int tileX = -1, tileY = -1;
@@ -282,7 +302,6 @@ int Application::run() {
 
     if (!imguiBlockingMouse) {
       ImVec2 mousePos = ImGui::GetMousePos();
-
       float worldX = cameraX + mousePos.x / scale;
       float worldY = cameraY + mousePos.y / scale;
 
@@ -297,13 +316,14 @@ int Application::run() {
       }
     }
 
-    displayToolkit(flags);
+    ImGuiWindowFlags flags =
+        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar |
+        ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing;
 
+    displayToolkit(flags);
     displayInspect(flags, tileX, tileY, hoveredTile, hoveredValid, speed,
                    TILE_SIZE);
-
-    // ---------------------------------------------
-
     displayTaskBar(flags, sim);
 
     ImGui::Render();
@@ -311,26 +331,15 @@ int Application::run() {
     SDL_SetRenderDrawColor(renderer, 35, 35, 35, 255);
     SDL_RenderClear(renderer);
 
-    for (int yy = 0; yy < ROWS; yy++) {
-      for (int xx = 0; xx < COLS; xx++) {
+    for (int yy = 0; yy < ROWS; ++yy) {
+      for (int xx = 0; xx < COLS; ++xx) {
         int tile = tilemap[yy][xx];
-        SDL_Rect *srcRect = &src[tile];
 
         SDL_Rect dest = {int((xx * TILE_SIZE - cameraX) * scale),
                          int((yy * TILE_SIZE - cameraY) * scale),
                          int(TILE_SIZE * scale), int(TILE_SIZE * scale)};
 
-        if (!imguiBlockingMouse && insideMap && xx == tileX && yy == tileY) {
-          // Brighten the tile by increasing alpha (or color modulation)
-          SDL_SetTextureColorMod(window.getTexture(), 255, 255,
-                                 255);                      // reset color
-          SDL_SetTextureAlphaMod(window.getTexture(), 180); // full brightness
-        } else {
-          // Normal render at ~85% brightness
-          SDL_SetTextureAlphaMod(window.getTexture(), 255);
-        }
-
-        SDL_RenderCopy(renderer, window.getTexture(), srcRect, &dest);
+        SDL_RenderCopy(renderer, window.getTexture(), &src[tile], &dest);
       }
     }
 
@@ -343,12 +352,9 @@ int Application::run() {
       SDL_RenderDrawRect(renderer, &outline);
     }
 
-    SDL_SetTextureAlphaMod(window.getTexture(), 255);
-    SDL_SetTextureColorMod(window.getTexture(), 255, 255, 255);
-
     ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer);
-
     SDL_RenderPresent(renderer);
+
     SDL_Delay(16);
     sim.tick(0.016f);
   }
