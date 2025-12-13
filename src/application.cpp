@@ -191,29 +191,35 @@ int Application::run() {
                r == 23 || r == 24 // 3x3 children
       );
 
-
-      
       // -------- 3x3 BUILDING (head = 12) --------
-      if (r == 12 && i + 2 < ROWS && j + 2 < COLS && tilemap[i][j] == -1 &&
-          tilemap[i][j + 1] == -1 && tilemap[i][j + 2] == -1 &&
-          tilemap[i + 1][j] == -1 && tilemap[i + 1][j + 1] == -1 &&
-          tilemap[i + 1][j + 2] == -1 && tilemap[i + 2][j] == -1 &&
-          tilemap[i + 2][j + 1] == -1 && tilemap[i + 2][j + 2] == -1) {
+      if (r == 12 && i + 2 < ROWS && j + 2 < COLS) {
+        // Check all 9 positions are empty
+        bool canPlace = true;
+        for (int dy = 0; dy < 3; ++dy) {
+          for (int dx = 0; dx < 3; ++dx) {
+            if (tilemap[i + dy][j + dx] != -1) {
+              canPlace = false;
+              break;
+            }
+          }
+          if (!canPlace)
+            break;
+        }
 
-        tilemap[i][j] = 12;
-        tilemap[i][j + 1] = 13;
-        tilemap[i][j + 2] = 14;
+        if (canPlace) {
+          tilemap[i][j] = 12;
+          tilemap[i][j + 1] = 13;
+          tilemap[i][j + 2] = 14;
+          tilemap[i + 1][j] = 17;
+          tilemap[i + 1][j + 1] = 18;
+          tilemap[i + 1][j + 2] = 19;
+          tilemap[i + 2][j] = 22;
+          tilemap[i + 2][j + 1] = 23;
+          tilemap[i + 2][j + 2] = 24;
 
-        tilemap[i + 1][j] = 17;
-        tilemap[i + 1][j + 1] = 18;
-        tilemap[i + 1][j + 2] = 19;
-
-        tilemap[i + 2][j] = 22;
-        tilemap[i + 2][j + 1] = 23;
-        tilemap[i + 2][j + 2] = 24;
-
-        j += 2; // skip used columns
-        continue;
+          j += 2; // skip columns used by building
+          continue;
+        }
       }
 
       // -------- 2x2 BUILDING --------
