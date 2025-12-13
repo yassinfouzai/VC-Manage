@@ -74,3 +74,4 @@ Resources Batiment::getconsommation() { return consommation; }
 int Batiment::getSatisfaction() { return effectSatisfication; }
 float Batiment::getPolution() { return polution; }
 double Batiment::getCost() { return cost; }
+string Batiment::getNom() const { return nom; }
