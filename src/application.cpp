@@ -88,7 +88,7 @@ void Application::displayTaskBar(ImGuiWindowFlags flags, Simulation &sim) {
   ImGui::SameLine();
   ImGui::Text("Population: %d", sim.getVille().getPopulation());
   ImGui::SameLine();
-  ImGui::Text("Satisfaction: %.1d", sim.getVille().getSatisfaction());
+  ImGui::Text("Satisfaction: %d%%", sim.getVille().getSatisfaction());
   ImGui::SameLine();
   ImGui::Text("Budget: %.2f", sim.getVille().getBudget());
   ImGui::SameLine();
