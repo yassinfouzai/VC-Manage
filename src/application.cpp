@@ -233,6 +233,10 @@ int Application::run() {
 
   Simulation sim("Test Town", Difficulty::Medium);
   sim.getVille().setBudget(1000);
+  
+  // Initialize game state on first load
+  sim.getVille().calculerPolutionTotale();
+  sim.getVille().calculerSatisfactionTotale();
 
   scale = 2.0f;
   cameraX = 0.0f;
