@@ -1,8 +1,10 @@
 #include "../include/application.hpp"
+#include "../include/buildings/batiment.hpp"
 #include "../include/cycle/simulation.hpp"
 #include "../tools/imgui/imgui.h"
 #include "../tools/imgui/imgui_impl_sdl2.h"
 #include "../tools/imgui/imgui_impl_sdlrenderer2.h"
+#include <cstdlib>
 #include <iostream>
 
 Application::Application(const WindowSettings &settings)
@@ -87,7 +89,8 @@ void Application::displayTaskBar(ImGuiWindowFlags flags, Simulation &sim) {
   ImGui::SameLine();
   ImGui::Text("Population: %d", sim.getVille().getPopulation());
   ImGui::SameLine();
-  ImGui::Text("Employed: %d / %d", sim.getVille().calculerEmploiActuel(), sim.getVille().calculerCapaciteEmploi());
+  ImGui::Text("Employed: %d / %d", sim.getVille().calculerEmploiActuel(),
+              sim.getVille().calculerCapaciteEmploi());
   ImGui::SameLine();
   ImGui::Text("Unemployment: %.1f%%", sim.getVille().calculerTauxChomage());
   ImGui::SameLine();
@@ -162,17 +165,80 @@ void Application::checkEvent() {
 }
 
 int Application::run() {
+  // init Simulation
+  Simulation sim("Test Town", Difficulty::Medium);
+  sim.getVille().setBudget(1000);
+  sim.getVille().calculerPolutionTotale();
+  sim.getVille().calculerSatisfactionTotale();
 
-  // -------------------- GRID --------------------
   const int ROWS = 64;
   const int COLS = 64;
   const int TILE_SIZE = 32;
   const int TILES_X = 5;
   const int TILES_Y = 5;
   const int TILE_COUNT = TILES_X * TILES_Y;
+  // ---------------NEW GRID --------------------
+  int map[ROWS][COLS] = {};
+  int tilemap[ROWS][COLS] = {};
 
-  int tilemap[ROWS][COLS];
+  for (const auto &buildingPtr : sim.getVille().batiments) {
+    const Batiment &building = *buildingPtr;
 
+    int width = 1;
+    int height = 1;
+
+    switch (building.type) {
+    case TypeBatiment::Cinema:
+      width = 2;
+      height = 1;
+      break;
+    case TypeBatiment::Mall:
+      width = 3;
+      height = 3;
+      break;
+    case TypeBatiment::Park:
+      width = 2;
+      height = 2;
+      break;
+    default:
+      break;
+    }
+
+    for (int dx = 0; dx < width; ++dx) {
+      for (int dy = 0; dy < height; ++dy) {
+        int x = building.position.x + dx;
+        int y = building.position.y + dy;
+        if (x >= 0 && x < ROWS && y >= 0 && y < COLS) {
+          switch (building.type) {
+          case TypeBatiment::Cinema:
+            tilemap[x][y] = 10 + dx;
+            break;
+          case TypeBatiment::Park:
+            tilemap[x][y] = 15 + dy * 2 + dx;
+            break;
+          case TypeBatiment::Mall:
+            tilemap[x][y] = 12 + dy * 3 + dx;
+            break;
+          default:
+            tilemap[x][y] = static_cast<int>(building.type) - 1;
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  // Fill empty tiles with random grass after all buildings
+  for (int y = 0; y < COLS; ++y) {
+    for (int x = 0; x < ROWS; ++x) {
+      if (map[x][y] == static_cast<int>(TypeBatiment::Blank)) {
+        tilemap[x][y] = 6 + std::rand() % 4;
+      }
+    }
+  }
+
+  // -------------------- GRID --------------------
+    /*
   // Initialize tilemap
   for (int i = 0; i < ROWS; ++i)
     for (int j = 0; j < COLS; ++j)
@@ -252,13 +318,14 @@ int Application::run() {
 
       tilemap[i][j] = r;
     }
-  }
+  } 
 
   // Clamp indices
   for (int i = 0; i < ROWS; ++i)
     for (int j = 0; j < COLS; ++j)
       if (tilemap[i][j] < 0 || tilemap[i][j] >= TILE_COUNT)
         tilemap[i][j] = 0;
+    */
 
   // ---- Tileset source rectangles ----
   SDL_Rect src[TILE_COUNT];
@@ -272,11 +339,6 @@ int Application::run() {
   // ------------------ END GRID ------------------
 
   SDL_Renderer *renderer = window.getNativeRenderer();
-
-  Simulation sim("Test Town", Difficulty::Medium);
-  sim.getVille().setBudget(1000);
-  sim.getVille().calculerPolutionTotale();
-  sim.getVille().calculerSatisfactionTotale();
 
   scale = 2.0f;
   cameraX = 0.0f;
