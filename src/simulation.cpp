@@ -26,6 +26,7 @@ void Simulation::terminerCycle() {
   // Computing stats
   ville.collectProfit();
   ville.calculerPolutionTotale();
+  ville.assignerEmplois();        // Distribute population to jobs
   ville.calculerSatisfactionTotale();
   ville.updatePopulation();
   cycleActuel++;
