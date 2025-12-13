@@ -25,6 +25,7 @@ void Simulation::terminerCycle() {
 
   // Computing stats
   ville.collectProfit();
+  ville.calculerPolutionTotale();
   ville.calculerSatisfactionTotale();
   ville.updatePopulation();
   cycleActuel++;
