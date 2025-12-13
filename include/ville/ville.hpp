@@ -27,8 +27,14 @@ public:
   Resources calculerResourcesTotale();
   float calculerPolutionTotale();
   int calculerSatisfactionTotale();
-  int calculerPopulationTotale();
-  int calculerCapacitePopulation();
+  // Employment
+  unsigned int calculerCapaciteEmploi() const;
+  unsigned int calculerEmploiActuel() const;
+  float calculerTauxChomage() const;
+  void assignerEmplois(); // Distribute population to jobs
+  void afficherStatutEmploi() const; // Display job status per building
+  int calculerPopulationTotale() const;
+  int calculerCapacitePopulation() const;
   double calculerProfit();
   void collectProfit();
   void updatePopulation();
