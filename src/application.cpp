@@ -191,6 +191,8 @@ int Application::run() {
                r == 23 || r == 24 // 3x3 children
       );
 
+
+      
       // -------- 3x3 BUILDING (head = 12) --------
       if (r == 12 && i + 2 < ROWS && j + 2 < COLS && tilemap[i][j] == -1 &&
           tilemap[i][j + 1] == -1 && tilemap[i][j + 2] == -1 &&
