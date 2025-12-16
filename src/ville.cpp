@@ -23,6 +23,8 @@ Ville::~Ville() = default;
 // List de batiments
 void Ville::ajoutBatiment(BatPtr batiment) {
     batiments.push_back(std::move(batiment));
+    // Immediately reassign jobs to include new building's employees
+    assignerEmplois();
 }
 
 
@@ -32,6 +34,8 @@ void Ville::supprimerBatiment(int x , int y) {
     if (pos.x == x && pos.y == y) {
       budget += (*it)->getCost();
       batiments.erase(it);
+      // Immediately reassign jobs to remaining buildings
+      assignerEmplois();
       return;
     }
   }
@@ -89,14 +93,16 @@ float Ville::calculerPolutionTotale() {
 
 //Satisfaction Calculations
 int Ville::calculerSatisfactionTotale() {
-  // If no population, satisfaction is 0% (no one to be satisfied)
-  int populationActuelle = calculerPopulationTotale();
-  if (populationActuelle == 0) {
+  // Use city population to determine if we should compute satisfaction
+  unsigned int popVille = getPopulation();
+  if (popVille == 0) {
     setSatisfaction(0);
     return 0;
   }
-  
-  float satisfactionScore = 50.0f; // Base satisfaction (only if population > 0)
+  // Occupancy and housing pressure are based on actual residents in buildings
+  int populationActuelle = calculerPopulationTotale();
+
+  float satisfactionScore = 50.0f; // Base satisfaction when city is active
   
   //positive factors
 
@@ -116,7 +122,7 @@ int Ville::calculerSatisfactionTotale() {
   
   if (capaciteTotale > 0) {
     float housingRatio = static_cast<float>(populationActuelle) / 
-                        static_cast<float>(capaciteTotale);
+              static_cast<float>(capaciteTotale);
     
     if (housingRatio < 0.5f) {
       satisfactionScore += 5.0f; // Plenty of space
@@ -208,16 +214,17 @@ void Ville::collectProfit() { budget += calculerProfit(); }
 //population update
 void Ville::updatePopulation() {
   int capaciteTotale = calculerCapacitePopulation();
-  int populationActuelle = calculerPopulationTotale();
+  // Distinguish between city population and actual occupants in buildings
+  int popDansBatiments = calculerPopulationTotale();
+  int popVille = static_cast<int>(getPopulation());
 
-  if (capaciteTotale == 0) {
-    // No housing: apply a small decline to avoid runaway numbers
-    int decline = static_cast<int>(std::round(populationActuelle * 0.05f));
-    int nouvellePopulation = std::max(0, populationActuelle - decline);
-    // remove inhabitants
-    int difference = nouvellePopulation - populationActuelle;
-    if (difference < 0) {
-      int toRemove = -difference;
+  // If current population exceeds capacity, force it down to capacity immediately
+  if (popVille > capaciteTotale) {
+    popVille = capaciteTotale;
+    setPopulation(capaciteTotale);
+    // Remove excess inhabitants from buildings
+    int toRemove = popDansBatiments - capaciteTotale;
+    if (toRemove > 0) {
       for (auto it = batiments.begin(); it != batiments.end() && toRemove > 0; ++it) {
         if ((*it)->type == TypeBatiment::House || (*it)->type == TypeBatiment::Apartment) {
           Resident *r = dynamic_cast<Resident *>(it->get());
@@ -229,16 +236,18 @@ void Ville::updatePopulation() {
         }
       }
     }
-    setPopulation(nouvellePopulation);
-    return;
+    // If capacity is 0, we're done - population is now 0
+    if (capaciteTotale == 0) {
+      return;
+    }
   }
 
-  // Compute modifiers
+  // Compute modifiers based on current city state
   float satisfactionRatio = static_cast<float>(satisfaction) / 100.0f; // 0..1
   float satisfactionEffect = (static_cast<float>(satisfaction) - 50.0f) / 50.0f; // -1..1
   float pollutionRatio = polution / 100.0f; // 0..1
   float unemploymentRatio = calculerTauxChomage() / 100.0f; // 0..1
-  float density = static_cast<float>(populationActuelle) / static_cast<float>(capaciteTotale); // 0..inf
+  float density = static_cast<float>(popVille) / static_cast<float>(capaciteTotale); // 0..inf
   float overcrowding = std::max(0.0f, density - 1.0f);
 
   // Base growth rate per cycle (conservative)
@@ -247,9 +256,9 @@ void Ville::updatePopulation() {
   // Compose growth rate from factors (small balanced contributions)
   float growthRate = baseRate
       + (satisfactionEffect * 0.02f)      // satisfaction influence +/-2%
-      - (unemploymentRatio * 0.02f)      // unemployment reduces growth up to -2%
-      - (pollutionRatio * 0.03f)         // pollution reduces growth up to -3%
-      - (overcrowding * 0.05f);          // overcrowding penalizes growth
+      - (unemploymentRatio * 0.02f)       // unemployment reduces growth up to -2%
+      - (pollutionRatio * 0.03f)          // pollution reduces growth up to -3%
+      - (overcrowding * 0.05f);           // overcrowding penalizes growth
 
   // Clamp growth rate to reasonable bounds to avoid explosions
   growthRate = std::max(-0.2f, std::min(0.2f, growthRate)); // [-20%, +20%]
@@ -258,25 +267,38 @@ void Ville::updatePopulation() {
   unsigned int totalJobs = calculerCapaciteEmploi();
   unsigned int employed = calculerEmploiActuel();
   int vacancies = static_cast<int>(totalJobs > employed ? totalJobs - employed : 0);
-  int housingSpace = capaciteTotale - populationActuelle;
+  int housingSpace = capaciteTotale - popVille;
   int migrants = 0;
   if (vacancies > 0 && housingSpace > 0) {
     int potential = std::min(vacancies, housingSpace);
     migrants = static_cast<int>(std::round(potential * 0.05f)); // 5% of available positions
   }
 
-  // Apply growth
-  int delta = static_cast<int>(std::round(populationActuelle * growthRate)) + migrants;
-  int nouvellePopulation = populationActuelle + delta;
+  // Apply growth to the city population
+  int delta = static_cast<int>(std::round(popVille * growthRate)) + migrants;
+  
+  // When satisfaction is very low, enforce minimum percentage decrease
+  // (not just -1, but scales with actual population)
+  if (satisfaction < 25) {
+    float minDecreasePercent = (25 - satisfaction) / 100.0f; // 0-0.25 (0-25% decrease)
+    int minDecrease = static_cast<int>(std::round(popVille * minDecreasePercent));
+    if (delta >= 0) {
+      delta = -minDecrease; // Override growth with decrease
+    } else if (delta > -minDecrease) {
+      delta = -minDecrease; // Make decrease stronger
+    }
+  }
+  
+  int nouvellePopulation = popVille + delta;
 
-  // Cap at housing capacity
+  // Cap at housing capacity and ensure >= 0
   if (nouvellePopulation > capaciteTotale)
     nouvellePopulation = capaciteTotale;
   if (nouvellePopulation < 0)
     nouvellePopulation = 0;
 
-  // Distribute population into resident buildings (same logic as before)
-  int difference = nouvellePopulation - populationActuelle;
+  // Distribute population into resident buildings relative to current occupants
+  int difference = nouvellePopulation - popDansBatiments;
 
   if (difference > 0) {
     for (auto it = batiments.begin(); it != batiments.end() && difference > 0; ++it) {
@@ -306,6 +328,11 @@ void Ville::updatePopulation() {
   }
 
   setPopulation(nouvellePopulation);
+  
+  // If population reaches 0, satisfaction is automatically 0
+  if (nouvellePopulation == 0) {
+    setSatisfaction(0);
+  }
 }
 
 // Getters
@@ -353,12 +380,13 @@ unsigned int Ville::calculerCapaciteEmploi() const {
   for (const auto &batiment : batiments) {
     const Service *s = dynamic_cast<const Service *>(batiment.get());
     if (s) {
-      // Only count job slots from buildings that actually hire
+      // Count job slots from all buildings that hire
       if (batiment->type == TypeBatiment::Cinema || 
           batiment->type == TypeBatiment::Mall ||
           batiment->type == TypeBatiment::Bank ||
           batiment->type == TypeBatiment::PowerPlant ||
-          batiment->type == TypeBatiment::WaterTreatmentPlant) {
+          batiment->type == TypeBatiment::WaterTreatmentPlant ||
+          batiment->type == TypeBatiment::Park) {
         totalJobs += s->getEmployeesNeeded();
       }
     }
@@ -388,31 +416,62 @@ float Ville::calculerTauxChomage() const {
 
 // job assignment
 void Ville::assignerEmplois() {
-  unsigned int remainingPopulation = static_cast<unsigned int>(calculerPopulationTotale());
+  unsigned int availableWorkers = static_cast<unsigned int>(calculerPopulationTotale());
+  unsigned int totalJobs = calculerCapaciteEmploi();
   
-  // Fill jobs only in Commercial and Infrastructure buildings that employ people
+  // Collect all buildings that employ people
+  std::vector<Service*> employers;
   for (auto &batiment : batiments) {
     Service *s = dynamic_cast<Service *>(batiment.get());
-    if (s && remainingPopulation > 0) {
-      // Only assign jobs to buildings that actually employ people
-      // Commercial buildings (Comercial) and Infrastructure have employees
-      // Parks (Parc) do NOT have employees
-      if (batiment->type == TypeBatiment::Cinema || 
-          batiment->type == TypeBatiment::Mall ||
-          batiment->type == TypeBatiment::Bank ||
-          batiment->type == TypeBatiment::PowerPlant ||
-          batiment->type == TypeBatiment::WaterTreatmentPlant) {
-        
-        unsigned int capacity = s->getEmployeesNeeded();
-        unsigned int toAssign = std::min(remainingPopulation, capacity);
-        s->setEmployees(toAssign);
-        remainingPopulation -= toAssign;
-      } else {
-        // Parks and other services don't employ people
-        s->setEmployees(0);
-      }
+    if (s && (batiment->type == TypeBatiment::Cinema || 
+              batiment->type == TypeBatiment::Mall ||
+              batiment->type == TypeBatiment::Bank ||
+              batiment->type == TypeBatiment::PowerPlant ||
+              batiment->type == TypeBatiment::WaterTreatmentPlant ||
+              batiment->type == TypeBatiment::Park)) {
+      employers.push_back(s);
     } else if (s) {
       s->setEmployees(0);
+    }
+  }
+  
+  if (employers.empty() || availableWorkers == 0) {
+    // No jobs or no workers - set all to 0
+    for (auto* s : employers) {
+      s->setEmployees(0);
+    }
+    return;
+  }
+  
+  if (availableWorkers >= totalJobs) {
+    // Enough workers to fill all jobs
+    for (auto* s : employers) {
+      s->setEmployees(s->getEmployeesNeeded());
+    }
+  } else {
+    // Not enough workers - distribute proportionally
+    unsigned int workersAssigned = 0;
+    
+    // First pass: floor allocation to avoid over-allocation
+    for (auto* s : employers) {
+      unsigned int capacity = s->getEmployeesNeeded();
+      float proportion = static_cast<float>(capacity) / static_cast<float>(totalJobs);
+      unsigned int allocated = static_cast<unsigned int>(std::floor(availableWorkers * proportion));
+      allocated = std::min(allocated, capacity); // Don't exceed building capacity
+      s->setEmployees(allocated);
+      workersAssigned += allocated;
+    }
+    
+    // Second pass: distribute remaining workers one by one
+    unsigned int remaining = availableWorkers - workersAssigned;
+    for (auto* s : employers) {
+      if (remaining == 0) break;
+      unsigned int current = s->getEmployees();
+      unsigned int capacity = s->getEmployeesNeeded();
+      if (current < capacity) {
+        s->setEmployees(current + 1);
+        remaining--;
+      }
     }
   }
 }
@@ -430,7 +489,8 @@ void Ville::afficherStatutEmploi() const {
               batiment->type == TypeBatiment::Mall ||
               batiment->type == TypeBatiment::Bank ||
               batiment->type == TypeBatiment::PowerPlant ||
-              batiment->type == TypeBatiment::WaterTreatmentPlant)) {
+              batiment->type == TypeBatiment::WaterTreatmentPlant ||
+              batiment->type == TypeBatiment::Park)) {
       
       unsigned int employed = s->getEmployees();
       unsigned int capacity = s->getEmployeesNeeded();
