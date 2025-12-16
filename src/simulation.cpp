@@ -20,6 +20,9 @@ Simulation::Simulation(const string &nomVille, Difficulty difficulty)
   eventManager.initialiserEvenements();
   evenementActuel = nullptr;
   
+  // Initialize job assignments so first cycle shows correct employment
+  ville.assignerEmplois();
+  
   demarerCycle();
 }
 
@@ -31,10 +34,27 @@ void Simulation::terminerCycle() {
 
   // Computing stats
   ville.collectProfit();
+  
+  // Apply per-cycle upkeep costs (taxes, maintenance, salaries)
+  // Base cost: 50 per cycle + 5 per population + 20 per building
+  // This grows with city size but stays manageable
+  unsigned int pop = ville.getPopulation();
+  size_t numBuildings = ville.batiments.size();
+  double upkeepCost = 50.0 + (pop * 5.0) + (numBuildings * 20.0);
+  
+  // Add slight exponential factor for larger cities (1% compound per 100 pop)
+  double exponentialFactor = 1.0 + (pop / 10000.0); // Very gentle growth
+  upkeepCost *= exponentialFactor;
+  
+  double currentBudget = ville.getBudget();
+  ville.setBudget(currentBudget - upkeepCost);
+  
+  std::cout << "Upkeep costs this cycle: $" << upkeepCost << std::endl;
+  
   ville.calculerPolutionTotale();
-  ville.assignerEmplois();        // Distribute population to jobs
   ville.calculerSatisfactionTotale();
-  ville.updatePopulation();
+  ville.updatePopulation();       // Changes population based on satisfaction
+  ville.assignerEmplois();        // Reassign jobs AFTER population changes
   cycleActuel++;
 
   // GAME OVER check
