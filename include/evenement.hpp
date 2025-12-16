@@ -105,6 +105,7 @@ private:
     std::vector<std::unique_ptr<Evenement>> evenementsPossibles;
     std::mt19937 rng;
     std::uniform_real_distribution<float> dist;
+    float baseTriggerChance = 0.02f; // Very low chance of any event per cycle
     
     // Helper to add events
     void ajouterEvenement(std::unique_ptr<Evenement> event);
