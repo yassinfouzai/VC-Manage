@@ -736,6 +736,10 @@ std::unique_ptr<Evenement> EventManager::genererEvenementAleatoire(const Ville* 
     if (!ville || evenementsPossibles.empty()) {
         return nullptr;
     }
+    // Global gate: only try events with a small base chance per cycle
+    if (dist(rng) >= baseTriggerChance) {
+        return nullptr;
+    }
     
     // Collect all eligible events
     std::vector<Evenement*> eligibleEvents;
