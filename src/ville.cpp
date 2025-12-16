@@ -22,7 +22,6 @@ Ville::~Ville() = default;
 
 // List de batiments
 void Ville::ajoutBatiment(BatPtr batiment) {
-    budget -= batiment->getCost();
     batiments.push_back(std::move(batiment));
 }
 
@@ -315,6 +314,24 @@ float Ville::getPolution() const { return polution; }
 unsigned int Ville::getPopulation() const { return population; }  
 int Ville::getSatisfaction() const { return satisfaction; }
 Resources Ville::getResources() const { return resources; }
+
+
+Batiment* Ville::getBatimentByPos(int x, int y) const {
+    for (const auto &batimentPtr : batiments) {
+        const Batiment &bat = *batimentPtr;
+
+        int width = bat.surface.largeur;
+        int height = bat.surface.longeur;
+
+        if (x >= bat.position.x && x < bat.position.x + width &&
+            y >= bat.position.y && y < bat.position.y + height) {
+            return batimentPtr.get(); 
+        }
+    }
+    return nullptr;
+}
+
+
 
 // Setters
 void Ville::setBudget(double newBudget) { budget = newBudget; }

@@ -12,6 +12,7 @@ public:
   ~Application();
   int run();
   void stop();
+  Simulation sim;
 
 private:
   Window window;

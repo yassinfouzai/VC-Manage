@@ -9,7 +9,7 @@
 #include <iostream>
 
 Application::Application(const WindowSettings &settings)
-    : window(settings), running(true) // initialize member objects here
+    : window(settings), running(true), sim("Test Town", Difficulty::Medium) // initialize member objects here
 {
   // Initialize SDL (already done before creating Window would be better in
   // main)
@@ -54,29 +54,71 @@ void Application::stop() { running = false; }
 void Application::displayInspect(ImGuiWindowFlags flags, float x, float y,
                                  int value, bool isHoveringRect, float speed,
                                  float recwidth) const {
-  float controlPanelWidth = window.getWidth() * 0.25;
-  if (controlPanelWidth < 200.0f) {
-    controlPanelWidth = 200.0f;
-  }
+    float controlPanelWidth = window.getWidth() * 0.25f;
+    if (controlPanelWidth < 200.0f) controlPanelWidth = 200.0f;
 
-  ImGuiViewport *viewport = ImGui::GetMainViewport();
+    ImGuiViewport *viewport = ImGui::GetMainViewport();
+    ImGui::SetNextWindowPos(ImVec2(
+        viewport->Pos.x + viewport->Size.x - controlPanelWidth, viewport->Pos.y));
+    ImGui::SetNextWindowSize(
+        ImVec2(controlPanelWidth, viewport->Size.y - taskbarHeight));
 
-  ImGui::SetNextWindowPos(ImVec2(
-      viewport->Pos.x + viewport->Size.x - controlPanelWidth, viewport->Pos.y));
-  ImGui::SetNextWindowSize(
-      ImVec2(controlPanelWidth, viewport->Size.y - taskbarHeight));
+    ImGui::Begin("Inspector", nullptr, flags);
 
-  ImGui::Begin("Inspector", nullptr, flags);
-  if (isHoveringRect) {
-    ImGui::Text("Rectangle Info:");
-    ImGui::Text("Position: (%.1f, %.1f)", x, y);
-    ImGui::Text("Value: %d", value);
-    ImGui::Text("Size: %.1f", recwidth);
-  } else {
-    ImGui::Text("Hover over the rectangle to see info");
-  }
-  ImGui::End();
+    if (isHoveringRect) {
+        Batiment* batiment = sim.getVille().getBatimentByPos(static_cast<int>(x), static_cast<int>(y));
+        if (batiment) {
+            ImGui::Text("Building Info:");
+            ImGui::Separator();
+
+            // Type
+            ImGui::Text("Type: %s", 
+                batiment->type == TypeBatiment::House ? "House" :
+                batiment->type == TypeBatiment::Cinema ? "Cinema" :
+                batiment->type == TypeBatiment::Mall ? "Mall" :
+                batiment->type == TypeBatiment::Park ? "Park" : "Unknown");
+
+            // Position
+            ImGui::Text("Position: (%d, %d)", batiment->position.x, batiment->position.y);
+
+            // Size
+            ImGui::Text("Size: %.1f x %.1f tiles", batiment->surface.largeur, batiment->surface.longeur);
+
+            // Name
+            ImGui::Text("Name: %s", batiment->getNom().c_str());
+
+            // Cost
+            ImGui::Text("Cost: %.2f", batiment->getCost());
+
+            // Satisfaction
+            ImGui::Text("Satisfaction effect: %d", batiment->getSatisfaction());
+
+            // Pollution
+            ImGui::Text("Pollution: %.2f", batiment->getPolution());
+
+            // Resource consumption
+            Resources res = batiment->getconsommation();
+            ImGui::Text("Water consumption: %.2f", res.eau);
+            ImGui::Text("Electricity consumption: %.2f", res.electricite);
+
+        } else {
+            ImGui::Text("No building at this tile");
+        }
+
+        // Also show tile info
+        ImGui::Text("");
+        ImGui::Text("Tile coords: (%.1f, %.1f)", x, y);
+        ImGui::Text("Tile value: %d", value);
+        ImGui::Text("Rectangle width: %.1f", recwidth);
+
+    } else {
+        ImGui::Text("Hover over the rectangle to see info");
+    }
+
+    ImGui::End();
 }
+
+
 
 void Application::displayTaskBar(ImGuiWindowFlags flags, Simulation &sim) {
   ImGuiViewport *viewport = ImGui::GetMainViewport();
@@ -168,7 +210,6 @@ void Application::checkEvent() {
 
 int Application::run() {
     // Initialize Simulation
-    Simulation sim("Test Town", Difficulty::Medium);
     sim.getVille().setBudget(1000);
     sim.getVille().calculerPolutionTotale();
     sim.getVille().calculerSatisfactionTotale();
@@ -182,7 +223,7 @@ int Application::run() {
     const int TILES_Y = 5;
     const int TILE_COUNT = TILES_X * TILES_Y;
 
-    // Tilemap initialization
+    // Tilemap init
     int tilemap[ROWS][COLS] = {};
     for (int y = 0; y < ROWS; ++y)
         for (int x = 0; x < COLS; ++x)
