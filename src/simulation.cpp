@@ -36,14 +36,14 @@ void Simulation::terminerCycle() {
   ville.collectProfit();
   
   // Apply per-cycle upkeep costs (taxes, maintenance, salaries)
-  // Base cost: 50 per cycle + 5 per population + 20 per building
-  // This grows with city size but stays manageable
+  // Softer model with gentle exponential: base 10 + 1 per pop + 5 per building
+  // Exponential factor: +0.5% per 100 population
   unsigned int pop = ville.getPopulation();
   size_t numBuildings = ville.batiments.size();
-  double upkeepCost = 50.0 + (pop * 5.0) + (numBuildings * 20.0);
+  double upkeepCost = 10.0 + (pop * 1.0) + (numBuildings * 5.0);
   
-  // Add slight exponential factor for larger cities (1% compound per 100 pop)
-  double exponentialFactor = 1.0 + (pop / 10000.0); // Very gentle growth
+  // Gentle exponential growth
+  double exponentialFactor = 1.0 + (pop / 20000.0); // 0.5% per 100 pop
   upkeepCost *= exponentialFactor;
   
   double currentBudget = ville.getBudget();
@@ -58,7 +58,8 @@ void Simulation::terminerCycle() {
   cycleActuel++;
 
   // GAME OVER check
-  if (ville.getPopulation() <= 0 || ville.getBudget() <= 0) {
+  if (ville.getPopulation() <= 0 && ville.getBudget() <= 0 &&
+      ville.getSatisfaction() <= 0) {
     state = SimState::GameOver;
     return;
   }
