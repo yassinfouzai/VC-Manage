@@ -507,88 +507,118 @@ int Application::run() {
     Batiment *bat = sim.getVille().getBatimentByPos(tileX, tileY);
 
     // ---- Build Logic ----
-    if (buildClickRequested && insideMap && !imguiBlockingMouse && !bat) {
-      bool created = false;
+    if (buildClickRequested) {
+      if (insideMap && !imguiBlockingMouse && !bat) {
+        bool created = false;
 
-      switch (currentBuildType) {
-      case TypeBatiment::House:
-        sim.getVille().ajoutBatiment(Resident::createHouse(&sim.getVille(), tileX, tileY));
-        SDL_Log("House");
-        created = true;
-        break;
-      case TypeBatiment::Park:
-        sim.getVille().ajoutBatiment(Parc::createPark(&sim.getVille(), tileX, tileY));
-        created = true;
-        break;
-      case TypeBatiment::Cinema:
-        sim.getVille().ajoutBatiment(Comercial::createCinema(&sim.getVille(), tileX, tileY));
-        created = true;
-        break;
-      case TypeBatiment::Mall:
-        sim.getVille().ajoutBatiment(Comercial::createMall(&sim.getVille(), tileX, tileY));
-        created = true;
-        break;
-      case TypeBatiment::Bank:
-        sim.getVille().ajoutBatiment(Comercial::createBank(&sim.getVille(), tileX, tileY));
-        created = true;
-        break;
-      default:
-        break;
+        switch (currentBuildType) {
+        case TypeBatiment::House:
+          sim.getVille().ajoutBatiment(
+              Resident::createHouse(&sim.getVille(), tileX, tileY));
+          created = true;
+          break;
+        case TypeBatiment::Park:
+          sim.getVille().ajoutBatiment(
+              Parc::createPark(&sim.getVille(), tileX, tileY));
+          created = true;
+          break;
+        case TypeBatiment::Cinema:
+          sim.getVille().ajoutBatiment(
+              Comercial::createCinema(&sim.getVille(), tileX, tileY));
+          created = true;
+          break;
+        case TypeBatiment::Mall:
+          sim.getVille().ajoutBatiment(
+              Comercial::createMall(&sim.getVille(), tileX, tileY));
+          created = true;
+          break;
+        case TypeBatiment::Bank:
+          sim.getVille().ajoutBatiment(
+              Comercial::createBank(&sim.getVille(), tileX, tileY));
+          created = true;
+          break;
+        default:
+          break;
+        }
+
+        if (created) {
+          // Reset tilemap to original landscape
+          std::memcpy(tilemap, landscape, sizeof(int) * ROWS * COLS);
+
+          // Place all buildings on the tilemap
+          placeBuildingsOnTilemap(tilemap, ROWS, COLS, TILE_COUNT,
+                                  sim.getVille().batiments);
+        }
       }
-
-      if (created) {
-        // Reset tilemap to original landscape
-        std::memcpy(tilemap, landscape, sizeof(int) * ROWS * COLS);
-
-        // Place all buildings on the tilemap
-        placeBuildingsOnTilemap(tilemap, ROWS, COLS, TILE_COUNT,
-                                sim.getVille().batiments);
-      }
-
-      buildClickRequested = false;
-    }
-
-    // ---- Destroy logic ----
-    if (destroyClickRequested) {
-      if (insideMap && !imguiBlockingMouse && bat) {
-
-        sim.getVille().supprimerBatiment(bat->position.x, bat->position.y);
-
-        std::memcpy(tilemap, landscape, sizeof(tilemap));
-        placeBuildingsOnTilemap(tilemap, ROWS, COLS, TILE_COUNT,
-                                sim.getVille().batiments);
-      }
-
-      destroyClickRequested = false; // always clear
-    }
-
-    ImGui::Render();
-
-    SDL_SetRenderDrawColor(renderer, 35, 35, 35, 255);
-    SDL_RenderClear(renderer);
-
-    // Render tiles
-    for (int y = 0; y < ROWS; ++y) {
-      for (int x = 0; x < COLS; ++x) {
-        int tile = tilemap[y][x];
-        SDL_Rect dest = {int((x * TILE_SIZE - cameraX) * scale),
-                         int((y * TILE_SIZE - cameraY) * scale),
-                         int(TILE_SIZE * scale), int(TILE_SIZE * scale)};
-        SDL_RenderCopy(renderer, window.getTexture(), &src[tile], &dest);
-      }
-    }
-
-    // Hover outline
-    if (insideMap) {
-      renderHoverOutline(renderer, tileX, tileY, TILE_SIZE, scale);
-    }
-
-    ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer);
-    SDL_RenderPresent(renderer);
-
-    SDL_Delay(16);
-    sim.tick(0.016f);
+    buildClickRequested = false;
   }
 
-  return exitStatus;
+  // ---- Destroy logic ----
+  if (destroyClickRequested) {
+    if (insideMap && !imguiBlockingMouse && bat) {
+
+      sim.getVille().supprimerBatiment(bat->position.x, bat->position.y);
+
+      std::memcpy(tilemap, landscape, sizeof(tilemap));
+      placeBuildingsOnTilemap(tilemap, ROWS, COLS, TILE_COUNT,
+                              sim.getVille().batiments);
+    }
+
+    destroyClickRequested = false; // always clear
+  }
+
+  // --- Game over WIndow
+
+  if (sim.getState() == SimState::GameOver) {
+    ImGuiViewport *viewport = ImGui::GetMainViewport();
+    ImVec2 windowSize(300, 150);
+    ImVec2 windowPos((viewport->Size.x - windowSize.x) * 0.5f,
+                     (viewport->Size.y - windowSize.y) * 0.5f);
+
+    ImGui::SetNextWindowPos(windowPos);
+    ImGui::SetNextWindowSize(windowSize);
+    ImGui::Begin("Game Over", nullptr,
+                 ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+                     ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar |
+                     ImGuiWindowFlags_NoScrollbar);
+
+    ImGui::TextWrapped("GAME OVER");
+    ImGui::Spacing();
+    ImGui::Spacing();
+    if (ImGui::Button("Close")) {
+      running = false;
+    }
+
+    ImGui::End();
+  }
+
+  ImGui::Render();
+
+  SDL_SetRenderDrawColor(renderer, 35, 35, 35, 255);
+  SDL_RenderClear(renderer);
+
+  // Render tiles
+  for (int y = 0; y < ROWS; ++y) {
+    for (int x = 0; x < COLS; ++x) {
+      int tile = tilemap[y][x];
+      SDL_Rect dest = {int((x * TILE_SIZE - cameraX) * scale),
+                       int((y * TILE_SIZE - cameraY) * scale),
+                       int(TILE_SIZE * scale), int(TILE_SIZE * scale)};
+      SDL_RenderCopy(renderer, window.getTexture(), &src[tile], &dest);
+    }
+  }
+
+  // Hover outline
+  if (insideMap) {
+    renderHoverOutline(renderer, tileX, tileY, TILE_SIZE, scale);
+  }
+
+  ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer);
+  SDL_RenderPresent(renderer);
+
+  SDL_Delay(16);
+  sim.tick(0.016f);
+}
+
+return exitStatus;
 }
