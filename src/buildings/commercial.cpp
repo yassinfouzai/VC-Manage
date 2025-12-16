@@ -43,7 +43,7 @@ Comercial::Comercial(int id, const string &nom, Ville *ville, TypeBatiment type,
       Service(id, nom, ville, type, effectSatisfication, cost, Employees,
               EmployeesNeeded, consommation, polution, position, surface) {}
 
-Comercial Comercial::createCinema(int id, const string &nom, Ville *ville,
+BatPtr Comercial::createCinema(Ville *ville,
                                   int x, int y) {
   // Auto-generate name and ID
   string generatedName = NameGenerator::getRandomName(TypeBatiment::Cinema);
@@ -55,12 +55,12 @@ Comercial Comercial::createCinema(int id, const string &nom, Ville *ville,
   int satisfaction = static_cast<int>(100 * SATISFACTION_BONUS);
   float pollution = 2.5f * (1.0f + POLLUTION_PENALTY);
   
-  return Comercial(generatedID, generatedName, ville, TypeBatiment::Cinema, satisfaction, 500.0, 
+  return BatPtr( new Comercial(generatedID, generatedName, ville, TypeBatiment::Cinema, satisfaction, 500.0, 
                    0, BASE_EMPLOYEES_CINEMA, 10, 30, pollution, x, y, 2, 1, 
-                   baseProfit);
+                   baseProfit));
 }
 
-Comercial Comercial::createMall(int id, const string &nom, Ville *ville, int x,
+BatPtr Comercial::createMall(Ville *ville, int x,
                                 int y) {
   // Auto-generate name and ID
   string generatedName = NameGenerator::getRandomName(TypeBatiment::Mall);
@@ -72,12 +72,12 @@ Comercial Comercial::createMall(int id, const string &nom, Ville *ville, int x,
   int satisfaction = static_cast<int>(100 * SATISFACTION_BONUS);
   float pollution = 8.0f * (1.0f + POLLUTION_PENALTY);
   
-  return Comercial(generatedID, generatedName, ville, TypeBatiment::Mall, satisfaction, 2000.0, 
+  return BatPtr( new Comercial(generatedID, generatedName, ville, TypeBatiment::Mall, satisfaction, 2000.0, 
                    0, BASE_EMPLOYEES_MALL, 400, 600, pollution, x, y, 3, 3, 
-                   baseProfit);
+                   baseProfit));
 }
 
-Comercial Comercial::createBank(int id, const string &nom, Ville *ville, int x,
+BatPtr Comercial::createBank(Ville *ville, int x,
                                 int y) {
   // Auto-generate name and ID
   string generatedName = NameGenerator::getRandomName(TypeBatiment::Bank);
@@ -88,9 +88,9 @@ Comercial Comercial::createBank(int id, const string &nom, Ville *ville, int x,
   float baseProfit = PROFIT_PER_EMPLOYEE * BASE_EMPLOYEES_BANK * 2.5f; 
   float pollution = 2.0f * (1.0f + POLLUTION_PENALTY);
   
-  return Comercial(generatedID, generatedName, ville, TypeBatiment::Bank, -20, 2000.0, 
+  return BatPtr( new Comercial(generatedID, generatedName, ville, TypeBatiment::Bank, -20, 2000.0, 
                    0, BASE_EMPLOYEES_BANK, 10, 30, pollution, x, y, 1, 1, 
-                   baseProfit);
+                   baseProfit));
 }
 
 // Methods

@@ -43,13 +43,14 @@ Resident::Resident(int id, const std::string &nom, Ville *ville,
 // Methods
 void Resident::afficheDetails() const {
   Batiment::afficheDetails();
-  std::cout << "Habitants Actuels :\t" << habitantsActuels << endl;
-  std::cout << "Capacite Habitants :\t" << capaciteHabitants << endl;
-  
-  
-  std::cout << "Eau par personne :\t" << WATER_PER_PERSON << " L/s" << endl;
-  std::cout << "Electricite par personne :\t" << ELECTRICITY_PER_PERSON << " W/s" << endl;
-  std::cout << "Satisfaction par personne :\t" << SATISFACTION_PER_PERSON << endl;
+  ImGui::Separator();
+  ImGui::Text("Resident Info:");
+  ImGui::Separator();
+  ImGui::Text("Habitants Actuels %d",habitantsActuels);
+  ImGui::Text("Capacite Habitants %d",capaciteHabitants);
+  ImGui::Text("Eau par personne : %.2f L/s",WATER_PER_PERSON);
+  ImGui::Text("Eau par personne : %.2f W/s",ELECTRICITY_PER_PERSON);
+  ImGui::Text("Satisfaction par personne : %.2f %%",SATISFACTION_PER_PERSON);
 }
 
 void Resident::ajouterHabitants(int nombreHabitants) {
@@ -71,7 +72,7 @@ void Resident::retirerHabitants(int nombreHabitants) {
   consommation.electricite = habitantsActuels * ELECTRICITY_PER_PERSON;
 }
 
-BatPtr Resident::createHouse(int id, const string &nom, Ville *ville,
+BatPtr Resident::createHouse(Ville *ville,
                              int x, int y) {
     // Auto-generate name and ID
     string generatedName = NameGenerator::getRandomName(TypeBatiment::House);

@@ -323,8 +323,8 @@ Batiment* Ville::getBatimentByPos(int x, int y) const {
         int width = bat.surface.largeur;
         int height = bat.surface.longeur;
 
-        if (x >= bat.position.x && x < bat.position.x + width &&
-            y >= bat.position.y && y < bat.position.y + height) {
+        if (x >= bat.position.x && x < bat.position.x +  height&&
+            y >= bat.position.y && y < bat.position.y + width) {
             return batimentPtr.get(); 
         }
     }

@@ -33,7 +33,7 @@ void Parc::afficheDetails() const {
   std::cout << "effectBienEtre :\t" << effectBienEtre << endl;
 }
 
-Parc Parc::createPark(int id, const string &nom, Ville *ville, int x, int y) {
+BatPtr Parc::createPark(Ville *ville, int x, int y) {
   // Auto-generate name and ID
   string generatedName = NameGenerator::getRandomName(TypeBatiment::Park);
   Position position(x, y);
@@ -50,7 +50,7 @@ Parc Parc::createPark(int id, const string &nom, Ville *ville, int x, int y) {
   // - Employees: 8 (maintenance staff)
   // - Employees needed: 8
   
-  return Parc(generatedID, generatedName, ville, TypeBatiment::Park, 
+  return BatPtr( new Parc(generatedID, generatedName, ville, TypeBatiment::Park, 
               80,           // satisfaction
               1500.0,       // cost
               8,            // employees
@@ -58,6 +58,6 @@ Parc Parc::createPark(int id, const string &nom, Ville *ville, int x, int y) {
               25.0,         // water consumption
               5.0,          // electricity consumption
               -15.0f,       // pollution (negative = reduces)
-              x, y, 2, 2);  // position and surface (2x2)
+              x, y, 2, 2));  // position and surface (2x2)
 }
 
