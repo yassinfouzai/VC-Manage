@@ -149,7 +149,7 @@ void EventManager::initialiserEvenements() {
     blizzard.blockCommercialIncome = true;
     blizzard.budgetChange = -400.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        6, "❄️ Blizzard Paralysant",
+        6, " Blizzard Paralysant",
         "Une tempête de neige bloque les routes et interrompt la production. Envoyez les déneigeurs!",
         EventCategory::Seasonal, EventSeverity::Major, 0.06f, blizzard
     ));
@@ -161,7 +161,7 @@ void EventManager::initialiserEvenements() {
     hurricane.pollutionChange = -10.0f; // Washes away pollution
     hurricane.populationChange = -30;
     ajouterEvenement(std::make_unique<Evenement>(
-        7, "🌀 Ouragan Dévastateur",
+        7, " Ouragan Dévastateur",
         "Un ouragan catégorie 4 frappe la ville! Destructions massives mais l'air est purifié.",
         EventCategory::Natural, EventSeverity::Critical, 0.02f, hurricane
     ));
@@ -174,7 +174,7 @@ void EventManager::initialiserEvenements() {
     strike.blockJobAssignment = true;
     strike.blockCommercialIncome = true;
     ajouterEvenement(std::make_unique<Evenement>(
-        8, "✊ Grève Générale",
+        8, "Grève Générale",
         "Les travailleurs sont en grève! Aucune production, les services sont paralysés.",
         EventCategory::Social, EventSeverity::Major, 0.10f, strike
     ));
@@ -184,7 +184,7 @@ void EventManager::initialiserEvenements() {
     gardenerStrike.satisfactionChange = -20.0f;
     gardenerStrike.blockParkEffects = true;
     ajouterEvenement(std::make_unique<Evenement>(
-        9, "🌱 Grève des Jardiniers",
+        9, "Grève des Jardiniers",
         "Les jardiniers refusent d'entretenir les parcs! L'effet des espaces verts diminue de moitié.",
         EventCategory::Social, EventSeverity::Moderate, 0.09f, gardenerStrike
     ));
@@ -194,7 +194,7 @@ void EventManager::initialiserEvenements() {
     protest.satisfactionChange = -12.0f;
     protest.budgetChange = -200.0; // Police costs
     ajouterEvenement(std::make_unique<Evenement>(
-        10, "📢 Manifestation Massive",
+        10, "Manifestation Massive",
         "Des milliers de citoyens manifestent dans les rues. La police doit intervenir.",
         EventCategory::Social, EventSeverity::Minor, 0.15f, protest
     ));
@@ -204,7 +204,7 @@ void EventManager::initialiserEvenements() {
     festival.satisfactionChange = 15.0f;
     festival.budgetChange = 300.0; // Tourism revenue
     ajouterEvenement(std::make_unique<Evenement>(
-        11, "🎉 Festival Culturel",
+        11, "Festival Culturel",
         "Un grand festival attire des touristes du monde entier! Joie et profits pour tous.",
         EventCategory::Entertainment, EventSeverity::Minor, 0.12f, festival
     ));
@@ -215,7 +215,7 @@ void EventManager::initialiserEvenements() {
     revolution.budgetChange = -800.0;
     revolution.populationChange = -15;
     ajouterEvenement(std::make_unique<Evenement>(
-        12, "⚔️ Tentative de Révolution",
+        12, "Tentative de Révolution",
         "Des révolutionnaires tentent de renverser le gouvernement! Chaos dans les rues.",
         EventCategory::Social, EventSeverity::Critical, 0.03f, revolution
     ));
@@ -227,7 +227,7 @@ void EventManager::initialiserEvenements() {
     powerOut.satisfactionChange = -15.0f;
     powerOut.electricityConsumptionMultiplier = 1.5f;
     ajouterEvenement(std::make_unique<Evenement>(
-        13, "⚡ Panne de Courant Géante",
+        13, " Panne de Courant Géante",
         "Une panne massive fait grimper la consommation d'énergie de 50%!",
         EventCategory::Technical, EventSeverity::Moderate, 0.11f, powerOut
     ));
@@ -238,7 +238,7 @@ void EventManager::initialiserEvenements() {
     pipeBurst.budgetChange = -350.0;
     pipeBurst.waterConsumptionMultiplier = 2.0f;
     ajouterEvenement(std::make_unique<Evenement>(
-        14, "💧 Rupture des Canalisations",
+        14, " Rupture des Canalisations",
         "Les canalisations principales explosent! L'eau se déverse dans les rues.",
         EventCategory::Technical, EventSeverity::Moderate, 0.10f, pipeBurst
     ));
@@ -248,7 +248,7 @@ void EventManager::initialiserEvenements() {
     internetDown.satisfactionChange = -18.0f;
     internetDown.blockCommercialIncome = true;
     ajouterEvenement(std::make_unique<Evenement>(
-        15, "📡 Coupure Internet Totale",
+        15, "Coupure Internet Totale",
         "Tout Internet est hors service! Les commerces en ligne sont paralysés.",
         EventCategory::Technical, EventSeverity::Major, 0.07f, internetDown
     ));
@@ -260,7 +260,7 @@ void EventManager::initialiserEvenements() {
     nuclearScare.populationChange = -50;
     nuclearScare.budgetChange = -1500.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        16, "☢️ Alerte Nucléaire",
+        16, " Alerte Nucléaire",
         "Une centrale nucléaire menace de fondre! Panique et évacuations massives.",
         EventCategory::Technical, EventSeverity::Critical, 0.01f, nuclearScare
     ));
@@ -271,7 +271,7 @@ void EventManager::initialiserEvenements() {
     gasLeak.budgetChange = -450.0;
     gasLeak.pollutionChange = 12.0f;
     ajouterEvenement(std::make_unique<Evenement>(
-        17, "💨 Fuite de Gaz Massive",
+        17, " Fuite de Gaz Massive",
         "Une énorme fuite de gaz force l'évacuation de plusieurs quartiers!",
         EventCategory::Technical, EventSeverity::Major, 0.06f, gasLeak
     ));
@@ -283,7 +283,7 @@ void EventManager::initialiserEvenements() {
     trafficJam.satisfactionChange = -25.0f;
     trafficJam.blockJobAssignment = true;
     ajouterEvenement(std::make_unique<Evenement>(
-        18, "🚗 Embouteillage Géant",
+        18, "Embouteillage Géant",
         "Tous les bus sont bloqués! Les habitants doivent marcher pour aller au travail.",
         EventCategory::Transport, EventSeverity::Major, 0.13f, trafficJam
     ));
@@ -293,7 +293,7 @@ void EventManager::initialiserEvenements() {
     metroStrike.satisfactionChange = -20.0f;
     metroStrike.budgetChange = -300.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        19, "🚇 Grève des Transports",
+        19, " Grève des Transports",
         "Les conducteurs de métro et bus sont en grève. Chaos dans la circulation!",
         EventCategory::Transport, EventSeverity::Moderate, 0.12f, metroStrike
     ));
@@ -304,7 +304,7 @@ void EventManager::initialiserEvenements() {
     bridgeCollapse.budgetChange = -900.0;
     bridgeCollapse.populationChange = -10;
     ajouterEvenement(std::make_unique<Evenement>(
-        20, "🌉 Effondrement de Pont",
+        20, " Effondrement de Pont",
         "Un pont majeur s'effondre! Victimes et isolement de quartiers entiers.",
         EventCategory::Transport, EventSeverity::Critical, 0.04f, bridgeCollapse
     ));
@@ -317,7 +317,7 @@ void EventManager::initialiserEvenements() {
     boom.budgetChange = 1000.0;
     boom.budgetMultiplier = 1.5f;
     ajouterEvenement(std::make_unique<Evenement>(
-        21, "💎 Boom Économique",
+        21, " Boom Économique",
         "L'économie explose! Les revenus augmentent de 50% ce cycle.",
         EventCategory::Economic, EventSeverity::Major, 0.05f, boom
     ));
@@ -328,7 +328,7 @@ void EventManager::initialiserEvenements() {
     crash.budgetChange = -800.0;
     crash.budgetMultiplier = 0.5f;
     ajouterEvenement(std::make_unique<Evenement>(
-        22, "📉 Krach Boursier",
+        22, " Krach Boursier",
         "La bourse s'effondre! Les revenus commerciaux sont divisés par deux.",
         EventCategory::Economic, EventSeverity::Major, 0.06f, crash
     ));
@@ -338,7 +338,7 @@ void EventManager::initialiserEvenements() {
     taxRevolt.satisfactionChange = -20.0f;
     taxRevolt.budgetMultiplier = 0.7f;
     ajouterEvenement(std::make_unique<Evenement>(
-        23, "💸 Révolte Fiscale",
+        23, "Révolte Fiscale",
         "Les citoyens refusent de payer leurs impôts! Les revenus chutent de 30%.",
         EventCategory::Economic, EventSeverity::Moderate, 0.10f, taxRevolt
     ));
@@ -348,7 +348,7 @@ void EventManager::initialiserEvenements() {
     lotteryDonation.satisfactionChange = 10.0f;
     lotteryDonation.budgetChange = 2000.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        24, "🎰 Don Généreux",
+        24, "Don Généreux",
         "Un gagnant de loterie fait don de sa fortune à la ville! 2000$ ajoutés au budget.",
         EventCategory::Economic, EventSeverity::Minor, 0.02f, lotteryDonation
     ));
@@ -358,7 +358,7 @@ void EventManager::initialiserEvenements() {
     bankRobbery.satisfactionChange = -10.0f;
     bankRobbery.budgetChange = -400.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        25, "🏦 Braquage de Banque",
+        25, "Braquage de Banque",
         "Des bandits braquent la banque centrale et s'enfuient avec l'argent!",
         EventCategory::Economic, EventSeverity::Moderate, 0.08f, bankRobbery
     ));
@@ -371,7 +371,7 @@ void EventManager::initialiserEvenements() {
     flu.blockJobAssignment = true;
     flu.budgetChange = -350.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        26, "🤒 Épidémie de Grippe",
+        26, "Épidémie de Grippe",
         "Une grippe virulente frappe la ville. 30% des travailleurs sont malades!",
         EventCategory::Health, EventSeverity::Moderate, 0.10f, flu
     ));
@@ -382,7 +382,7 @@ void EventManager::initialiserEvenements() {
     foodPoison.populationChange = -5;
     foodPoison.budgetChange = -250.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        27, "🤢 Intoxication Massive",
+        27, "Intoxication Massive",
         "Des aliments contaminés causent une intoxication massive! Hôpitaux débordés.",
         EventCategory::Health, EventSeverity::Moderate, 0.07f, foodPoison
     ));
@@ -394,7 +394,7 @@ void EventManager::initialiserEvenements() {
     pandemic.budgetChange = -1500.0;
     pandemic.blockJobAssignment = true;
     ajouterEvenement(std::make_unique<Evenement>(
-        28, "🦠 Pandémie Mondiale",
+        28, "Pandémie Mondiale",
         "Une pandémie dévastatrice frappe! Confinement général, l'économie s'arrête.",
         EventCategory::Health, EventSeverity::Critical, 0.01f, pandemic
     ));
@@ -405,7 +405,7 @@ void EventManager::initialiserEvenements() {
     pollutionCrisis.pollutionChange = 40.0f;
     pollutionCrisis.budgetChange = -400.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        29, "😷 Crise de Pollution",
+        29, "Crise de Pollution",
         "Un nuage toxique recouvre la ville! Alertes sanitaires et hospitalisations.",
         EventCategory::Health, EventSeverity::Major, 0.08f, pollutionCrisis
     ));
@@ -415,7 +415,7 @@ void EventManager::initialiserEvenements() {
     medicalBreak.satisfactionChange = 15.0f;
     medicalBreak.budgetChange = 500.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        30, "💊 Percée Médicale",
+        30, "Percée Médicale",
         "Un chercheur local découvre un remède révolutionnaire! La ville devient célèbre.",
         EventCategory::Health, EventSeverity::Minor, 0.03f, medicalBreak
     ));
@@ -427,7 +427,7 @@ void EventManager::initialiserEvenements() {
     pigeons.satisfactionChange = -15.0f;
     pigeons.pollutionChange = 10.0f;
     ajouterEvenement(std::make_unique<Evenement>(
-        31, "🐦 Invasion de Pigeons Géants",
+        31, "Invasion de Pigeons Géants",
         "Des pigeons géants envahissent la ville! Déchets partout, nettoyage urgent nécessaire.",
         EventCategory::Wildlife, EventSeverity::Moderate, 0.12f, pigeons
     ));
@@ -438,7 +438,7 @@ void EventManager::initialiserEvenements() {
     rats.pollutionChange = 15.0f;
     rats.budgetChange = -300.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        32, "🐀 Invasion de Rats",
+        32, "Invasion de Rats",
         "Les rats envahissent les égouts et remontent dans les maisons! Désinfection urgente.",
         EventCategory::Wildlife, EventSeverity::Moderate, 0.09f, rats
     ));
@@ -448,7 +448,7 @@ void EventManager::initialiserEvenements() {
     bees.satisfactionChange = -10.0f;
     bees.budgetChange = -150.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        33, "🐝 Essaim d'Abeilles Géant",
+        33, "Essaim d'Abeilles Géant",
         "Un essaim d'abeilles géant s'installe en plein centre-ville! Apiculteurs à la rescousse.",
         EventCategory::Wildlife, EventSeverity::Minor, 0.06f, bees
     ));
@@ -459,7 +459,7 @@ void EventManager::initialiserEvenements() {
     wolves.populationChange = -8;
     wolves.budgetChange = -250.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        34, "🐺 Meute de Loups",
+        34, "Meute de Loups",
         "Une meute de loups descend des montagnes et attaque! Panique et victimes.",
         EventCategory::Wildlife, EventSeverity::Major, 0.04f, wolves
     ));
@@ -469,7 +469,7 @@ void EventManager::initialiserEvenements() {
     seagulls.satisfactionChange = -8.0f;
     seagulls.pollutionChange = 5.0f;
     ajouterEvenement(std::make_unique<Evenement>(
-        35, "🦅 Attaque de Mouettes",
+        35, "Attaque de Mouettes",
         "Des mouettes agressives volent la nourriture et attaquent les passants!",
         EventCategory::Wildlife, EventSeverity::Minor, 0.10f, seagulls
     ));
@@ -479,7 +479,7 @@ void EventManager::initialiserEvenements() {
     dogs.satisfactionChange = -12.0f;
     dogs.budgetChange = -200.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        36, "🐕 Armée de Chiens Errants",
+        36, " Armée de Chiens Errants",
         "Des centaines de chiens errants forment des meutes dans les rues! Refuge animalier débordé.",
         EventCategory::Wildlife, EventSeverity::Minor, 0.08f, dogs
     ));
@@ -490,7 +490,7 @@ void EventManager::initialiserEvenements() {
     locusts.budgetChange = -400.0;
     locusts.pollutionChange = 8.0f;
     ajouterEvenement(std::make_unique<Evenement>(
-        37, "🦗 Nuée de Sauterelles",
+        37, "Nuée de Sauterelles",
         "Des milliards de sauterelles dévorent tout! Les jardins et parcs sont dévastés.",
         EventCategory::Wildlife, EventSeverity::Major, 0.03f, locusts
     ));
@@ -500,7 +500,7 @@ void EventManager::initialiserEvenements() {
     dolphins.satisfactionChange = 15.0f;
     dolphins.budgetChange = 300.0; // Tourism
     ajouterEvenement(std::make_unique<Evenement>(
-        38, "🐬 Visite de Dauphins",
+        38, "Visite de Dauphins",
         "Des dauphins visitent le port! Les touristes affluent pour les voir.",
         EventCategory::Wildlife, EventSeverity::Minor, 0.05f, dolphins
     ));
@@ -512,7 +512,7 @@ void EventManager::initialiserEvenements() {
     ufo.satisfactionChange = 10.0f;
     ufo.budgetChange = 500.0; // Tourist attraction
     ajouterEvenement(std::make_unique<Evenement>(
-        39, "👽 Observation d'OVNI",
+        39, "Observation d'OVNI",
         "Un OVNI est aperçu au-dessus de la ville! Les ufologues envahissent la ville.",
         EventCategory::Entertainment, EventSeverity::Minor, 0.02f, ufo
     ));
@@ -522,7 +522,7 @@ void EventManager::initialiserEvenements() {
     celebrity.satisfactionChange = 12.0f;
     celebrity.budgetChange = 400.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        40, "⭐ Visite de Célébrité",
+        40, "Visite de Célébrité",
         "Une star mondiale visite votre ville! Euphorie générale et revenus touristiques.",
         EventCategory::Entertainment, EventSeverity::Minor, 0.08f, celebrity
     ));
@@ -532,7 +532,7 @@ void EventManager::initialiserEvenements() {
     zombieDrill.satisfactionChange = 5.0f;
     zombieDrill.budgetChange = -100.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        41, "🧟 Exercice Anti-Zombie",
+        41, "Exercice Anti-Zombie",
         "La ville organise un exercice d'apocalypse zombie! C'est fun mais coûteux.",
         EventCategory::Entertainment, EventSeverity::Minor, 0.04f, zombieDrill
     ));
@@ -541,7 +541,7 @@ void EventManager::initialiserEvenements() {
     EventEffect flashMob;
     flashMob.satisfactionChange = 8.0f;
     ajouterEvenement(std::make_unique<Evenement>(
-        42, "💃 Flash Mob Géant",
+        42, "Flash Mob Géant",
         "Un flash mob spontané réunit des milliers de danseurs! Vidéos virales garanties.",
         EventCategory::Entertainment, EventSeverity::Minor, 0.10f, flashMob
     ));
@@ -551,7 +551,7 @@ void EventManager::initialiserEvenements() {
     timeCapsule.satisfactionChange = 10.0f;
     timeCapsule.budgetChange = 600.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        43, "⏰ Capsule Temporelle",
+        43, " Capsule Temporelle",
         "Une capsule temporelle de 1900 est découverte! Trésors historiques et attraction touristique.",
         EventCategory::Entertainment, EventSeverity::Minor, 0.03f, timeCapsule
     ));
@@ -561,7 +561,7 @@ void EventManager::initialiserEvenements() {
     rubberDuck.satisfactionChange = 15.0f;
     rubberDuck.budgetChange = 300.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        44, "🦆 Canard de Bain Géant",
+        44, "Canard de Bain Géant",
         "Un énorme canard de bain gonflable apparaît dans le port! Sensation mondiale.",
         EventCategory::Entertainment, EventSeverity::Minor, 0.05f, rubberDuck
     ));
@@ -571,7 +571,7 @@ void EventManager::initialiserEvenements() {
     kaiju.satisfactionChange = -15.0f;
     kaiju.budgetChange = -200.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        45, "🦖 Fausse Alerte Monstre",
+        45, "Fausse Alerte Monstre",
         "Une fausse alerte Godzilla cause une panique! C'était juste un gros lézard.",
         EventCategory::Entertainment, EventSeverity::Minor, 0.03f, kaiju
     ));
@@ -583,7 +583,7 @@ void EventManager::initialiserEvenements() {
     meteor.satisfactionChange = 20.0f;
     meteor.budgetChange = 700.0; // Space tourism
     ajouterEvenement(std::make_unique<Evenement>(
-        46, "☄️ Pluie de Météorites",
+        46, " Pluie de Météorites",
         "Un spectacle céleste époustouflant! Les touristes affluent pour observer.",
         EventCategory::Natural, EventSeverity::Minor, 0.04f, meteor
     ));
@@ -593,7 +593,7 @@ void EventManager::initialiserEvenements() {
     ruins.satisfactionChange = 18.0f;
     ruins.budgetChange = 1000.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        47, "🏛️ Découverte Archéologique",
+        47, "Découverte Archéologique",
         "Des ruines antiques sont découvertes! Votre ville devient un site du patrimoine mondial.",
         EventCategory::Entertainment, EventSeverity::Minor, 0.02f, ruins
     ));
@@ -605,7 +605,7 @@ void EventManager::initialiserEvenements() {
     volcano.budgetChange = -2000.0;
     volcano.populationChange = -80;
     ajouterEvenement(std::make_unique<Evenement>(
-        48, "🌋 Éruption Volcanique",
+        48, "Éruption Volcanique",
         "Un volcan entre en éruption! Lave, cendres et destruction massive.",
         EventCategory::Natural, EventSeverity::Critical, 0.01f, volcano
     ));
@@ -615,7 +615,7 @@ void EventManager::initialiserEvenements() {
     rainbow.satisfactionChange = 12.0f;
     rainbow.budgetChange = 200.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        49, "🌈 Double Arc-en-ciel",
+        49, "Double Arc-en-ciel",
         "Un magnifique double arc-en-ciel apparaît! Tout le monde prend des photos.",
         EventCategory::Seasonal, EventSeverity::Minor, 0.08f, rainbow
     ));
@@ -625,7 +625,7 @@ void EventManager::initialiserEvenements() {
     fountain.satisfactionChange = 8.0f;
     fountain.waterConsumptionMultiplier = 1.3f;
     ajouterEvenement(std::make_unique<Evenement>(
-        50, "⛲ Fontaine Folle",
+        50, "Fontaine Folle",
         "La fontaine centrale devient incontrôlable et arrose tout le monde! C'est hilarant.",
         EventCategory::Technical, EventSeverity::Minor, 0.06f, fountain
     ));
@@ -635,7 +635,7 @@ void EventManager::initialiserEvenements() {
     insomnia.satisfactionChange = -14.0f;
     insomnia.electricityConsumptionMultiplier = 1.4f;
     ajouterEvenement(std::make_unique<Evenement>(
-        51, "😴 Vague d'Insomnie",
+        51, "Vague d'Insomnie",
         "Personne n'arrive à dormir! Les lumières restent allumées toute la nuit.",
         EventCategory::Health, EventSeverity::Minor, 0.07f, insomnia
     ));
@@ -645,7 +645,7 @@ void EventManager::initialiserEvenements() {
     singing.satisfactionChange = 10.0f;
     singing.budgetChange = 250.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        52, "🎤 Concours de Chant",
+        52, "Concours de Chant",
         "Un grand concours de talents attire des participants de partout!",
         EventCategory::Entertainment, EventSeverity::Minor, 0.09f, singing
     ));
@@ -655,7 +655,7 @@ void EventManager::initialiserEvenements() {
     cropCircles.satisfactionChange = 5.0f;
     cropCircles.budgetChange = 300.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        53, "👽 Cercles de Culture",
+        53, "Cercles de Culture",
         "Des motifs mystérieux apparaissent dans les champs! Les théoriciens du complot arrivent.",
         EventCategory::Entertainment, EventSeverity::Minor, 0.03f, cropCircles
     ));
@@ -665,7 +665,7 @@ void EventManager::initialiserEvenements() {
     fashion.satisfactionChange = 15.0f;
     fashion.budgetChange = 800.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        54, "👗 Fashion Week",
+        54, "Fashion Week",
         "Votre ville accueille la Fashion Week! Défilés, célébrités et économie florissante.",
         EventCategory::Entertainment, EventSeverity::Minor, 0.04f, fashion
     ));
@@ -675,7 +675,7 @@ void EventManager::initialiserEvenements() {
     robots.satisfactionChange = -10.0f;
     robots.budgetChange = -300.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        55, "🤖 Robots en Folie",
+        55, "Robots en Folie",
         "Les robots de nettoyage deviennent fous et nettoient... trop! Chaos organisé.",
         EventCategory::Technical, EventSeverity::Minor, 0.05f, robots
     ));
@@ -685,7 +685,7 @@ void EventManager::initialiserEvenements() {
     fog.satisfactionChange = -8.0f;
     fog.pollutionChange = 5.0f;
     ajouterEvenement(std::make_unique<Evenement>(
-        56, "🌫️ Brouillard Mystérieux",
+        56, " Brouillard Mystérieux",
         "Un brouillard épais et étrange enveloppe la ville. Visibilité nulle!",
         EventCategory::Seasonal, EventSeverity::Minor, 0.10f, fog
     ));
@@ -695,7 +695,7 @@ void EventManager::initialiserEvenements() {
     sports.satisfactionChange = 20.0f;
     sports.budgetChange = 600.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        57, "🏆 Championnat Gagné",
+        57, " Championnat Gagné",
         "L'équipe locale gagne le championnat! Euphorie collective et célébrations.",
         EventCategory::Entertainment, EventSeverity::Minor, 0.05f, sports
     ));
@@ -705,7 +705,7 @@ void EventManager::initialiserEvenements() {
     magician.satisfactionChange = 5.0f;
     magician.budgetChange = -100.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        58, "🎩 Tour de Magie Raté",
+        58, "Tour de Magie Raté",
         "Un magicien fait disparaître... la mairie! Heureusement, elle réapparaît.",
         EventCategory::Entertainment, EventSeverity::Minor, 0.04f, magician
     ));
@@ -714,7 +714,7 @@ void EventManager::initialiserEvenements() {
     EventEffect noise;
     noise.satisfactionChange = -12.0f;
     ajouterEvenement(std::make_unique<Evenement>(
-        59, "🔊 Pollution Sonore",
+        59, "Pollution Sonore",
         "Des travaux nocturnes créent un vacarme insupportable! Personne ne dort.",
         EventCategory::Health, EventSeverity::Minor, 0.11f, noise
     ));
@@ -724,12 +724,12 @@ void EventManager::initialiserEvenements() {
     treasure.satisfactionChange = 15.0f;
     treasure.budgetChange = 1500.0;
     ajouterEvenement(std::make_unique<Evenement>(
-        60, "💰 Trésor de Pirates",
+        60, "Trésor de Pirates",
         "Un trésor de pirates est découvert sous la ville! Fortune instantanée.",
         EventCategory::Entertainment, EventSeverity::Minor, 0.01f, treasure
     ));
     
-    std::cout << "✅ " << evenementsPossibles.size() << " événements initialisés!" << std::endl;
+    std::cout << " " << evenementsPossibles.size() << " événements initialisés!" << std::endl;
 }
 
 std::unique_ptr<Evenement> EventManager::genererEvenementAleatoire(const Ville* ville) {
