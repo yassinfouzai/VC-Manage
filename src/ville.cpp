@@ -22,9 +22,10 @@ Ville::~Ville() = default;
 
 // List de batiments
 void Ville::ajoutBatiment(BatPtr batiment) {
-  batiments.push_back(std::move(batiment));
-  budget -= batiment->getCost();
+    budget -= batiment->getCost();
+    batiments.push_back(std::move(batiment));
 }
+
 
 void Ville::supprimerBatiment(int id) {
   for (auto it = batiments.begin(); it != batiments.end(); ++it) {

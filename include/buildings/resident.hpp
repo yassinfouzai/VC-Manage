@@ -46,7 +46,7 @@ public:
   void ajouterHabitants(int nombreHabitants);
   void retirerHabitants(int nombreHabitants);
 
-  static Resident createHouse(int id, const string &nom, Ville *ville, int x,
+  static BatPtr createHouse(int id, const string &nom, Ville *ville, int x,
                               int y);
 
   // Getters

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <memory>
 
 using namespace std;
 
@@ -70,17 +71,27 @@ void Resident::retirerHabitants(int nombreHabitants) {
   consommation.electricite = habitantsActuels * ELECTRICITY_PER_PERSON;
 }
 
-Resident Resident::createHouse(int id, const string &nom, Ville *ville, int x,
-                               int y) {
-  float pollution = POLLUTION_PER_PERSON * BASE_CAPACITY_HOUSE;
-  int satisfaction = static_cast<int>(SATISFACTION_PER_PERSON * BASE_CAPACITY_HOUSE * 10);
-  float water = WATER_PER_PERSON * BASE_CAPACITY_HOUSE;
-  float electricity = ELECTRICITY_PER_PERSON * BASE_CAPACITY_HOUSE;
-  
-  return Resident(id, nom, ville, TypeBatiment::House, satisfaction, 30.0, 
-                  water, electricity, pollution, x, y, 1, 1, 
-                  BASE_CAPACITY_HOUSE, 0);
+BatPtr Resident::createHouse(int id, const string &nom, Ville *ville,
+                             int x, int y) {
+    float pollution = POLLUTION_PER_PERSON * BASE_CAPACITY_HOUSE;
+    int satisfaction = static_cast<int>(
+        SATISFACTION_PER_PERSON * BASE_CAPACITY_HOUSE * 10
+    );
+    float water = WATER_PER_PERSON * BASE_CAPACITY_HOUSE;
+    float electricity = ELECTRICITY_PER_PERSON * BASE_CAPACITY_HOUSE;
+
+    return BatPtr(
+        new Resident(
+            id, nom, ville, TypeBatiment::House,
+            satisfaction, 30.0,
+            water, electricity, pollution,
+            x, y, 1, 1,
+            BASE_CAPACITY_HOUSE, 0
+        )
+    );
 }
+
+
 
 // Getters
 int Resident::gethabitantsActuels() { return habitantsActuels; }

@@ -4,6 +4,7 @@
 #include "../tools/imgui/imgui.h"
 #include "../tools/imgui/imgui_impl_sdl2.h"
 #include "../tools/imgui/imgui_impl_sdlrenderer2.h"
+#include "../include/buildings/resident.hpp"
 #include <cstdlib>
 #include <iostream>
 
@@ -164,274 +165,179 @@ void Application::checkEvent() {
   }
 }
 
+
 int Application::run() {
-  // init Simulation
-  Simulation sim("Test Town", Difficulty::Medium);
-  sim.getVille().setBudget(1000);
-  sim.getVille().calculerPolutionTotale();
-  sim.getVille().calculerSatisfactionTotale();
+    // Initialize Simulation
+    Simulation sim("Test Town", Difficulty::Medium);
+    sim.getVille().setBudget(1000);
+    sim.getVille().calculerPolutionTotale();
+    sim.getVille().calculerSatisfactionTotale();
+    sim.getVille().ajoutBatiment(Resident::createHouse(111, "test", &sim.getVille(), 25, 25));
 
-  const int ROWS = 64;
-  const int COLS = 64;
-  const int TILE_SIZE = 32;
-  const int TILES_X = 5;
-  const int TILES_Y = 5;
-  const int TILE_COUNT = TILES_X * TILES_Y;
-  // ---------------NEW GRID --------------------
-  int map[ROWS][COLS] = {};
-  int tilemap[ROWS][COLS] = {};
+    // Grid constants
+    const int ROWS = 64;
+    const int COLS = 64;
+    const int TILE_SIZE = 32;
+    const int TILES_X = 5;
+    const int TILES_Y = 5;
+    const int TILE_COUNT = TILES_X * TILES_Y;
 
-  for (const auto &buildingPtr : sim.getVille().batiments) {
-    const Batiment &building = *buildingPtr;
+    // Tilemap initialization
+    int tilemap[ROWS][COLS] = {};
+    for (int y = 0; y < ROWS; ++y)
+        for (int x = 0; x < COLS; ++x)
+            tilemap[y][x] = 6 + std::rand() % 4; // random grass tiles as default
 
-    int width = 1;
-    int height = 1;
+    // Place buildings
+    for (const auto &buildingPtr : sim.getVille().batiments) {
+        const Batiment &building = *buildingPtr;
 
-    switch (building.type) {
-    case TypeBatiment::Cinema:
-      width = 2;
-      height = 1;
-      break;
-    case TypeBatiment::Mall:
-      width = 3;
-      height = 3;
-      break;
-    case TypeBatiment::Park:
-      width = 2;
-      height = 2;
-      break;
-    default:
-      break;
-    }
-
-    for (int dx = 0; dx < width; ++dx) {
-      for (int dy = 0; dy < height; ++dy) {
-        int x = building.position.x + dx;
-        int y = building.position.y + dy;
-        if (x >= 0 && x < ROWS && y >= 0 && y < COLS) {
-          switch (building.type) {
-          case TypeBatiment::Cinema:
-            tilemap[x][y] = 10 + dx;
-            break;
-          case TypeBatiment::Park:
-            tilemap[x][y] = 15 + dy * 2 + dx;
-            break;
-          case TypeBatiment::Mall:
-            tilemap[x][y] = 12 + dy * 3 + dx;
-            break;
-          default:
-            tilemap[x][y] = static_cast<int>(building.type) - 1;
-            break;
-          }
+        int width = 1, height = 1;
+        switch (building.type) {
+            case TypeBatiment::Cinema:
+                width = 2; height = 1;
+                break;
+            case TypeBatiment::Mall:
+                width = 3; height = 3;
+                break;
+            case TypeBatiment::Park:
+                width = 2; height = 2;
+                break;
+            case TypeBatiment::House:
+                width = 1; height = 1;
+                break;
+            default:
+                break;
         }
-      }
-    }
-  }
 
-  // Fill empty tiles with random grass after all buildings
-  for (int y = 0; y < COLS; ++y) {
-    for (int x = 0; x < ROWS; ++x) {
-      if (map[x][y] == static_cast<int>(TypeBatiment::Blank)) {
-        tilemap[x][y] = 6 + std::rand() % 4;
-      }
-    }
-  }
-
-  // -------------------- GRID --------------------
-    /*
-  // Initialize tilemap
-  for (int i = 0; i < ROWS; ++i)
-    for (int j = 0; j < COLS; ++j)
-      tilemap[i][j] = -1;
-
-  std::srand(static_cast<unsigned int>(time(nullptr)));
-
-  for (int i = 0; i < ROWS; ++i) {
-    for (int j = 0; j < COLS; ++j) {
-
-      if (tilemap[i][j] != -1)
-        continue;
-
-      int r;
-      do {
-        r = std::rand() % TILE_COUNT;
-      } while (r == 11 || r == 16 || r == 20 ||
-               r == 21 || // existing exclusions
-               r == 13 || r == 14 || r == 17 || r == 18 || r == 19 || r == 22 ||
-               r == 23 || r == 24 // 3x3 children
-      );
-
-      // -------- 3x3 BUILDING (head = 12) --------
-      if (r == 12 && i + 2 < ROWS && j + 2 < COLS) {
-        // Check all 9 positions are empty
-        bool canPlace = true;
-        for (int dy = 0; dy < 3; ++dy) {
-          for (int dx = 0; dx < 3; ++dx) {
-            if (tilemap[i + dy][j + dx] != -1) {
-              canPlace = false;
-              break;
+        for (int dy = 0; dy < height; ++dy) {
+            for (int dx = 0; dx < width; ++dx) {
+                int x = building.position.x + dx;
+                int y = building.position.y + dy;
+                if (x >= 0 && x < COLS && y >= 0 && y < ROWS) {
+                    int tile = 0;
+                    switch (building.type) {
+                        case TypeBatiment::Cinema:
+                            tile = 10 + dx;
+                            break;
+                        case TypeBatiment::Park:
+                            tile = 15 + dy * 2 + dx;
+                            break;
+                        case TypeBatiment::Mall:
+                            tile = 12 + dy * 3 + dx;
+                            break;
+                        case TypeBatiment::House:
+                            tile = 0; // house tile index in tileset
+                            break;
+                        default:
+                            tile = 6; // fallback to grass
+                            break;
+                    }
+                    tilemap[y][x] = std::min(tile, TILE_COUNT - 1);
+                }
             }
-          }
-          if (!canPlace)
-            break;
+        }
+    }
+
+    // Tileset source rectangles
+    SDL_Rect src[TILE_COUNT];
+    int idx = 0;
+    for (int ty = 0; ty < TILES_Y; ++ty) {
+        for (int tx = 0; tx < TILES_X; ++tx) {
+            src[idx++] = {tx * TILE_SIZE, ty * TILE_SIZE, TILE_SIZE, TILE_SIZE};
+        }
+    }
+
+    SDL_Renderer *renderer = window.getNativeRenderer();
+
+    scale = 2.0f;
+    cameraX = 0.0f;
+    cameraY = 0.0f;
+    speed = 5.0f;
+    taskbarHeight = 40.0f;
+    running = true;
+
+    const Uint8 *keystate = SDL_GetKeyboardState(nullptr);
+
+    while (running) {
+        checkEvent();
+
+        float moveSpeed = speed / scale;
+        if (keystate[SDL_SCANCODE_W]) cameraY -= moveSpeed;
+        if (keystate[SDL_SCANCODE_S]) cameraY += moveSpeed;
+        if (keystate[SDL_SCANCODE_A]) cameraX -= moveSpeed;
+        if (keystate[SDL_SCANCODE_D]) cameraX += moveSpeed;
+
+        ImGui_ImplSDL2_NewFrame();
+        ImGui_ImplSDLRenderer2_NewFrame();
+        ImGui::NewFrame();
+
+        ImGuiIO &io = ImGui::GetIO();
+        bool imguiBlockingMouse = io.WantCaptureMouse;
+
+        bool insideMap = false;
+        int tileX = -1, tileY = -1;
+        int hoveredTile = -1;
+        bool hoveredValid = false;
+
+        if (!imguiBlockingMouse) {
+            ImVec2 mousePos = ImGui::GetMousePos();
+            float worldX = cameraX + mousePos.x / scale;
+            float worldY = cameraY + mousePos.y / scale;
+
+            tileX = int(worldX) / TILE_SIZE;
+            tileY = int(worldY) / TILE_SIZE;
+
+            insideMap = tileX >= 0 && tileX < COLS && tileY >= 0 && tileY < ROWS;
+
+            if (insideMap) {
+                hoveredTile = tilemap[tileY][tileX];
+                hoveredValid = hoveredTile >= 0;
+            }
         }
 
-        if (canPlace) {
-          tilemap[i][j] = 12;
-          tilemap[i][j + 1] = 13;
-          tilemap[i][j + 2] = 14;
-          tilemap[i + 1][j] = 17;
-          tilemap[i + 1][j + 1] = 18;
-          tilemap[i + 1][j + 2] = 19;
-          tilemap[i + 2][j] = 22;
-          tilemap[i + 2][j + 1] = 23;
-          tilemap[i + 2][j + 2] = 24;
+        ImGuiWindowFlags flags =
+            ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+            ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar |
+            ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing;
 
-          j += 2; // skip columns used by building
-          continue;
+        // Display UI
+        displayToolkit(flags);
+        displayInspect(flags, tileX, tileY, hoveredTile, hoveredValid, speed, TILE_SIZE);
+        displayTaskBar(flags, sim);
+
+        ImGui::Render();
+
+        SDL_SetRenderDrawColor(renderer, 35, 35, 35, 255);
+        SDL_RenderClear(renderer);
+
+        // Render tiles
+        for (int y = 0; y < ROWS; ++y) {
+            for (int x = 0; x < COLS; ++x) {
+                int tile = tilemap[y][x];
+                SDL_Rect dest = {int((x * TILE_SIZE - cameraX) * scale),
+                                 int((y * TILE_SIZE - cameraY) * scale),
+                                 int(TILE_SIZE * scale), int(TILE_SIZE * scale)};
+                SDL_RenderCopy(renderer, window.getTexture(), &src[tile], &dest);
+            }
         }
-      }
 
-      // -------- 2x2 BUILDING --------
-      if (r == 15 && i + 1 < ROWS && j + 1 < COLS && tilemap[i][j + 1] == -1 &&
-          tilemap[i + 1][j] == -1 && tilemap[i + 1][j + 1] == -1) {
+        // Hover outline
+        if (insideMap) {
+            SDL_Rect outline = {int((tileX * TILE_SIZE - cameraX) * scale),
+                                int((tileY * TILE_SIZE - cameraY) * scale),
+                                int(TILE_SIZE * scale), int(TILE_SIZE * scale)};
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+            SDL_RenderDrawRect(renderer, &outline);
+        }
 
-        tilemap[i][j] = 15;
-        tilemap[i][j + 1] = 16;
-        tilemap[i + 1][j] = 20;
-        tilemap[i + 1][j + 1] = 21;
+        ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer);
+        SDL_RenderPresent(renderer);
 
-        ++j;
-        continue;
-      }
-
-      // -------- 2x1 BUILDING --------
-      if (r == 10 && j + 1 < COLS && tilemap[i][j + 1] == -1) {
-        tilemap[i][j] = 10;
-        tilemap[i][j + 1] = 11;
-        ++j;
-        continue;
-      }
-
-      if (r == 5 || r == 8)
-        r = 0;
-
-      tilemap[i][j] = r;
-    }
-  } 
-
-  // Clamp indices
-  for (int i = 0; i < ROWS; ++i)
-    for (int j = 0; j < COLS; ++j)
-      if (tilemap[i][j] < 0 || tilemap[i][j] >= TILE_COUNT)
-        tilemap[i][j] = 0;
-    */
-
-  // ---- Tileset source rectangles ----
-  SDL_Rect src[TILE_COUNT];
-  int idx = 0;
-
-  for (int y = 0; y < TILES_Y; ++y) {
-    for (int x = 0; x < TILES_X; ++x) {
-      src[idx++] = {x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE};
-    }
-  }
-  // ------------------ END GRID ------------------
-
-  SDL_Renderer *renderer = window.getNativeRenderer();
-
-  scale = 2.0f;
-  cameraX = 0.0f;
-  cameraY = 0.0f;
-  speed = 5.0f;
-  taskbarHeight = 40.0f;
-  running = true;
-
-  const Uint8 *keystate = SDL_GetKeyboardState(nullptr);
-
-  while (running) {
-    checkEvent();
-
-    float moveSpeed = speed / scale;
-    if (keystate[SDL_SCANCODE_W])
-      cameraY -= moveSpeed;
-    if (keystate[SDL_SCANCODE_S])
-      cameraY += moveSpeed;
-    if (keystate[SDL_SCANCODE_A])
-      cameraX -= moveSpeed;
-    if (keystate[SDL_SCANCODE_D])
-      cameraX += moveSpeed;
-
-    ImGui_ImplSDL2_NewFrame();
-    ImGui_ImplSDLRenderer2_NewFrame();
-    ImGui::NewFrame();
-
-    ImGuiIO &io = ImGui::GetIO();
-    bool imguiBlockingMouse = io.WantCaptureMouse;
-
-    bool insideMap = false;
-    int tileX = -1, tileY = -1;
-    int hoveredTile = -1;
-    bool hoveredValid = false;
-
-    if (!imguiBlockingMouse) {
-      ImVec2 mousePos = ImGui::GetMousePos();
-      float worldX = cameraX + mousePos.x / scale;
-      float worldY = cameraY + mousePos.y / scale;
-
-      tileX = int(worldX) / TILE_SIZE;
-      tileY = int(worldY) / TILE_SIZE;
-
-      insideMap = tileX >= 0 && tileX < COLS && tileY >= 0 && tileY < ROWS;
-
-      if (insideMap) {
-        hoveredTile = tilemap[tileY][tileX];
-        hoveredValid = hoveredTile >= 0;
-      }
+        SDL_Delay(16);
+        sim.tick(0.016f);
     }
 
-    ImGuiWindowFlags flags =
-        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
-        ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar |
-        ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing;
-
-    displayToolkit(flags);
-    displayInspect(flags, tileX, tileY, hoveredTile, hoveredValid, speed,
-                   TILE_SIZE);
-    displayTaskBar(flags, sim);
-
-    ImGui::Render();
-
-    SDL_SetRenderDrawColor(renderer, 35, 35, 35, 255);
-    SDL_RenderClear(renderer);
-
-    for (int yy = 0; yy < ROWS; ++yy) {
-      for (int xx = 0; xx < COLS; ++xx) {
-        int tile = tilemap[yy][xx];
-
-        SDL_Rect dest = {int((xx * TILE_SIZE - cameraX) * scale),
-                         int((yy * TILE_SIZE - cameraY) * scale),
-                         int(TILE_SIZE * scale), int(TILE_SIZE * scale)};
-
-        SDL_RenderCopy(renderer, window.getTexture(), &src[tile], &dest);
-      }
-    }
-
-    if (insideMap) {
-      SDL_Rect outline = {int((tileX * TILE_SIZE - cameraX) * scale),
-                          int((tileY * TILE_SIZE - cameraY) * scale),
-                          int(TILE_SIZE * scale), int(TILE_SIZE * scale)};
-
-      SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-      SDL_RenderDrawRect(renderer, &outline);
-    }
-
-    ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer);
-    SDL_RenderPresent(renderer);
-
-    SDL_Delay(16);
-    sim.tick(0.016f);
-  }
-
-  return exitStatus;
+    return exitStatus;
 }
+
