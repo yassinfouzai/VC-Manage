@@ -7,6 +7,7 @@
 #include "../tools/imgui/imgui.h"
 #include "../tools/imgui/imgui_impl_sdl2.h"
 #include "../tools/imgui/imgui_impl_sdlrenderer2.h"
+#include <SDL2/SDL_events.h>
 #include <cstdlib>
 #include <iostream>
 
@@ -137,15 +138,128 @@ void Application::displayToolkit(ImGuiWindowFlags flags) {
 
   ImGui::Begin("Toolkit", nullptr, flags);
 
-  ImGui::Button("House");
-  ImGui::SameLine();
-  ImGui::Button("Appartement");
+  if (ImGui::CollapsingHeader("Buildings", ImGuiTreeNodeFlags_DefaultOpen)) {
+    ImGui::Indent(10);
+    ImGui::Spacing();
+    if (ImGui::CollapsingHeader("Residents", ImGuiTreeNodeFlags_DefaultOpen)) {
+      ImGui::Indent(10);
+      if (ImGui::Button("House", ImVec2(120, 0))) {
+      }
+      if (ImGui::Button("Apartment", ImVec2(120, 0))) {
+      }
+      ImGui::Unindent(10);
+    }
 
-  ImGui::Button("Cinema");
-  ImGui::SameLine();
-  ImGui::Button("Bank");
+    ImGui::Spacing();
+    if (ImGui::CollapsingHeader("Services", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+      ImGui::Indent(10);
+
+      ImGui::Button("Park", ImVec2(140, 0));
+      if (ImGui::CollapsingHeader("Commercials",
+                                  ImGuiTreeNodeFlags_DefaultOpen)) {
+        ImGui::Indent(10);
+        ImGui::Button("Cinema", ImVec2(140, 0));
+        ImGui::Button("Mall", ImVec2(140, 0));
+        ImGui::Button("Bank", ImVec2(140, 0));
+        ImGui::Unindent(10);
+      }
+
+      if (ImGui::CollapsingHeader("Infrastructures",
+                                  ImGuiTreeNodeFlags_DefaultOpen)) {
+        ImGui::Indent(10);
+        ImGui::Button("Power Plant", ImVec2(180, 0));
+        ImGui::Button("Water Treatment Plant", ImVec2(180, 0));
+        ImGui::Button("Utility Plant", ImVec2(180, 0));
+        ImGui::Unindent(10);
+      }
+
+      ImGui::Unindent(10);
+    }
+    ImGui::Unindent(10);
+  }
+  if (ImGui::CollapsingHeader("Edit", ImGuiTreeNodeFlags_DefaultOpen)) {
+    if (ImGui::Button("Destroy building", ImVec2(180, 0))) {
+      isDestroying = !isDestroying;
+    }
+  }
 
   ImGui::End();
+}
+
+void placeBuildingsOnTilemap(int tilemap[][64], int rows, int cols,
+                             int tileCount,
+                             const std::vector<BatPtr> &buildings) {
+  for (const auto &buildingPtr : buildings) {
+    const Batiment &building = *buildingPtr;
+
+    int width = 1, height = 1;
+
+    switch (building.type) {
+    case TypeBatiment::Cinema:
+      width = 2;
+      height = 1;
+      break;
+    case TypeBatiment::Mall:
+      width = 3;
+      height = 3;
+      break;
+    case TypeBatiment::Park:
+      width = 2;
+      height = 2;
+      break;
+    default:
+      width = 1;
+      height = 1;
+      break;
+    }
+
+    for (int dy = 0; dy < height; ++dy) {
+      for (int dx = 0; dx < width; ++dx) {
+        int x = building.position.x + dx;
+        int y = building.position.y + dy;
+
+        if (x < 0 || x >= cols || y < 0 || y >= rows)
+          continue;
+
+        int tile = 6; // grass fallback
+
+        switch (building.type) {
+        case TypeBatiment::Cinema:
+          tile = 10 + dx;
+          break;
+        case TypeBatiment::Park:
+          tile = 15 + dy * 5 + dx;
+          break;
+        case TypeBatiment::Mall:
+          tile = 12 + dy * 5 + dx;
+          break;
+        case TypeBatiment::House:
+          tile = 0;
+          break;
+        case TypeBatiment::Apartment:
+          tile = 1;
+          break;
+        case TypeBatiment::Bank:
+          tile = 2;
+          break;
+        case TypeBatiment::PowerPlant:
+          tile = 3;
+          break;
+        case TypeBatiment::WaterTreatmentPlant:
+          tile = 4;
+          break;
+        case TypeBatiment::UtilityPlant:
+          tile = 5;
+          break;
+        default:
+          break;
+        }
+
+        tilemap[y][x] = std::min(tile, tileCount - 1);
+      }
+    }
+  }
 }
 
 void Application::checkEvent() {
@@ -156,33 +270,41 @@ void Application::checkEvent() {
     if (event.type == SDL_QUIT)
       running = false;
 
+    if (event.type == SDL_MOUSEBUTTONDOWN &&
+        event.button.button == SDL_BUTTON_LEFT && isDestroying) {
+
+      destroyClickRequested = true;
+      clickMouseX = event.button.x;
+      clickMouseY = event.button.y;
+    }
+
     if (event.type == SDL_MOUSEWHEEL) {
       float oldScale = scale;
+
       if (event.wheel.y > 0)
         scale *= 1.1f;
       if (event.wheel.y < 0)
         scale *= 0.9f;
-      if (scale < 1.0f)
-        scale = 1.0f;
-      if (scale > 20.0f)
-        scale = 20.0f;
 
-      int mouseX, mouseY;
-      SDL_GetMouseState(&mouseX, &mouseY);
-      float worldX_before = cameraX + mouseX / oldScale;
-      float worldY_before = cameraY + mouseY / oldScale;
-      float worldX_after = cameraX + mouseX / scale;
-      float worldY_after = cameraY + mouseY / scale;
+      scale = std::clamp(scale, 1.0f, 20.0f);
 
-      cameraX += (worldX_before - worldX_after);
-      cameraY += (worldY_before - worldY_after);
+      int mx, my;
+      SDL_GetMouseState(&mx, &my);
+
+      float wxBefore = cameraX + mx / oldScale;
+      float wyBefore = cameraY + my / oldScale;
+      float wxAfter = cameraX + mx / scale;
+      float wyAfter = cameraY + my / scale;
+
+      cameraX += (wxBefore - wxAfter);
+      cameraY += (wyBefore - wyAfter);
     }
   }
 }
 
 int Application::run() {
   // Initialize Simulation
-  sim.getVille().setBudget(1000);
+  sim.getVille().setBudget(10000);
   sim.getVille().calculerPolutionTotale();
   sim.getVille().calculerSatisfactionTotale();
   sim.getVille().ajoutBatiment(Resident::createHouse(&sim.getVille(), 25, 25));
@@ -201,85 +323,16 @@ int Application::run() {
   // ----------------------------GRID-------------------------
 
   // Tilemap init
-  int tilemap[ROWS][COLS] = {};
+  int landscape[ROWS][COLS] = {};
   for (int y = 0; y < ROWS; ++y)
     for (int x = 0; x < COLS; ++x)
-      tilemap[y][x] = 6 + std::rand() % 4; // random grass tiles as default
+      landscape[y][x] = 6 + std::rand() % 4; // random grass tiles as default
+  int tilemap[ROWS][COLS] = {};
+  std::memcpy(tilemap, landscape, sizeof(tilemap));
 
   // Place buildings
-  for (const auto &buildingPtr : sim.getVille().batiments) {
-    const Batiment &building = *buildingPtr;
-
-    int width = 1, height = 1;
-    switch (building.type) {
-    case TypeBatiment::Cinema:
-      width = 2;
-      height = 1;
-      break;
-    case TypeBatiment::Mall:
-      width = 3;
-      height = 3;
-      break;
-    case TypeBatiment::Park:
-      width = 2;
-      height = 2;
-      break;
-    case TypeBatiment::House:
-    case TypeBatiment::Apartment:
-    case TypeBatiment::Bank:
-    case TypeBatiment::PowerPlant:
-    case TypeBatiment::WaterTreatmentPlant:
-    case TypeBatiment::UtilityPlant:
-      width = 1;
-      height = 1;
-      break;
-    default:
-      break;
-    }
-
-    for (int dy = 0; dy < height; ++dy) {
-      for (int dx = 0; dx < width; ++dx) {
-        int x = building.position.x + dx;
-        int y = building.position.y + dy;
-        if (x >= 0 && x < COLS && y >= 0 && y < ROWS) {
-          int tile = 0;
-          switch (building.type) {
-          case TypeBatiment::Cinema:
-            tile = 10 + dx;
-            break;
-          case TypeBatiment::Park:
-            tile = 15 + dy * 5 + dx;
-            break;
-          case TypeBatiment::Mall:
-            tile = 12 + dy * 5 + dx;
-            break;
-          case TypeBatiment::House:
-            tile = 0; // house tile index in tileset
-            break;
-          case TypeBatiment::Apartment:
-            tile = 1;
-            break;
-          case TypeBatiment::Bank:
-            tile = 2;
-            break;
-          case TypeBatiment::PowerPlant:
-            tile = 3;
-            break;
-          case TypeBatiment::WaterTreatmentPlant:
-            tile = 4;
-            break;
-          case TypeBatiment::UtilityPlant:
-            tile = 5;
-            break;
-          default:
-            tile = 6; // fallback to grass
-            break;
-          }
-          tilemap[y][x] = std::min(tile, TILE_COUNT - 1);
-        }
-      }
-    }
-  }
+  placeBuildingsOnTilemap(tilemap, ROWS, COLS, TILE_COUNT,
+                          sim.getVille().batiments);
 
   // Tileset source rectangles
   SDL_Rect src[TILE_COUNT];
@@ -298,6 +351,7 @@ int Application::run() {
   speed = 5.0f;
   taskbarHeight = 40.0f;
   running = true;
+  isDestroying = false;
 
   const Uint8 *keystate = SDL_GetKeyboardState(nullptr);
 
@@ -353,6 +407,21 @@ int Application::run() {
                    TILE_SIZE);
     displayTaskBar(flags, sim);
 
+    // ---- Destroy logic ----
+    Batiment *bat = sim.getVille().getBatimentByPos(tileX, tileY);
+    if (destroyClickRequested) {
+      if (insideMap && !imguiBlockingMouse && bat) {
+
+        sim.getVille().supprimerBatiment(bat->position.x, bat->position.y);
+
+        std::memcpy(tilemap, landscape, sizeof(tilemap));
+        placeBuildingsOnTilemap(tilemap, ROWS, COLS, TILE_COUNT,
+                                sim.getVille().batiments);
+      }
+
+      destroyClickRequested = false; // always clear
+    }
+
     ImGui::Render();
 
     SDL_SetRenderDrawColor(renderer, 35, 35, 35, 255);
@@ -374,7 +443,10 @@ int Application::run() {
       SDL_Rect outline = {int((tileX * TILE_SIZE - cameraX) * scale),
                           int((tileY * TILE_SIZE - cameraY) * scale),
                           int(TILE_SIZE * scale), int(TILE_SIZE * scale)};
-      SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+      if (isDestroying)
+        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+      else
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
       SDL_RenderDrawRect(renderer, &outline);
     }
 

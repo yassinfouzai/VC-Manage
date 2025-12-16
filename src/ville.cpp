@@ -26,9 +26,10 @@ void Ville::ajoutBatiment(BatPtr batiment) {
 }
 
 
-void Ville::supprimerBatiment(int id) {
+void Ville::supprimerBatiment(int x , int y) {
   for (auto it = batiments.begin(); it != batiments.end(); ++it) {
-    if ((*it)->getID() == id) {
+    Position pos = (*it)->position;
+    if (pos.x == x && pos.y == y) {
       budget += (*it)->getCost();
       batiments.erase(it);
       return;

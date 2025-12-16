@@ -22,7 +22,7 @@ public:
   Ville &operator=(Ville &&) = default;
 
   void ajoutBatiment(BatPtr batiment);
-  void supprimerBatiment(int id);
+  void supprimerBatiment(int x, int y);
   Resources calculerconsommationTotale();
   Resources calculerResourcesTotale();
   float calculerPolutionTotale();
