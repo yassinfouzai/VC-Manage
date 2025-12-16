@@ -43,14 +43,13 @@ Resident::Resident(int id, const std::string &nom, Ville *ville,
 // Methods
 void Resident::afficheDetails() const {
   Batiment::afficheDetails();
-  ImGui::Separator();
-  ImGui::Text("Resident Info:");
-  ImGui::Separator();
+  if (ImGui::CollapsingHeader("Resident Info", ImGuiTreeNodeFlags_DefaultOpen)) {
   ImGui::Text("Habitants Actuels %d",habitantsActuels);
   ImGui::Text("Capacite Habitants %d",capaciteHabitants);
   ImGui::Text("Eau par personne : %.2f L/s",WATER_PER_PERSON);
   ImGui::Text("Eau par personne : %.2f W/s",ELECTRICITY_PER_PERSON);
   ImGui::Text("Satisfaction par personne : %.2f %%",SATISFACTION_PER_PERSON);
+  }
 }
 
 void Resident::ajouterHabitants(int nombreHabitants) {

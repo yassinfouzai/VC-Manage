@@ -23,9 +23,9 @@ Service::Service(int id, const string &nom, Ville *ville, TypeBatiment type,
 // Methods
 void Service::afficheDetails() const {
   Batiment::afficheDetails();
-  ImGui::Separator();
-  ImGui::Text("Service Info:");
-  ImGui::Separator();
-  ImGui::Text("Nomber of Employees : %d",Employees);
-  ImGui::Text("Nomber of Employees Needed : %d",EmployeesNeeded);
+  if (ImGui::CollapsingHeader("Service Info",
+                              ImGuiTreeNodeFlags_DefaultOpen)) {
+    ImGui::Text("Nomber of Employees : %d", Employees);
+    ImGui::Text("Nomber of Employees Needed : %d", EmployeesNeeded);
+  }
 }

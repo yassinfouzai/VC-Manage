@@ -50,23 +50,24 @@ Batiment::Batiment(int id, const string &nom, Ville *ville, TypeBatiment type,
 
 // methods
 void Batiment::afficheDetails() const {
-  ImGui::Separator();
-  ImGui::Text("Building Info:");
-  ImGui::Separator();
-  ImGui::Text("ID: %d", id);
-  ImGui::Text("Name: %s", nom.c_str());
-  // Type
-  ImGui::Text("Type: %s", type == TypeBatiment::House    ? "House"
-                          : type == TypeBatiment::Cinema ? "Cinema"
-                          : type == TypeBatiment::Mall   ? "Mall"
-                          : type == TypeBatiment::Park   ? "Park"
-                                                         : "Unknown");
-  ImGui::Text("effectSatisfication %d %%", effectSatisfication);
-  ImGui::Text("Cost %.2f", cost);
-  ImGui::Text("consommationEau  : %.3f Litre/s", consommation.eau);
-  ImGui::Text("consommationElectricite  : %.3f Watt/s", consommation.electricite);
-  ImGui::Text("Position : %d,%d",position.x,position.y);
-  ImGui::Text("Surface : %.0f, %.0f",surface.largeur,surface.longeur);
+  if (ImGui::CollapsingHeader("Building Info",
+                              ImGuiTreeNodeFlags_DefaultOpen)) {
+    ImGui::Text("ID: %d", id);
+    ImGui::Text("Name: %s", nom.c_str());
+    // Type
+    ImGui::Text("Type: %s", type == TypeBatiment::House    ? "House"
+                            : type == TypeBatiment::Cinema ? "Cinema"
+                            : type == TypeBatiment::Mall   ? "Mall"
+                            : type == TypeBatiment::Park   ? "Park"
+                                                           : "Unknown");
+    ImGui::Text("effectSatisfication %d %%", effectSatisfication);
+    ImGui::Text("Cost %.2f", cost);
+    ImGui::Text("consommationEau  : %.3f Litre/s", consommation.eau);
+    ImGui::Text("consommationElectricite  : %.3f Watt/s",
+                consommation.electricite);
+    ImGui::Text("Position : %d,%d", position.x, position.y);
+    ImGui::Text("Surface : %.0f, %.0f", surface.largeur, surface.longeur);
+  }
 }
 
 void Batiment::impacterRessources() {

@@ -1,8 +1,8 @@
 #include "../include/application.hpp"
 #include "../include/buildings/batiment.hpp"
 #include "../include/buildings/commercial.hpp"
-#include "../include/buildings/resident.hpp"
 #include "../include/buildings/parc.hpp"
+#include "../include/buildings/resident.hpp"
 #include "../include/cycle/simulation.hpp"
 #include "../tools/imgui/imgui.h"
 #include "../tools/imgui/imgui_impl_sdl2.h"
@@ -79,12 +79,12 @@ void Application::displayInspect(ImGuiWindowFlags flags, float x, float y,
     }
 
     // Also show tile info
-    ImGui::Separator();
-    ImGui::Text("World Info:");
-    ImGui::Separator();
-    ImGui::Text("Tile coords: (%.1f, %.1f)", x, y);
-    ImGui::Text("Tile value: %d", value);
-    ImGui::Text("Rectangle width: %.1f", recwidth);
+
+    if (ImGui::CollapsingHeader("World Info", ImGuiTreeNodeFlags_DefaultOpen)) {
+      ImGui::Text("Tile coords: (%.1f, %.1f)", x, y);
+      ImGui::Text("Tile value: %d", value);
+      ImGui::Text("Rectangle width: %.1f", recwidth);
+    }
 
   } else {
     ImGui::Text("Hover over the rectangle to see info");
@@ -186,7 +186,8 @@ int Application::run() {
   sim.getVille().calculerPolutionTotale();
   sim.getVille().calculerSatisfactionTotale();
   sim.getVille().ajoutBatiment(Resident::createHouse(&sim.getVille(), 25, 25));
-  sim.getVille().ajoutBatiment(Comercial::createCinema(&sim.getVille(), 30, 35));
+  sim.getVille().ajoutBatiment(
+      Comercial::createCinema(&sim.getVille(), 30, 35));
   sim.getVille().ajoutBatiment(Parc::createPark(&sim.getVille(), 10, 15));
 
   // Grid constants
