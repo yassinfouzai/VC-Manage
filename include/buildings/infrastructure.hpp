@@ -28,12 +28,9 @@ public:
   void impacterRessources() override;
   double calculerPollution(); // TO-DO
 
-  static Infrastructure createPowerPlant(int id, const string &nom,
-                                         Ville *ville, int x, int y);
-  static Infrastructure createWaterTreatmentPlant(int id, const string &nom,
-                                                  Ville *ville, int x, int y);
-  static Infrastructure createUtilityPlant(int id, const string &nom,
-                                           Ville *ville, int x, int y);
+  static BatPtr createPowerPlant(Ville *ville, int x, int y);
+  static BatPtr createWaterTreatmentPlant(Ville *ville, int x, int y);
+  static BatPtr createUtilityPlant(Ville *ville, int x, int y);
 };
 
 #endif // !INFRASTRUCTURE

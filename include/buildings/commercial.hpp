@@ -28,6 +28,10 @@ public:
   static int BASE_EMPLOYEES_MALL;
   static int BASE_EMPLOYEES_BANK;
 
+  static float BANK_COST;
+  static float MALL_COST;
+  static float CINEMA_COST;
+
   // Setters
   static void setProfitPerEmployee(float value);
   static void setSatisfactionBonus(float value);

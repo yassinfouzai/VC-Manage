@@ -28,6 +28,8 @@ public:
   static int BASE_CAPACITY_HOUSE;
   static int BASE_CAPACITY_APARTMENT;
 
+  static float HOUSE_COST;
+
   // Méthodes statiques
   static void setWaterPerPerson(float value);
   static void setElectricityPerPerson(float value);

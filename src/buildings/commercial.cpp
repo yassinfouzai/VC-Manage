@@ -14,6 +14,10 @@ int Comercial::BASE_EMPLOYEES_CINEMA = 5;
 int Comercial::BASE_EMPLOYEES_MALL = 50;
 int Comercial::BASE_EMPLOYEES_BANK = 10;
 
+float Comercial::BANK_COST = 2000;
+float Comercial::MALL_COST = 1000;
+float Comercial::CINEMA_COST = 500;
+
 // Setters
 void Comercial::setProfitPerEmployee(float value) {
   PROFIT_PER_EMPLOYEE = value;
@@ -64,7 +68,7 @@ BatPtr Comercial::createCinema(Ville *ville, int x, int y) {
   float pollution = 2.5f * (1.0f + POLLUTION_PENALTY);
 
   return BatPtr(new Comercial(generatedID, generatedName, ville,
-                              TypeBatiment::Cinema, satisfaction, 500.0, 0,
+                              TypeBatiment::Cinema, satisfaction, CINEMA_COST, 0,
                               BASE_EMPLOYEES_CINEMA, 10, 30, pollution, x, y, 2,
                               1, baseProfit));
 }
@@ -83,7 +87,7 @@ BatPtr Comercial::createMall(Ville *ville, int x, int y) {
   float pollution = 8.0f * (1.0f + POLLUTION_PENALTY);
 
   return BatPtr(new Comercial(generatedID, generatedName, ville,
-                              TypeBatiment::Mall, satisfaction, 2000.0, 0,
+                              TypeBatiment::Mall, satisfaction, MALL_COST, 0,
                               BASE_EMPLOYEES_MALL, 400, 600, pollution, x, y, 3,
                               3, baseProfit));
 }
@@ -100,7 +104,7 @@ BatPtr Comercial::createBank(Ville *ville, int x, int y) {
   float pollution = 2.0f * (1.0f + POLLUTION_PENALTY);
 
   return BatPtr(new Comercial(
-      generatedID, generatedName, ville, TypeBatiment::Bank, -20, 2000.0, 0,
+      generatedID, generatedName, ville, TypeBatiment::Bank, BANK_COST, 2000.0, 0,
       BASE_EMPLOYEES_BANK, 10, 30, pollution, x, y, 1, 1, baseProfit));
 }
 
