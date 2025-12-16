@@ -96,9 +96,12 @@ BatPtr Comercial::createBank(Ville *ville, int x,
 // Methods
 void Comercial::afficheDetails() const {
   Service::afficheDetails();
-  std::cout << "Profit :\t" << profit << endl;
-  std::cout << "Profit par employe :\t" << PROFIT_PER_EMPLOYEE << endl;
-  std::cout << "Bonus satisfaction :\t" << SATISFACTION_BONUS << endl;
+  ImGui::Separator();
+  ImGui::Text("Comercial Info:");
+  ImGui::Separator();
+  ImGui::Text("Profit %.2f",profit);
+  ImGui::Text("Profit par employe %.2f",PROFIT_PER_EMPLOYEE);
+  ImGui::Text("Bonus satisfaction %.2f",SATISFACTION_BONUS);
 }
 
 // Getters

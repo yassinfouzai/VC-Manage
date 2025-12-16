@@ -74,10 +74,6 @@ void Application::displayInspect(ImGuiWindowFlags flags, float x, float y,
                                                          static_cast<int>(y));
     if (batiment) {
       batiment->afficheDetails();
-      // Size
-      ImGui::Text("Size: %.1f x %.1f tiles", batiment->surface.largeur,
-                  batiment->surface.longeur);
-
     } else {
       ImGui::Text("No building at this tile");
     }

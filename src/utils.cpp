@@ -34,7 +34,7 @@ void NameGenerator::initializeNames() {
     if (initialized) return;
     
     try {
-        std::ifstream file("building_names.json");
+        std::ifstream file("./building_names.json");
         if (!file.is_open()) {
             buildingNames[TypeBatiment::House] = {"Maison 1", "Maison 2", "Maison 3"};
             buildingNames[TypeBatiment::Apartment] = {"Appartement 1", "Appartement 2", "Appartement 3"};

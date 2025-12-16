@@ -66,7 +66,7 @@ void Batiment::afficheDetails() const {
   ImGui::Text("consommationEau  : %.3f Litre/s", consommation.eau);
   ImGui::Text("consommationElectricite  : %.3f Watt/s", consommation.electricite);
   ImGui::Text("Position : %d,%d",position.x,position.y);
-  ImGui::Text("Surface : %f, %f",surface.largeur,surface.longeur);
+  ImGui::Text("Surface : %.0f, %.0f",surface.largeur,surface.longeur);
 }
 
 void Batiment::impacterRessources() {

@@ -30,7 +30,10 @@ void Parc::ameliorerBienEtre() {
 
 void Parc::afficheDetails() const {
   Batiment::afficheDetails();
-  std::cout << "effectBienEtre :\t" << effectBienEtre << endl;
+  ImGui::Separator();
+  ImGui::Text("Park Info:");
+  ImGui::Separator();
+  ImGui::Text("effect Bien Etre : %d", effectBienEtre);
 }
 
 BatPtr Parc::createPark(Ville *ville, int x, int y) {
