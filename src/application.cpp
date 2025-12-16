@@ -517,19 +517,19 @@ int Application::run() {
         created = true;
         break;
       case TypeBatiment::Park:
-        Parc::createPark(&sim.getVille(), tileX, tileY);
+        sim.getVille().ajoutBatiment(Parc::createPark(&sim.getVille(), tileX, tileY));
         created = true;
         break;
       case TypeBatiment::Cinema:
-        Comercial::createCinema(&sim.getVille(), tileX, tileY);
+        sim.getVille().ajoutBatiment(Comercial::createCinema(&sim.getVille(), tileX, tileY));
         created = true;
         break;
       case TypeBatiment::Mall:
-        Comercial::createMall(&sim.getVille(), tileX, tileY);
+        sim.getVille().ajoutBatiment(Comercial::createMall(&sim.getVille(), tileX, tileY));
         created = true;
         break;
       case TypeBatiment::Bank:
-        Comercial::createBank(&sim.getVille(), tileX, tileY);
+        sim.getVille().ajoutBatiment(Comercial::createBank(&sim.getVille(), tileX, tileY));
         created = true;
         break;
       default:
