@@ -73,6 +73,12 @@ void Resident::retirerHabitants(int nombreHabitants) {
 
 BatPtr Resident::createHouse(int id, const string &nom, Ville *ville,
                              int x, int y) {
+    // Auto-generate name and ID
+    string generatedName = NameGenerator::getRandomName(TypeBatiment::House);
+    Position position(x, y);
+    Surface surface(1, 1);
+    int generatedID = BuildingIDGenerator::generateID(generatedName, TypeBatiment::House, position, surface);
+    
     float pollution = POLLUTION_PER_PERSON * BASE_CAPACITY_HOUSE;
     int satisfaction = static_cast<int>(
         SATISFACTION_PER_PERSON * BASE_CAPACITY_HOUSE * 10
@@ -82,7 +88,7 @@ BatPtr Resident::createHouse(int id, const string &nom, Ville *ville,
 
     return BatPtr(
         new Resident(
-            id, nom, ville, TypeBatiment::House,
+            generatedID, generatedName, ville, TypeBatiment::House,
             satisfaction, 30.0,
             water, electricity, pollution,
             x, y, 1, 1,

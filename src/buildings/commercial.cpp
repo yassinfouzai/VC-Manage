@@ -45,33 +45,50 @@ Comercial::Comercial(int id, const string &nom, Ville *ville, TypeBatiment type,
 
 Comercial Comercial::createCinema(int id, const string &nom, Ville *ville,
                                   int x, int y) {
+  // Auto-generate name and ID
+  string generatedName = NameGenerator::getRandomName(TypeBatiment::Cinema);
+  Position position(x, y);
+  Surface surface(2, 1);
+  int generatedID = BuildingIDGenerator::generateID(generatedName, TypeBatiment::Cinema, position, surface);
   
   float baseProfit = PROFIT_PER_EMPLOYEE * BASE_EMPLOYEES_CINEMA;
   int satisfaction = static_cast<int>(100 * SATISFACTION_BONUS);
   float pollution = 2.5f * (1.0f + POLLUTION_PENALTY);
   
-  return Comercial(id, nom, ville, TypeBatiment::Cinema, satisfaction, 500.0, 
+  return Comercial(generatedID, generatedName, ville, TypeBatiment::Cinema, satisfaction, 500.0, 
                    0, BASE_EMPLOYEES_CINEMA, 10, 30, pollution, x, y, 2, 1, 
                    baseProfit);
 }
 
 Comercial Comercial::createMall(int id, const string &nom, Ville *ville, int x,
                                 int y) {
+  // Auto-generate name and ID
+  string generatedName = NameGenerator::getRandomName(TypeBatiment::Mall);
+  Position position(x, y);
+  Surface surface(3, 3);
+  int generatedID = BuildingIDGenerator::generateID(generatedName, TypeBatiment::Mall, position, surface);
+  
   float baseProfit = PROFIT_PER_EMPLOYEE * BASE_EMPLOYEES_MALL * EMPLOYEE_EFFICIENCY;
   int satisfaction = static_cast<int>(100 * SATISFACTION_BONUS);
   float pollution = 8.0f * (1.0f + POLLUTION_PENALTY);
   
-  return Comercial(id, nom, ville, TypeBatiment::Mall, satisfaction, 2000.0, 
+  return Comercial(generatedID, generatedName, ville, TypeBatiment::Mall, satisfaction, 2000.0, 
                    0, BASE_EMPLOYEES_MALL, 400, 600, pollution, x, y, 3, 3, 
                    baseProfit);
 }
 
 Comercial Comercial::createBank(int id, const string &nom, Ville *ville, int x,
                                 int y) {
+  // Auto-generate name and ID
+  string generatedName = NameGenerator::getRandomName(TypeBatiment::Bank);
+  Position position(x, y);
+  Surface surface(1, 1);
+  int generatedID = BuildingIDGenerator::generateID(generatedName, TypeBatiment::Bank, position, surface);
+  
   float baseProfit = PROFIT_PER_EMPLOYEE * BASE_EMPLOYEES_BANK * 2.5f; 
   float pollution = 2.0f * (1.0f + POLLUTION_PENALTY);
   
-  return Comercial(id, nom, ville, TypeBatiment::Bank, -20, 2000.0, 
+  return Comercial(generatedID, generatedName, ville, TypeBatiment::Bank, -20, 2000.0, 
                    0, BASE_EMPLOYEES_BANK, 10, 30, pollution, x, y, 1, 1, 
                    baseProfit);
 }
