@@ -129,8 +129,7 @@ void Application::displayTaskBar(ImGuiWindowFlags flags, Simulation &sim) {
 }
 
 void Application::displayToolkit(ImGuiWindowFlags flags) {
-  float width = window.getWidth() * 0.2;
-
+  float width = window.getWidth() * 0.2f;
   ImGuiViewport *viewport = ImGui::GetMainViewport();
 
   ImGui::SetNextWindowPos(ImVec2(0, 0));
@@ -140,47 +139,85 @@ void Application::displayToolkit(ImGuiWindowFlags flags) {
 
   if (ImGui::CollapsingHeader("Buildings", ImGuiTreeNodeFlags_DefaultOpen)) {
     ImGui::Indent(10);
-    ImGui::Spacing();
+
     if (ImGui::CollapsingHeader("Residents", ImGuiTreeNodeFlags_DefaultOpen)) {
       ImGui::Indent(10);
       if (ImGui::Button("House", ImVec2(120, 0))) {
+        currentBuildType = TypeBatiment::House;
+        isBuidling = true;
+        isDestroying = false;
       }
       if (ImGui::Button("Apartment", ImVec2(120, 0))) {
+        currentBuildType = TypeBatiment::Apartment;
+        isDestroying = false;
+        isBuidling = true;
       }
       ImGui::Unindent(10);
     }
 
-    ImGui::Spacing();
     if (ImGui::CollapsingHeader("Services", ImGuiTreeNodeFlags_DefaultOpen)) {
-
       ImGui::Indent(10);
 
-      ImGui::Button("Park", ImVec2(140, 0));
+      if (ImGui::Button("Park", ImVec2(140, 0))) {
+        currentBuildType = TypeBatiment::Park;
+        isDestroying = false;
+        isBuidling = true;
+      }
+
       if (ImGui::CollapsingHeader("Commercials",
                                   ImGuiTreeNodeFlags_DefaultOpen)) {
         ImGui::Indent(10);
-        ImGui::Button("Cinema", ImVec2(140, 0));
-        ImGui::Button("Mall", ImVec2(140, 0));
-        ImGui::Button("Bank", ImVec2(140, 0));
+        if (ImGui::Button("Cinema", ImVec2(140, 0))) {
+          currentBuildType = TypeBatiment::Cinema;
+          isDestroying = false;
+          isBuidling = true;
+        }
+        if (ImGui::Button("Mall", ImVec2(140, 0))) {
+          currentBuildType = TypeBatiment::Mall;
+          isDestroying = false;
+          isBuidling = true;
+        }
+        if (ImGui::Button("Bank", ImVec2(140, 0))) {
+          currentBuildType = TypeBatiment::Bank;
+          isDestroying = false;
+          isBuidling = true;
+        }
         ImGui::Unindent(10);
       }
 
       if (ImGui::CollapsingHeader("Infrastructures",
                                   ImGuiTreeNodeFlags_DefaultOpen)) {
         ImGui::Indent(10);
-        ImGui::Button("Power Plant", ImVec2(180, 0));
-        ImGui::Button("Water Treatment Plant", ImVec2(180, 0));
-        ImGui::Button("Utility Plant", ImVec2(180, 0));
+        if (ImGui::Button("Power Plant", ImVec2(180, 0))) {
+          currentBuildType = TypeBatiment::PowerPlant;
+          isDestroying = false;
+          isBuidling = true;
+        }
+        if (ImGui::Button("Water Treatment Plant", ImVec2(180, 0))) {
+          currentBuildType = TypeBatiment::WaterTreatmentPlant;
+          isDestroying = false;
+          isBuidling = true;
+        }
+        if (ImGui::Button("Utility Plant", ImVec2(180, 0))) {
+          currentBuildType = TypeBatiment::UtilityPlant;
+          isDestroying = false;
+          isBuidling = true;
+        }
         ImGui::Unindent(10);
       }
 
       ImGui::Unindent(10);
     }
+
     ImGui::Unindent(10);
   }
+
   if (ImGui::CollapsingHeader("Edit", ImGuiTreeNodeFlags_DefaultOpen)) {
     if (ImGui::Button("Destroy building", ImVec2(180, 0))) {
+      isBuidling = false;
       isDestroying = !isDestroying;
+      if (isDestroying)
+        currentBuildType = TypeBatiment::Blank;
     }
   }
 
@@ -262,28 +299,81 @@ void placeBuildingsOnTilemap(int tilemap[][64], int rows, int cols,
   }
 }
 
+void Application::renderHoverOutline(SDL_Renderer *renderer, int tileX,
+                                     int tileY, int TILE_SIZE, float scale) {
+  if (tileX < 0 || tileY < 0)
+    return; // skip invalid tiles
+
+  int outlineWidth = TILE_SIZE;
+  int outlineHeight = TILE_SIZE;
+
+  // Adjust outline size for multi-tile buildings
+  if (!isDestroying && currentBuildType != TypeBatiment::Blank) {
+    switch (currentBuildType) {
+    case TypeBatiment::Cinema:
+      outlineWidth = 2 * TILE_SIZE;
+      outlineHeight = 1 * TILE_SIZE;
+      break;
+    case TypeBatiment::Mall:
+      outlineWidth = 3 * TILE_SIZE;
+      outlineHeight = 3 * TILE_SIZE;
+      break;
+    case TypeBatiment::Park:
+      outlineWidth = 2 * TILE_SIZE;
+      outlineHeight = 2 * TILE_SIZE;
+      break;
+    default:
+      outlineWidth = TILE_SIZE;
+      outlineHeight = TILE_SIZE;
+      break;
+    }
+  }
+
+  SDL_Rect outline = {int((tileX * TILE_SIZE - cameraX) * scale),
+                      int((tileY * TILE_SIZE - cameraY) * scale),
+                      int(outlineWidth * scale), int(outlineHeight * scale)};
+
+  // Set color based on mode
+  if (isDestroying) {
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // red
+  } else if (currentBuildType != TypeBatiment::Blank) {
+    SDL_SetRenderDrawColor(renderer, 0, 140, 255, 255); // blue
+  } else {
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // white
+  }
+
+  SDL_RenderDrawRect(renderer, &outline);
+}
+
 void Application::checkEvent() {
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
     ImGui_ImplSDL2_ProcessEvent(&event);
 
-    if (event.type == SDL_QUIT)
+    switch (event.type) {
+    case SDL_QUIT:
       running = false;
+      break;
 
-    if (event.type == SDL_MOUSEBUTTONDOWN &&
-        event.button.button == SDL_BUTTON_LEFT && isDestroying) {
+    case SDL_MOUSEBUTTONDOWN:
+      if (event.button.button == SDL_BUTTON_LEFT) {
+        clickMouseX = event.button.x;
+        clickMouseY = event.button.y;
 
-      destroyClickRequested = true;
-      clickMouseX = event.button.x;
-      clickMouseY = event.button.y;
-    }
+        if (isDestroying) {
+          destroyClickRequested = true;
+        } else if (isBuidling) {
+          buildClickRequested = true;
+        }
+      }
+      break;
 
-    if (event.type == SDL_MOUSEWHEEL) {
+    case SDL_MOUSEWHEEL: {
       float oldScale = scale;
 
       if (event.wheel.y > 0)
         scale *= 1.1f;
-      if (event.wheel.y < 0)
+      else if (event.wheel.y < 0)
         scale *= 0.9f;
 
       scale = std::clamp(scale, 1.0f, 20.0f);
@@ -298,6 +388,11 @@ void Application::checkEvent() {
 
       cameraX += (wxBefore - wxAfter);
       cameraY += (wyBefore - wyAfter);
+      break;
+    }
+
+    default:
+      break;
     }
   }
 }
@@ -305,6 +400,8 @@ void Application::checkEvent() {
 int Application::run() {
   // Initialize Simulation
   sim.getVille().setBudget(10000);
+  sim.getVille().setPopulation(500);
+  sim.getVille().setSatisfaction(50);
   sim.getVille().calculerPolutionTotale();
   sim.getVille().calculerSatisfactionTotale();
   sim.getVille().ajoutBatiment(Resident::createHouse(&sim.getVille(), 25, 25));
@@ -407,8 +504,51 @@ int Application::run() {
                    TILE_SIZE);
     displayTaskBar(flags, sim);
 
-    // ---- Destroy logic ----
     Batiment *bat = sim.getVille().getBatimentByPos(tileX, tileY);
+
+    // ---- Build Logic ----
+    if (buildClickRequested && insideMap && !imguiBlockingMouse && !bat) {
+      bool created = false;
+
+      switch (currentBuildType) {
+      case TypeBatiment::House:
+        sim.getVille().ajoutBatiment(Resident::createHouse(&sim.getVille(), tileX, tileY));
+        SDL_Log("House");
+        created = true;
+        break;
+      case TypeBatiment::Park:
+        Parc::createPark(&sim.getVille(), tileX, tileY);
+        created = true;
+        break;
+      case TypeBatiment::Cinema:
+        Comercial::createCinema(&sim.getVille(), tileX, tileY);
+        created = true;
+        break;
+      case TypeBatiment::Mall:
+        Comercial::createMall(&sim.getVille(), tileX, tileY);
+        created = true;
+        break;
+      case TypeBatiment::Bank:
+        Comercial::createBank(&sim.getVille(), tileX, tileY);
+        created = true;
+        break;
+      default:
+        break;
+      }
+
+      if (created) {
+        // Reset tilemap to original landscape
+        std::memcpy(tilemap, landscape, sizeof(int) * ROWS * COLS);
+
+        // Place all buildings on the tilemap
+        placeBuildingsOnTilemap(tilemap, ROWS, COLS, TILE_COUNT,
+                                sim.getVille().batiments);
+      }
+
+      buildClickRequested = false;
+    }
+
+    // ---- Destroy logic ----
     if (destroyClickRequested) {
       if (insideMap && !imguiBlockingMouse && bat) {
 
@@ -440,14 +580,7 @@ int Application::run() {
 
     // Hover outline
     if (insideMap) {
-      SDL_Rect outline = {int((tileX * TILE_SIZE - cameraX) * scale),
-                          int((tileY * TILE_SIZE - cameraY) * scale),
-                          int(TILE_SIZE * scale), int(TILE_SIZE * scale)};
-      if (isDestroying)
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-      else
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-      SDL_RenderDrawRect(renderer, &outline);
+      renderHoverOutline(renderer, tileX, tileY, TILE_SIZE, scale);
     }
 
     ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer);

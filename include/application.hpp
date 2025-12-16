@@ -24,14 +24,19 @@ private:
   float cameraX;
   float cameraY;
   bool destroyClickRequested = false;
+  bool buildClickRequested = false;
   int clickMouseX = 0;
   int clickMouseY = 0;
   float speed;
   float taskbarHeight;
-  bool isDestroying;
+  bool isDestroying = false;
+  bool isBuidling = false;
+  TypeBatiment currentBuildType = TypeBatiment::Blank;
 
   // for run() method
   void checkEvent();
+  void renderHoverOutline(SDL_Renderer *renderer, int tileX, int tileY,
+                          int TILE_SIZE, float scale);
   void displayInspect(ImGuiWindowFlags flags, float x, float y, int value,
                       bool isHoveringRect, float speed, float recwidth) const;
   void displayTaskBar(ImGuiWindowFlags flags, Simulation &);
