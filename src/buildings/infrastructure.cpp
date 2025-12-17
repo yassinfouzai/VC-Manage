@@ -4,6 +4,10 @@
 
 using namespace std;
 
+// Building costs (static for reuse)
+double Infrastructure::COST_POWER_PLANT = 20.0;
+double Infrastructure::COST_WATER_TREATMENT = 20.0;
+
 Infrastructure::Infrastructure(int id, const string &nom, Ville *ville,
                                TypeBatiment type, int effectSatisfication,
                                double cost, unsigned int employees,
@@ -37,7 +41,7 @@ Infrastructure Infrastructure::createPowerPlant(int id, const string &nom,
   Surface surface(1, 1);
   int generatedID = BuildingIDGenerator::generateID(generatedName, TypeBatiment::PowerPlant, position, surface);
   
-  return Infrastructure(generatedID, generatedName, ville, TypeBatiment::PowerPlant, -2, 20.0, 0,
+  return Infrastructure(generatedID, generatedName, ville, TypeBatiment::PowerPlant, -2, COST_POWER_PLANT, 0,
                         40, 3.0, 0.0, 20, x, y, 1, 1, Resources(0.0, 200.0));
 }
 
@@ -52,7 +56,7 @@ Infrastructure Infrastructure::createWaterTreatmentPlant(int id,
   int generatedID = BuildingIDGenerator::generateID(generatedName, TypeBatiment::WaterTreatmentPlant, position, surface);
   
   return Infrastructure(generatedID, generatedName, ville, TypeBatiment::WaterTreatmentPlant, -2,
-                        20.0, 0, 40, 0.0, 7.0, 15, x, y, 1, 1,
+                        COST_WATER_TREATMENT, 0, 40, 0.0, 7.0, 15, x, y, 1, 1,
                         Resources(200.0, 0.0));
 }
 
