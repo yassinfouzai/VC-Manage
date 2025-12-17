@@ -1,5 +1,6 @@
 #include "../../include/buildings/appartement.hpp"
 #include <stdexcept>
+#include <string>
 
 Appartement::Appartement(int id, const std::string &nom, Ville *ville,
                          TypeBatiment type, int effectSatisfication,
@@ -27,7 +28,8 @@ Appartement::Appartement(int id, const std::string &nom, Ville *ville,
 unsigned int Appartement::getFloorsCount() { return floorsCount; }
 
 void Appartement::addNewFloor() {
-  if (floorsCount <= MAX_FLOOR_COUNT) {
+  // Disable adding floors beyond the maximum; apartments are created at max
+  if (floorsCount < MAX_FLOOR_COUNT) {
     floorsCount++;
     cost += COST_PER_FLOOR;
     polution += POLUTION_PER_FLOOR;
@@ -36,20 +38,25 @@ void Appartement::addNewFloor() {
         Resources(CONSOMMATION_EAU_PER_FLOOR, CONSOMMATION_ELE_PER_FLOOR);
     capaciteHabitants += MAX_HABITATS_PER_FLOOR;
   } else {
-    std::invalid_argument("Floor count connot execed 4.");
+    // No-op: already at maximum floors
+    return;
   }
 }
 
-Appartement Appartement::createAppartement(int id, const string &nom,
+void Appartement::destroyFloor() {
+  // Apartments are fixed at max floors in creation; floor removal disabled.
+  return;
+}
+
+Appartement Appartement::createAppartement(int id, const std::string &nom,
                                            Ville *ville,
                                            unsigned int floorsCount, int x,
                                            int y) {
-  if (floorsCount > MAX_FLOOR_COUNT) {
-    std::invalid_argument("Floor count connot execed 4.");
-  }
+  // Force apartments to be created at maximum floors due to time :'()
+  floorsCount = MAX_FLOOR_COUNT;
   
   // Auto-generate name and ID
-  string generatedName = NameGenerator::getRandomName(TypeBatiment::Apartment);
+  std::string generatedName = NameGenerator::getRandomName(TypeBatiment::Apartment);
   Position position(x, y);
   Surface surface(1, 1);
   int generatedID = BuildingIDGenerator::generateID(generatedName, TypeBatiment::Apartment, position, surface);
