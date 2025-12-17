@@ -124,6 +124,17 @@ double Comercial::getProfit() {
   // Calcul
   float efficiency =
       (Employees >= EmployeesNeeded) ? 1.0f : EMPLOYEE_EFFICIENCY;
-  return profit * efficiency *
+  // Scale by utilities availability: without power/water, income drops
+  float utilitiesFactor = 1.0f;
+  if (ville) {
+    // Use the stricter of the two availabilities
+    float powerAvail = 1.0f;
+    float waterAvail = 1.0f;
+    // Guard: Ville may not expose availability if not initialized yet
+    powerAvail = ville->getPolution() >= 0 ? ville->getPowerAvailability() : 1.0f;
+    waterAvail = ville->getPolution() >= 0 ? ville->getWaterAvailability() : 1.0f;
+    utilitiesFactor = std::min(powerAvail, waterAvail);
+  }
+  return profit * efficiency * utilitiesFactor *
          (1.0f - (ville->getPolution() * POLLUTION_PENALTY / 100.0f));
 }
