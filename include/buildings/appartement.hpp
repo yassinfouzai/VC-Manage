@@ -26,10 +26,10 @@ protected:
   static constexpr double CONSOMMATION_ELE_PER_FLOOR = 10.0;
   static constexpr double COST_PER_FLOOR = 15.0;
   static constexpr float POLUTION_PER_FLOOR = 2.0;
-  static constexpr int EFFET_SATISFACTION_PER_FLOOR = 1.0;
+  static constexpr float EFFET_SATISFACTION_PER_FLOOR = 1.0f;
 
 public:
-  static Appartement createAppartement(int id, const string &nom, Ville *ville,
+  static Appartement createAppartement(int id, const std::string &nom, Ville *ville,
                                        unsigned int floorNumbers, int x, int y);
   void addNewFloor();
   void destroyFloor();
