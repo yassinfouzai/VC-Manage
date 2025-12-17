@@ -21,6 +21,9 @@ protected:
        int largeur, int longeur);
 
 public:
+  // Building cost (static for reuse)
+  static double COST_PARK;
+  
   // Methods
   void afficheDetails() const override;
   void ameliorerBienEtre();

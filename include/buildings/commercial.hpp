@@ -27,6 +27,11 @@ public:
   static int BASE_EMPLOYEES_CINEMA;
   static int BASE_EMPLOYEES_MALL;
   static int BASE_EMPLOYEES_BANK;
+  
+  // Building costs (static for reuse)
+  static double COST_CINEMA;
+  static double COST_MALL;
+  static double COST_BANK;
 
   static float BANK_COST;
   static float MALL_COST;
