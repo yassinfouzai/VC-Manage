@@ -13,8 +13,9 @@ float Resident::SATISFACTION_PER_PERSON = 0.1f;
 float Resident::POLLUTION_PER_PERSON = 0.05f;
 int Resident::BASE_CAPACITY_HOUSE = 6;
 int Resident::BASE_CAPACITY_APARTMENT = 4;
-float Resident::HOUSE_COST = 30;
-
+// Building costs (static for reuse)
+float Resident::COST_HOUSE = 50.0;
+float Resident::COST_APARTMENT = 300.0;
 // Setters 
 void Resident::setWaterPerPerson(float value) { WATER_PER_PERSON = value; }
 void Resident::setElectricityPerPerson(float value) { ELECTRICITY_PER_PERSON = value; }
