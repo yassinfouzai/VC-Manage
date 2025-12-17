@@ -22,7 +22,7 @@ protected:
 
 public:
   // Building cost (static for reuse)
-  static double COST_PARK;
+  static float COST_PARK;
   
   // Methods
   void afficheDetails() const override;

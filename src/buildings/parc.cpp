@@ -1,6 +1,9 @@
 #include "../../include/buildings/parc.hpp"
 #include <iostream>
 
+
+float Parc::COST_PARK = 1000.0;
+
 Parc::Parc(int id, const string &nom, Ville *ville, TypeBatiment type,
            int effectSatisfication, double cost, unsigned int Employees,
            unsigned int EmployeesNeeded, Resources consommation, float polution,
@@ -55,7 +58,7 @@ BatPtr Parc::createPark(Ville *ville, int x, int y) {
   
   return BatPtr( new Parc(generatedID, generatedName, ville, TypeBatiment::Park, 
               80,           // satisfaction
-              1500.0,       // cost
+              COST_PARK,       // cost
               8,            // employees
               8,            // employees needed
               25.0,         // water consumption
