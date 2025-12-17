@@ -26,6 +26,7 @@ public:
   // Building costs (static for reuse)
   static double COST_POWER_PLANT;
   static double COST_WATER_TREATMENT;
+  static double COST_UTILITY;
   
   // Methods
   void produireRessources();

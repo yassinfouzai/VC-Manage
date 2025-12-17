@@ -167,7 +167,7 @@ void Application::displayToolkit(ImGuiWindowFlags flags) {
         if (ImGui::CollapsingHeader("Services", ImGuiTreeNodeFlags_DefaultOpen)) {
             ImGui::Indent(10);
 
-            ImGui::BeginDisabled(currentBudget < Parc::PARK_COST);
+            ImGui::BeginDisabled(currentBudget < Parc::COST_PARK);
             if (ImGui::Button("Park", ImVec2(140, 0))) {
                 currentBuildType = TypeBatiment::Park;
                 isBuidling = true;
@@ -178,7 +178,7 @@ void Application::displayToolkit(ImGuiWindowFlags flags) {
             if (ImGui::CollapsingHeader("Commercials", ImGuiTreeNodeFlags_DefaultOpen)) {
                 ImGui::Indent(10);
 
-                ImGui::BeginDisabled(currentBudget < Comercial::CINEMA_COST);
+                ImGui::BeginDisabled(currentBudget < Comercial::COST_CINEMA);
                 if (ImGui::Button("Cinema", ImVec2(140, 0))) {
                     currentBuildType = TypeBatiment::Cinema;
                     isBuidling = true;
@@ -186,7 +186,7 @@ void Application::displayToolkit(ImGuiWindowFlags flags) {
                 }
                 ImGui::EndDisabled();
 
-                ImGui::BeginDisabled(currentBudget < Comercial::MALL_COST);
+                ImGui::BeginDisabled(currentBudget < Comercial::COST_MALL);
                 if (ImGui::Button("Mall", ImVec2(140, 0))) {
                     currentBuildType = TypeBatiment::Mall;
                     isBuidling = true;
@@ -194,7 +194,7 @@ void Application::displayToolkit(ImGuiWindowFlags flags) {
                 }
                 ImGui::EndDisabled();
 
-                ImGui::BeginDisabled(currentBudget < Comercial::BANK_COST);
+                ImGui::BeginDisabled(currentBudget < Comercial::COST_BANK);
                 if (ImGui::Button("Bank", ImVec2(140, 0))) {
                     currentBuildType = TypeBatiment::Bank;
                     isBuidling = true;
@@ -208,7 +208,7 @@ void Application::displayToolkit(ImGuiWindowFlags flags) {
             if (ImGui::CollapsingHeader("Infrastructures", ImGuiTreeNodeFlags_DefaultOpen)) {
                 ImGui::Indent(10);
 
-                ImGui::BeginDisabled(currentBudget < Infrastructure::POWERPLANT_COST);
+                ImGui::BeginDisabled(currentBudget < Infrastructure::COST_POWER_PLANT);
                 if (ImGui::Button("Power Plant", ImVec2(180, 0))) {
                     currentBuildType = TypeBatiment::PowerPlant;
                     isBuidling = true;
@@ -216,7 +216,7 @@ void Application::displayToolkit(ImGuiWindowFlags flags) {
                 }
                 ImGui::EndDisabled();
 
-                ImGui::BeginDisabled(currentBudget < Infrastructure::WATER_COST);
+                ImGui::BeginDisabled(currentBudget < Infrastructure::COST_WATER_TREATMENT);
                 if (ImGui::Button("Water Treatment Plant", ImVec2(180, 0))) {
                     currentBuildType = TypeBatiment::WaterTreatmentPlant;
                     isBuidling = true;
@@ -224,7 +224,7 @@ void Application::displayToolkit(ImGuiWindowFlags flags) {
                 }
                 ImGui::EndDisabled();
 
-                ImGui::BeginDisabled(currentBudget < Infrastructure::UTILITY_COST);
+                ImGui::BeginDisabled(currentBudget < Infrastructure::COST_UTILITY);
                 if (ImGui::Button("Utility Plant", ImVec2(180, 0))) {
                     currentBuildType = TypeBatiment::UtilityPlant;
                     isBuidling = true;

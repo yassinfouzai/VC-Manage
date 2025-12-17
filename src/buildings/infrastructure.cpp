@@ -7,6 +7,7 @@ using namespace std;
 // Building costs (static for reuse)
 double Infrastructure::COST_POWER_PLANT = 20.0;
 double Infrastructure::COST_WATER_TREATMENT = 20.0;
+double Infrastructure::COST_UTILITY = 45.0;
 
 Infrastructure::Infrastructure(int id, const string &nom, Ville *ville,
                                TypeBatiment type, int effectSatisfication,
@@ -72,7 +73,7 @@ BatPtr Infrastructure::createUtilityPlant(Ville *ville, int x, int y) {
       generatedName, TypeBatiment::UtilityPlant, position, surface);
 
   return BatPtr(new Infrastructure(
-      generatedID, generatedName, ville, TypeBatiment::UtilityPlant, -6, 60.0,
+      generatedID, generatedName, ville, TypeBatiment::UtilityPlant, -6, COST_UTILITY,
       0, 45, 0.0, 0.0, 45, x, y, 1, 1, Resources(150.0, 150.0)));
 }
 
