@@ -53,10 +53,11 @@ Appartement Appartement::createAppartement(int id, const string &nom,
   Position position(x, y);
   Surface surface(1, 1);
   int generatedID = BuildingIDGenerator::generateID(generatedName, TypeBatiment::Apartment, position, surface);
-  
+
+  double baseCost = Resident::COST_APARTMENT * floorsCount;
   return Appartement(generatedID, generatedName, ville, TypeBatiment::Apartment,
                      EFFET_SATISFACTION_PER_FLOOR * floorsCount,
-                     COST_PER_FLOOR * floorsCount,
+                     baseCost,
                      CONSOMMATION_EAU_PER_FLOOR * floorsCount,
                      CONSOMMATION_ELE_PER_FLOOR * floorsCount,
                      POLUTION_PER_FLOOR * floorsCount, x, y, 1, 1,
