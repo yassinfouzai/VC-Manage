@@ -32,6 +32,8 @@ public:
   void produireRessources();
   void impacterRessources() override;
   double calculerPollution(); // TO-DO
+  // Production getter used by city to aggregate availability
+  const Resources& getProductionRessources() const { return productionRessources; }
 
   static BatPtr createPowerPlant(Ville *ville, int x, int y);
   static BatPtr createWaterTreatmentPlant(Ville *ville, int x, int y);
