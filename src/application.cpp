@@ -377,6 +377,63 @@ void Application::renderHoverOutline(SDL_Renderer *renderer, int tileX,
   SDL_RenderDrawRect(renderer, &outline);
 }
 
+static void getBuildingSize(TypeBatiment type, int &width, int &height) {
+  width = 1;
+  height = 1;
+
+  switch (type) {
+  case TypeBatiment::Park:
+    width = 2;
+    height = 2;
+    break;
+  case TypeBatiment::Cinema:
+    width = 2;
+    height = 1;
+    break;
+  case TypeBatiment::Mall:
+    width = 3;
+    height = 3;
+    break;
+  default:
+    break;
+  }
+}
+
+void Application::renderPlacementHighlights(SDL_Renderer *renderer,
+                                            int tilemap[][64], int ROWS,
+                                            int COLS, int TILE_SIZE,
+                                            float scale) {
+  if (!isBuidling)
+    return;
+
+  int width, height;
+  getBuildingSize(currentBuildType, width, height);
+
+  SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+  SDL_SetRenderDrawColor(renderer, 0, 255, 0, 80); // green overlay
+
+  for (int y = 0; y < ROWS; ++y) {
+    for (int x = 0; x < COLS; ++x) {
+
+      // Skip if occupied
+      if (sim.getVille().getBatimentByPos(x, y))
+        continue;
+
+      if (!Cluster::canPlaceBuilding(y, x, width, height, tilemap, ROWS, COLS))
+        continue;
+
+      SDL_Rect r{int((x * TILE_SIZE - cameraX) * scale),
+                 int((y * TILE_SIZE - cameraY) * scale),
+                 int(TILE_SIZE * width * scale),
+                 int(TILE_SIZE * height * scale)};
+
+      SDL_RenderFillRect(renderer, &r);
+    }
+  }
+
+  SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+}
+
 void Application::checkEvent() {
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
@@ -708,6 +765,8 @@ int Application::run() {
         SDL_RenderCopy(renderer, window.getTexture(), &src[tile], &dest);
       }
     }
+
+    renderPlacementHighlights(renderer, tilemap, ROWS, COLS, TILE_SIZE, scale);
 
     // Hover outline
     if (insideMap) {

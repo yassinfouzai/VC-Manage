@@ -110,17 +110,6 @@ void EventManager::initialiserEvenements() {
         EventCategory::Natural, EventSeverity::Critical, 0.05f, inondation
     ));
     
-    // 3. Earthquake / Tremblement de terre
-    EventEffect earthquake;
-    earthquake.satisfactionChange = -30.0f;
-    earthquake.budgetChange = -1000.0;
-    earthquake.populationChange = -20;
-    ajouterEvenement(std::make_unique<Evenement>(
-        3, "Tremblement de Terre",
-        "Un séisme secoue la ville! Des bâtiments s'effondrent et la population panique.",
-        EventCategory::Natural, EventSeverity::Critical, 0.03f, earthquake
-    ));
-    
     // 4. Tornado / Tornade
     EventEffect tornado;
     tornado.satisfactionChange = -22.0f;
@@ -296,17 +285,6 @@ void EventManager::initialiserEvenements() {
         19, " Grève des Transports",
         "Les conducteurs de métro et bus sont en grève. Chaos dans la circulation!",
         EventCategory::Transport, EventSeverity::Moderate, 0.12f, metroStrike
-    ));
-    
-    // 20. Bridge Collapse / Effondrement de pont
-    EventEffect bridgeCollapse;
-    bridgeCollapse.satisfactionChange = -30.0f;
-    bridgeCollapse.budgetChange = -900.0;
-    bridgeCollapse.populationChange = -10;
-    ajouterEvenement(std::make_unique<Evenement>(
-        20, " Effondrement de Pont",
-        "Un pont majeur s'effondre! Victimes et isolement de quartiers entiers.",
-        EventCategory::Transport, EventSeverity::Critical, 0.04f, bridgeCollapse
     ));
     
     // ===== ECONOMIC =====
@@ -717,16 +695,6 @@ void EventManager::initialiserEvenements() {
         59, "Pollution Sonore",
         "Des travaux nocturnes créent un vacarme insupportable! Personne ne dort.",
         EventCategory::Health, EventSeverity::Minor, 0.11f, noise
-    ));
-    
-    // 60. Treasure Found / Trésor trouvé
-    EventEffect treasure;
-    treasure.satisfactionChange = 15.0f;
-    treasure.budgetChange = 1500.0;
-    ajouterEvenement(std::make_unique<Evenement>(
-        60, "Trésor de Pirates",
-        "Un trésor de pirates est découvert sous la ville! Fortune instantanée.",
-        EventCategory::Entertainment, EventSeverity::Minor, 0.01f, treasure
     ));
     
     std::cout << " " << evenementsPossibles.size() << " événements initialisés!" << std::endl;

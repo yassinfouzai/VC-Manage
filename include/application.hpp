@@ -35,6 +35,10 @@ private:
 
   // for run() method
   void checkEvent();
+
+  void renderPlacementHighlights(SDL_Renderer *renderer, int tilemap[][64],
+                                 int ROWS, int COLS, int TILE_SIZE,
+                                 float scale);
   void renderHoverOutline(SDL_Renderer *renderer, int tileX, int tileY,
                           int TILE_SIZE, float scale);
   void displayInspect(ImGuiWindowFlags flags, float x, float y, int value,

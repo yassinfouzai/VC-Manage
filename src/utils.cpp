@@ -60,9 +60,6 @@ void NameGenerator::initializeNames() {
       json j;
       try {
         file >> j;
-        std::cout << "Fichier building-names.json chargé avec succès!"
-                  << std::endl;
-
         buildingNames[TypeBatiment::House] =
             j["House"].get<std::vector<std::string>>();
         buildingNames[TypeBatiment::Apartment] =
