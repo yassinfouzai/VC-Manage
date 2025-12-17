@@ -29,8 +29,8 @@ public:
   static int BASE_CAPACITY_APARTMENT;
   
   // Building costs (static for reuse)
-  static double COST_HOUSE;
-  static double COST_APARTMENT;
+  static float COST_HOUSE;
+  static float COST_APARTMENT;
 
   static float HOUSE_COST;
 
