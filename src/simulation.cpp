@@ -33,17 +33,36 @@ void Simulation::terminerCycle() {
   state = SimState::Evaluating;
 
   // Computing stats
+  // Compute utilities availability for this cycle (production vs consumption)
+  {
+    Resources cons = ville.calculerconsommationTotale();
+    Resources prod = ville.calculerProductionTotale();
+    float waterAvail = 1.0f;
+    float powerAvail = 1.0f;
+    if (cons.eau > 0.0) {
+      waterAvail = static_cast<float>(prod.eau / cons.eau);
+    }
+    if (cons.electricite > 0.0) {
+      powerAvail = static_cast<float>(prod.electricite / cons.electricite);
+    }
+    // Clamp 0..1 and set on city for this cycle's calculations
+    waterAvail = std::max(0.0f, std::min(1.0f, waterAvail));
+    powerAvail = std::max(0.0f, std::min(1.0f, powerAvail));
+    ville.setWaterAvailability(waterAvail);
+    ville.setPowerAvailability(powerAvail);
+    std::cout << "Utilities: Water " << (waterAvail * 100.0f) << "%, Power " << (powerAvail * 100.0f) << "%" << std::endl;
+  }
+
   ville.collectProfit();
   
   // Apply per-cycle upkeep costs (taxes, maintenance, salaries)
-  // Very light model: base 1 + 0.1 per pop + 0.5 per building
-  // Exponential: +0.5% per 1000 population (almost flat early game)
+  // Hardened: higher base and per-unit coefficients for gameplay challenge
   unsigned int pop = ville.getPopulation();
   size_t numBuildings = ville.batiments.size();
-  double upkeepCost = 1.0 + (pop * 0.1) + (numBuildings * 0.5);
+  double upkeepCost = 12.0 + (pop * 1.2) + (numBuildings * 6.0);
   
-  // Very gentle exponential growth
-  double exponentialFactor = 1.0 + (pop / 200000.0); // 0.5% per 1000 pop
+  // Slightly stronger exponential growth with population
+  double exponentialFactor = 1.0 + (pop / 18000.0);
   upkeepCost *= exponentialFactor;
   
   double currentBudget = ville.getBudget();

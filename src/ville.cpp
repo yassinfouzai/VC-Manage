@@ -3,6 +3,7 @@
 #include "../include/buildings/commercial.hpp"
 #include "../include/buildings/resident.hpp"
 #include "../include/buildings/service.hpp"
+#include "../include/buildings/infrastructure.hpp"
 #include "../include/utils.hpp"
 #include <memory>
 #include <string>
@@ -144,6 +145,24 @@ int Ville::calculerSatisfactionTotale() {
   float pollutionPenalty = pollutionFactor * pollutionFactor * 50.0f;
   satisfactionScore -= pollutionPenalty;
   
+  // Utilities availability penalties: deficits reduce satisfaction
+  // These are computed per cycle in Simulation and cached on the city
+  if (true) {
+    float waterAvail = 1.0f;
+    float powerAvail = 1.0f;
+    // Guard: Ville may not yet be initialized; getters return cached values
+    waterAvail = getWaterAvailability();
+    powerAvail = getPowerAvailability();
+    if (waterAvail < 1.0f) {
+      float waterDeficit = 1.0f - waterAvail; // 0..1
+      satisfactionScore -= waterDeficit * 40.0f; // up to -40
+    }
+    if (powerAvail < 1.0f) {
+      float powerDeficit = 1.0f - powerAvail; // 0..1
+      satisfactionScore -= powerDeficit * 50.0f; // up to -50
+    }
+  }
+  
   // Clamp to 0-100 range
   satisfactionScore = std::max(0.0f, std::min(100.0f, satisfactionScore));
   
@@ -171,6 +190,22 @@ Resources Ville::calculerResourcesTotale() {
   }
   setResources(resources);
   return ResourcesTotale;
+}
+
+// Total resource production from infrastructure plants
+Resources Ville::calculerProductionTotale() const {
+  Resources totalProduction;
+  for (const auto &b : batiments) {
+    if (b->type == TypeBatiment::PowerPlant ||
+        b->type == TypeBatiment::WaterTreatmentPlant ||
+        b->type == TypeBatiment::UtilityPlant) {
+      const Infrastructure *plant = dynamic_cast<const Infrastructure *>(b.get());
+      if (plant) {
+        totalProduction += plant->getProductionRessources();
+      }
+    }
+  }
+  return totalProduction;
 }
 
 int Ville::calculerPopulationTotale() const {
@@ -263,6 +298,17 @@ void Ville::updatePopulation() {
   // Clamp growth rate to reasonable bounds to avoid explosions
   growthRate = std::max(-0.2f, std::min(0.2f, growthRate)); // [-20%, +20%]
 
+  // Utilities deficits: block positive growth and induce decline
+  {
+    float waterAvail = getWaterAvailability();
+    float powerAvail = getPowerAvailability();
+    float deficit = std::max(0.0f, 1.0f - std::min(waterAvail, powerAvail));
+    if (deficit > 0.0f) {
+      if (growthRate > 0.0f) growthRate = 0.0f;   // no positive growth under deficits
+      growthRate -= deficit * 0.03f;              // up to -3% extra decline
+    }
+  }
+
   // Compute migration due to job vacancies (small immediate inflow)
   unsigned int totalJobs = calculerCapaciteEmploi();
   unsigned int employed = calculerEmploiActuel();
@@ -343,6 +389,10 @@ unsigned int Ville::getPopulation() const { return population; }
 int Ville::getSatisfaction() const { return satisfaction; }
 Resources Ville::getResources() const { return resources; }
 
+// Utilities availability (0..1)
+float Ville::getWaterAvailability() const { return waterAvailability; }
+float Ville::getPowerAvailability() const { return powerAvailability; }
+
 
 Batiment* Ville::getBatimentByPos(int x, int y) const {
     for (const auto &batimentPtr : batiments) {
@@ -373,6 +423,12 @@ void Ville::setPolution(float newPolution) {
   polution = std::max(0.0f, std::min(100.0f, newPolution)); 
 }
 void Ville::setResources(Resources newResources) { resources = newResources; }
+void Ville::setWaterAvailability(float value) {
+  waterAvailability = std::max(0.0f, std::min(1.0f, value));
+}
+void Ville::setPowerAvailability(float value) {
+  powerAvailability = std::max(0.0f, std::min(1.0f, value));
+}
 
 // employment calculations
 unsigned int Ville::calculerCapaciteEmploi() const {
