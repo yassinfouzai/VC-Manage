@@ -48,8 +48,7 @@ void Appartement::destroyFloor() {
   return;
 }
 
-Appartement Appartement::createAppartement(int id, const std::string &nom,
-                                           Ville *ville,
+BatPtr Appartement::createAppartement(Ville *ville,
                                            unsigned int floorsCount, int x,
                                            int y) {
   // Force apartments to be created at maximum floors due to time :'()
@@ -62,11 +61,11 @@ Appartement Appartement::createAppartement(int id, const std::string &nom,
   int generatedID = BuildingIDGenerator::generateID(generatedName, TypeBatiment::Apartment, position, surface);
 
   double baseCost = Resident::COST_APARTMENT * floorsCount;
-  return Appartement(generatedID, generatedName, ville, TypeBatiment::Apartment,
+  return BatPtr( new Appartement(generatedID, generatedName, ville, TypeBatiment::Apartment,
                      EFFET_SATISFACTION_PER_FLOOR * floorsCount,
                      baseCost,
                      CONSOMMATION_EAU_PER_FLOOR * floorsCount,
                      CONSOMMATION_ELE_PER_FLOOR * floorsCount,
                      POLUTION_PER_FLOOR * floorsCount, x, y, 1, 1,
-                     MAX_HABITATS_PER_FLOOR * floorsCount, 0, floorsCount);
+                     MAX_HABITATS_PER_FLOOR * floorsCount, 0, floorsCount));
 }

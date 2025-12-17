@@ -1,7 +1,7 @@
 #include "../include/application.hpp"
+#include "../include/buildings/appartement.hpp"
 #include "../include/buildings/batiment.hpp"
 #include "../include/buildings/commercial.hpp"
-#include "../include/buildings/appartement.hpp"
 #include "../include/buildings/infrastructure.hpp"
 #include "../include/buildings/parc.hpp"
 #include "../include/buildings/resident.hpp"
@@ -131,127 +131,130 @@ void Application::displayTaskBar(ImGuiWindowFlags flags, Simulation &sim) {
 }
 
 void Application::displayToolkit(ImGuiWindowFlags flags) {
-    float width = window.getWidth() * 0.2f;
-    ImGuiViewport* viewport = ImGui::GetMainViewport();
-    float currentBudget = sim.getVille().getBudget();
+  float width = window.getWidth() * 0.2f;
+  ImGuiViewport *viewport = ImGui::GetMainViewport();
+  float currentBudget = sim.getVille().getBudget();
 
-    ImGui::SetNextWindowPos(ImVec2(0, 0));
-    ImGui::SetNextWindowSize(ImVec2(width, viewport->Size.y - taskbarHeight));
-    ImGui::Begin("Toolkit", nullptr, flags);
+  ImGui::SetNextWindowPos(ImVec2(0, 0));
+  ImGui::SetNextWindowSize(ImVec2(width, viewport->Size.y - taskbarHeight));
+  ImGui::Begin("Toolkit", nullptr, flags);
 
-    if (ImGui::CollapsingHeader("Buildings", ImGuiTreeNodeFlags_DefaultOpen)) {
+  if (ImGui::CollapsingHeader("Buildings", ImGuiTreeNodeFlags_DefaultOpen)) {
+    ImGui::Indent(10);
+
+    if (ImGui::CollapsingHeader("Residents", ImGuiTreeNodeFlags_DefaultOpen)) {
+      ImGui::Indent(10);
+
+      ImGui::BeginDisabled(currentBudget < Resident::COST_HOUSE);
+      if (ImGui::Button("House", ImVec2(120, 0))) {
+        currentBuildType = TypeBatiment::House;
+        isBuidling = true;
+        isDestroying = false;
+      }
+      ImGui::EndDisabled();
+
+      ImGui::BeginDisabled(currentBudget < Resident::COST_APARTMENT);
+      if (ImGui::Button("Apartment", ImVec2(120, 0))) {
+        currentBuildType = TypeBatiment::Apartment;
+        isBuidling = true;
+        isDestroying = false;
+      }
+      ImGui::EndDisabled();
+
+      ImGui::Unindent(10);
+    }
+
+    if (ImGui::CollapsingHeader("Services", ImGuiTreeNodeFlags_DefaultOpen)) {
+      ImGui::Indent(10);
+
+      ImGui::BeginDisabled(currentBudget < Parc::COST_PARK);
+      if (ImGui::Button("Park", ImVec2(140, 0))) {
+        currentBuildType = TypeBatiment::Park;
+        isBuidling = true;
+        isDestroying = false;
+      }
+      ImGui::EndDisabled();
+
+      if (ImGui::CollapsingHeader("Commercials",
+                                  ImGuiTreeNodeFlags_DefaultOpen)) {
         ImGui::Indent(10);
 
-        if (ImGui::CollapsingHeader("Residents", ImGuiTreeNodeFlags_DefaultOpen)) {
-            ImGui::Indent(10);
-
-            ImGui::BeginDisabled(currentBudget < Resident::HOUSE_COST);
-            if (ImGui::Button("House", ImVec2(120, 0))) {
-                currentBuildType = TypeBatiment::House;
-                isBuidling = true;
-                isDestroying = false;
-            }
-            ImGui::EndDisabled();
-
-            ImGui::BeginDisabled(false);
-            if (ImGui::Button("Apartment", ImVec2(120, 0))) {
-                currentBuildType = TypeBatiment::Apartment;
-                isBuidling = true;
-                isDestroying = false;
-            }
-            ImGui::EndDisabled();
-
-            ImGui::Unindent(10);
+        ImGui::BeginDisabled(currentBudget < Comercial::COST_CINEMA);
+        if (ImGui::Button("Cinema", ImVec2(140, 0))) {
+          currentBuildType = TypeBatiment::Cinema;
+          isBuidling = true;
+          isDestroying = false;
         }
+        ImGui::EndDisabled();
 
-        if (ImGui::CollapsingHeader("Services", ImGuiTreeNodeFlags_DefaultOpen)) {
-            ImGui::Indent(10);
-
-            ImGui::BeginDisabled(currentBudget < Parc::COST_PARK);
-            if (ImGui::Button("Park", ImVec2(140, 0))) {
-                currentBuildType = TypeBatiment::Park;
-                isBuidling = true;
-                isDestroying = false;
-            }
-            ImGui::EndDisabled();
-
-            if (ImGui::CollapsingHeader("Commercials", ImGuiTreeNodeFlags_DefaultOpen)) {
-                ImGui::Indent(10);
-
-                ImGui::BeginDisabled(currentBudget < Comercial::COST_CINEMA);
-                if (ImGui::Button("Cinema", ImVec2(140, 0))) {
-                    currentBuildType = TypeBatiment::Cinema;
-                    isBuidling = true;
-                    isDestroying = false;
-                }
-                ImGui::EndDisabled();
-
-                ImGui::BeginDisabled(currentBudget < Comercial::COST_MALL);
-                if (ImGui::Button("Mall", ImVec2(140, 0))) {
-                    currentBuildType = TypeBatiment::Mall;
-                    isBuidling = true;
-                    isDestroying = false;
-                }
-                ImGui::EndDisabled();
-
-                ImGui::BeginDisabled(currentBudget < Comercial::COST_BANK);
-                if (ImGui::Button("Bank", ImVec2(140, 0))) {
-                    currentBuildType = TypeBatiment::Bank;
-                    isBuidling = true;
-                    isDestroying = false;
-                }
-                ImGui::EndDisabled();
-
-                ImGui::Unindent(10);
-            }
-
-            if (ImGui::CollapsingHeader("Infrastructures", ImGuiTreeNodeFlags_DefaultOpen)) {
-                ImGui::Indent(10);
-
-                ImGui::BeginDisabled(currentBudget < Infrastructure::COST_POWER_PLANT);
-                if (ImGui::Button("Power Plant", ImVec2(180, 0))) {
-                    currentBuildType = TypeBatiment::PowerPlant;
-                    isBuidling = true;
-                    isDestroying = false;
-                }
-                ImGui::EndDisabled();
-
-                ImGui::BeginDisabled(currentBudget < Infrastructure::COST_WATER_TREATMENT);
-                if (ImGui::Button("Water Treatment Plant", ImVec2(180, 0))) {
-                    currentBuildType = TypeBatiment::WaterTreatmentPlant;
-                    isBuidling = true;
-                    isDestroying = false;
-                }
-                ImGui::EndDisabled();
-
-                ImGui::BeginDisabled(currentBudget < Infrastructure::COST_UTILITY);
-                if (ImGui::Button("Utility Plant", ImVec2(180, 0))) {
-                    currentBuildType = TypeBatiment::UtilityPlant;
-                    isBuidling = true;
-                    isDestroying = false;
-                }
-                ImGui::EndDisabled();
-
-                ImGui::Unindent(10);
-            }
-
-            ImGui::Unindent(10);
+        ImGui::BeginDisabled(currentBudget < Comercial::COST_MALL);
+        if (ImGui::Button("Mall", ImVec2(140, 0))) {
+          currentBuildType = TypeBatiment::Mall;
+          isBuidling = true;
+          isDestroying = false;
         }
+        ImGui::EndDisabled();
+
+        ImGui::BeginDisabled(currentBudget < Comercial::COST_BANK);
+        if (ImGui::Button("Bank", ImVec2(140, 0))) {
+          currentBuildType = TypeBatiment::Bank;
+          isBuidling = true;
+          isDestroying = false;
+        }
+        ImGui::EndDisabled();
 
         ImGui::Unindent(10);
-    }
+      }
 
-    if (ImGui::CollapsingHeader("Edit", ImGuiTreeNodeFlags_DefaultOpen)) {
-        if (ImGui::Button("Destroy building", ImVec2(180, 0))) {
-            isBuidling = false;
-            isDestroying = !isDestroying;
-            if (isDestroying) currentBuildType = TypeBatiment::Blank;
+      if (ImGui::CollapsingHeader("Infrastructures",
+                                  ImGuiTreeNodeFlags_DefaultOpen)) {
+        ImGui::Indent(10);
+
+        ImGui::BeginDisabled(currentBudget < Infrastructure::COST_POWER_PLANT);
+        if (ImGui::Button("Power Plant", ImVec2(180, 0))) {
+          currentBuildType = TypeBatiment::PowerPlant;
+          isBuidling = true;
+          isDestroying = false;
         }
+        ImGui::EndDisabled();
+
+        ImGui::BeginDisabled(currentBudget <
+                             Infrastructure::COST_WATER_TREATMENT);
+        if (ImGui::Button("Water Treatment Plant", ImVec2(180, 0))) {
+          currentBuildType = TypeBatiment::WaterTreatmentPlant;
+          isBuidling = true;
+          isDestroying = false;
+        }
+        ImGui::EndDisabled();
+
+        ImGui::BeginDisabled(currentBudget < Infrastructure::COST_UTILITY);
+        if (ImGui::Button("Utility Plant", ImVec2(180, 0))) {
+          currentBuildType = TypeBatiment::UtilityPlant;
+          isBuidling = true;
+          isDestroying = false;
+        }
+        ImGui::EndDisabled();
+
+        ImGui::Unindent(10);
+      }
+
+      ImGui::Unindent(10);
     }
 
-    ImGui::End();
-}
+    ImGui::Unindent(10);
+  }
 
+  if (ImGui::CollapsingHeader("Edit", ImGuiTreeNodeFlags_DefaultOpen)) {
+    if (ImGui::Button("Destroy building", ImVec2(180, 0))) {
+      isBuidling = false;
+      isDestroying = !isDestroying;
+      if (isDestroying)
+        currentBuildType = TypeBatiment::Blank;
+    }
+  }
+
+  ImGui::End();
+}
 
 void placeBuildingsOnTilemap(int tilemap[][64], int rows, int cols,
                              int tileCount,
@@ -428,15 +431,22 @@ void Application::checkEvent() {
 
 int Application::run() {
   // Initialize Simulation
-  sim.getVille().setBudget(1000);
-  sim.getVille().setPopulation(500);
+  sim.getVille().setBudget(5000);
+  sim.getVille().setPopulation(100);
   sim.getVille().setSatisfaction(50);
   sim.getVille().calculerPolutionTotale();
   sim.getVille().calculerSatisfactionTotale();
+
+  // Initiale Houses
   sim.getVille().ajoutBatiment(Resident::createHouse(&sim.getVille(), 25, 25));
   sim.getVille().ajoutBatiment(Resident::createHouse(&sim.getVille(), 25, 26));
+  sim.getVille().ajoutBatiment(Resident::createHouse(&sim.getVille(), 25, 27));
   sim.getVille().ajoutBatiment(Resident::createHouse(&sim.getVille(), 26, 25));
   sim.getVille().ajoutBatiment(Resident::createHouse(&sim.getVille(), 26, 26));
+  sim.getVille().ajoutBatiment(Resident::createHouse(&sim.getVille(), 26, 27));
+  sim.getVille().ajoutBatiment(Resident::createHouse(&sim.getVille(), 27, 25));
+  sim.getVille().ajoutBatiment(Resident::createHouse(&sim.getVille(), 27, 26));
+  sim.getVille().ajoutBatiment(Resident::createHouse(&sim.getVille(), 27, 27));
 
   // Grid constants
   const int ROWS = 64;
@@ -540,59 +550,104 @@ int Application::run() {
       if (insideMap && !imguiBlockingMouse && !bat) {
         bool created = false;
 
+        int width = 1, height = 1;
+
+        // Determine building size
         switch (currentBuildType) {
         case TypeBatiment::House:
-          sim.getVille().ajoutBatiment(
-              Resident::createHouse(&sim.getVille(), tileX, tileY));
-          created = true;
+        case TypeBatiment::Apartment:
+          width = 1;
+          height = 1;
           break;
         case TypeBatiment::Park:
-          sim.getVille().ajoutBatiment(
-              Parc::createPark(&sim.getVille(), tileX, tileY));
-          created = true;
+          width = 2;
+          height = 2;
           break;
         case TypeBatiment::Cinema:
-          sim.getVille().ajoutBatiment(
-              Comercial::createCinema(&sim.getVille(), tileX, tileY));
-          created = true;
+          width = 2;
+          height = 1;
           break;
         case TypeBatiment::Mall:
-          sim.getVille().ajoutBatiment(
-              Comercial::createMall(&sim.getVille(), tileX, tileY));
-          created = true;
+          width = 3;
+          height = 3;
           break;
         case TypeBatiment::Bank:
-          sim.getVille().ajoutBatiment(
-              Comercial::createBank(&sim.getVille(), tileX, tileY));
-          created = true;
-          break;
         case TypeBatiment::PowerPlant:
-          sim.getVille().ajoutBatiment(
-              Infrastructure::createPowerPlant(&sim.getVille(), tileX, tileY));
-          created = true;
-          break;
         case TypeBatiment::WaterTreatmentPlant:
-          sim.getVille().ajoutBatiment(
-              Infrastructure::createWaterTreatmentPlant(&sim.getVille(), tileX,
-                                                        tileY));
-          created = true;
-          break;
         case TypeBatiment::UtilityPlant:
-          sim.getVille().ajoutBatiment(Infrastructure::createUtilityPlant(
-              &sim.getVille(), tileX, tileY));
-          created = true;
+          width = 1;
+          height = 1;
           break;
         default:
           break;
         }
 
-        if (created) {
-          // Reset tilemap to original landscape
-          std::memcpy(tilemap, landscape, sizeof(int) * ROWS * COLS);
+        // Check if the building can be placed using Cluster algorithm
+        if (Cluster::canPlaceBuilding(tileY, tileX, width, height, tilemap,
+                                      ROWS, COLS)) {
 
-          // Place all buildings on the tilemap
-          placeBuildingsOnTilemap(tilemap, ROWS, COLS, TILE_COUNT,
-                                  sim.getVille().batiments);
+          switch (currentBuildType) {
+          case TypeBatiment::House:
+            sim.getVille().ajoutBatiment(
+                Resident::createHouse(&sim.getVille(), tileX, tileY));
+            created = true;
+            break;
+          case TypeBatiment::Apartment:
+            sim.getVille().ajoutBatiment(Appartement::createAppartement(
+                &sim.getVille(), 4, tileX, tileY));
+            created = true;
+            break;
+          case TypeBatiment::Park:
+            sim.getVille().ajoutBatiment(
+                Parc::createPark(&sim.getVille(), tileX, tileY));
+            created = true;
+            break;
+          case TypeBatiment::Cinema:
+            sim.getVille().ajoutBatiment(
+                Comercial::createCinema(&sim.getVille(), tileX, tileY));
+            created = true;
+            break;
+          case TypeBatiment::Mall:
+            sim.getVille().ajoutBatiment(
+                Comercial::createMall(&sim.getVille(), tileX, tileY));
+            created = true;
+            break;
+          case TypeBatiment::Bank:
+            sim.getVille().ajoutBatiment(
+                Comercial::createBank(&sim.getVille(), tileX, tileY));
+            created = true;
+            break;
+          case TypeBatiment::PowerPlant:
+            sim.getVille().ajoutBatiment(Infrastructure::createPowerPlant(
+                &sim.getVille(), tileX, tileY));
+            created = true;
+            break;
+          case TypeBatiment::WaterTreatmentPlant:
+            sim.getVille().ajoutBatiment(
+                Infrastructure::createWaterTreatmentPlant(&sim.getVille(),
+                                                          tileX, tileY));
+            created = true;
+            break;
+          case TypeBatiment::UtilityPlant:
+            sim.getVille().ajoutBatiment(Infrastructure::createUtilityPlant(
+                &sim.getVille(), tileX, tileY));
+            created = true;
+            break;
+          default:
+            break;
+          }
+
+          if (created) {
+            // Reset tilemap to original landscape
+            std::memcpy(tilemap, landscape, sizeof(int) * ROWS * COLS);
+
+            // Place all buildings on the tilemap
+            placeBuildingsOnTilemap(tilemap, ROWS, COLS, TILE_COUNT,
+                                    sim.getVille().batiments);
+          }
+        } else {
+          // Optional: play sound or message that placement is invalid
+          SDL_Log("Cannot place building here: weight check failed");
         }
       }
       buildClickRequested = false;

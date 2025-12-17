@@ -1,6 +1,5 @@
 #include "../../include/buildings/resident.hpp"
 
-#include <iostream>
 #include <string>
 #include <memory>
 
@@ -13,7 +12,9 @@ float Resident::SATISFACTION_PER_PERSON = 0.1f;
 float Resident::POLLUTION_PER_PERSON = 0.05f;
 int Resident::BASE_CAPACITY_HOUSE = 6;
 int Resident::BASE_CAPACITY_APARTMENT = 4;
-float Resident::HOUSE_COST = 30;
+float Resident::COST_HOUSE = 30;
+float Resident::COST_APARTMENT = 50; 
+
 
 // Setters 
 void Resident::setWaterPerPerson(float value) { WATER_PER_PERSON = value; }
@@ -90,7 +91,7 @@ BatPtr Resident::createHouse(Ville *ville,
     return BatPtr(
         new Resident(
             generatedID, generatedName, ville, TypeBatiment::House,
-            satisfaction, HOUSE_COST,
+            satisfaction, COST_HOUSE,
             water, electricity, pollution,
             x, y, 1, 1,
             BASE_CAPACITY_HOUSE, 0

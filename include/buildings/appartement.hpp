@@ -29,8 +29,7 @@ protected:
   static constexpr float EFFET_SATISFACTION_PER_FLOOR = 1.0f;
 
 public:
-  static Appartement createAppartement(int id, const std::string &nom, Ville *ville,
-                                       unsigned int floorNumbers, int x, int y);
+  static BatPtr createAppartement(Ville *ville, unsigned int floorNumbers, int x, int y);
   void addNewFloor();
   void destroyFloor();
 

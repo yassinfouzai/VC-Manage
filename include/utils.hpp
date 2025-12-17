@@ -1,21 +1,19 @@
 #ifndef UTILS
 #define UTILS
 
-#include <memory>
-#include <string>
-#include <vector>
-#include <random>
-#include <map>
 #include <fstream>
 #include <functional>
-#include <sstream>
+#include <map>
+#include <memory>
 #include <nlohmann/json.hpp>
+#include <random>
+#include <sstream>
+#include <string>
+#include <vector>
 
 using json = nlohmann::json;
 
-
 class Batiment;
-
 
 struct Surface {
   float longeur;
@@ -88,17 +86,17 @@ struct WindowSettings {
 
 // Énumérations
 enum class TypeBatiment {
-  Blank, //0 
-  House, //1
-  Apartment, //2 
-  Bank, //3
-  PowerPlant, //4
-  WaterTreatmentPlant, //5 
-  UtilityPlant, //6
-  Park, //7
-  Cinema, //8
-  Mall, //9
-  Custom //10
+  Blank,               // 0
+  House,               // 1
+  Apartment,           // 2
+  Bank,                // 3
+  PowerPlant,          // 4
+  WaterTreatmentPlant, // 5
+  UtilityPlant,        // 6
+  Park,                // 7
+  Cinema,              // 8
+  Mall,                // 9
+  Custom               // 10
 };
 
 enum class SimState { Running, Evaluating, GameOver };
@@ -110,28 +108,40 @@ using BatimentList = std::vector<BatPtr>;
 // Générateur d'IDs - déclaration seulement
 class BuildingIDGenerator {
 private:
-    static std::hash<std::string> string_hasher;
-    static std::random_device rd;
-    static std::mt19937 gen;
-    static std::uniform_int_distribution<int> dist;
+  static std::hash<std::string> string_hasher;
+  static std::random_device rd;
+  static std::mt19937 gen;
+  static std::uniform_int_distribution<int> dist;
 
 public:
-    static int generateID(const std::string& name, TypeBatiment type, 
-                         const Position& position, const Surface& surface);
+  static int generateID(const std::string &name, TypeBatiment type,
+                        const Position &position, const Surface &surface);
 };
 
 // Générateur de noms - déclaration seulement
 class NameGenerator {
 private:
-    static std::map<TypeBatiment, std::vector<std::string>> buildingNames;
-    static std::random_device rd;
-    static std::mt19937 gen;
-    static bool initialized;
+  static std::map<TypeBatiment, std::vector<std::string>> buildingNames;
+  static std::random_device rd;
+  static std::mt19937 gen;
+  static bool initialized;
 
-    static void initializeNames();
+  static void initializeNames();
 
 public:
-    static std::string getRandomName(TypeBatiment type);
+  static std::string getRandomName(TypeBatiment type);
 };
 
+
+// MY ORIGINAL CLUSTER ALGORITHM
+namespace Cluster {
+
+// Hate recusive cuz it wastes memory
+float calculateMinWeight(int x);
+
+double calculateWeight(int i, int j, int grid[][64], int ROWS, int COLS);
+
+bool canPlaceBuilding(int topRow, int leftCol, int width, int height,
+                      int grid[][64], int ROWS, int COLS);
+} // namespace Cluster
 #endif // !UTILS
