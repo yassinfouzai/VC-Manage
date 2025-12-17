@@ -27,6 +27,10 @@ public:
   static float POLLUTION_PER_PERSON;
   static int BASE_CAPACITY_HOUSE;
   static int BASE_CAPACITY_APARTMENT;
+  
+  // Building costs (static for reuse)
+  static double COST_HOUSE;
+  static double COST_APARTMENT;
 
   // Méthodes statiques
   static void setWaterPerPerson(float value);

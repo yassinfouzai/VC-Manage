@@ -23,6 +23,10 @@ protected:
   Resources productionRessources;
 
 public:
+  // Building costs (static for reuse)
+  static double COST_POWER_PLANT;
+  static double COST_WATER_TREATMENT;
+  
   // Methods
   void produireRessources();
   void impacterRessources() override;
