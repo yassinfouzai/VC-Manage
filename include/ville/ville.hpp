@@ -25,6 +25,8 @@ public:
   void supprimerBatiment(int x, int y);
   Resources calculerconsommationTotale();
   Resources calculerResourcesTotale();
+  // Total resource production from infrastructure plants
+  Resources calculerProductionTotale() const;
   float calculerPolutionTotale();
   int calculerSatisfactionTotale();
   // Employment
@@ -46,6 +48,9 @@ public:
   int getSatisfaction() const;
   float getPolution() const;
   Resources getResources() const;
+  // Utilities availability (0..1)
+  float getWaterAvailability() const;
+  float getPowerAvailability() const;
   Batiment* getBatimentByPos(int x, int y) const;
 
   // Setters
@@ -54,6 +59,8 @@ public:
   void setSatisfaction(int newSatisfaction);
   void setPolution(float newPolution);
   void setResources(Resources newResources);
+  void setWaterAvailability(float value);
+  void setPowerAvailability(float value);
 
 
   BatimentList batiments;
@@ -64,6 +71,9 @@ private:
   int satisfaction;
   float polution;
   Resources resources;
+  // Cached utility availability for gameplay penalties
+  float waterAvailability = 1.0f;
+  float powerAvailability = 1.0f;
 };
 
 #endif // !VILLE
